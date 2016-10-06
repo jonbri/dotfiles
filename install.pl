@@ -15,21 +15,14 @@ sub runCommand($) {
 }
 
 # read dot files directory
-opendir(DH, "$cwd");
+opendir(DH, "$cwd/.files");
 my @files = readdir(DH);
 closedir(DH);
 
 foreach (@files) {
-    # skip . and .. and others
+    # skip . and ..
     next if($_ =~ /^\.$/);
     next if($_ =~ /^\.\.$/);
-    next if($_ =~ /^\.git$/);
-    next if($_ =~ /^\.gitignore$/);
-    next if($_ =~ /^install.pl$/);
-    next if($_ =~ /^updateVimPlugins.pl$/);
-    next if($_ =~ /^README.md$/);
-    next if($_ =~ /^Notes.md$/);
-    next if($_ =~ /^vimstuff$/);
 
-    print join('', runCommand("ln -sfv $cwd/$_ $home"));
+    print join('', runCommand("ln -sfv $cwd/.files/$_ $home"));
 }
