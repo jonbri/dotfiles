@@ -17,10 +17,12 @@ autocmd VimEnter * set expandtab
 
 """"""""""""""""""""""""""""""""""""""""""
 " pathogen
-execute pathogen#infect()
-syntax on
-filetype plugin indent on
-:Helptags
+if !empty(findfile('autoload/pathogen.vim', &rtp)) 
+        execute pathogen#infect()
+        syntax on
+        filetype plugin indent on
+        :Helptags
+endif
 """"""""""""""""""""""""""""""""""""""""""
 
 
@@ -193,7 +195,7 @@ set guioptions-=e
 
 " set t_Co=256
 set laststatus=2
-colorscheme transparent
+silent! colorscheme transparent
 
 " commonly used deployment script
 nnoremap <leader>dep :!./deploy<cr>
