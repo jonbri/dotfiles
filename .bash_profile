@@ -1,6 +1,8 @@
 set -o vi
 export EDITOR=vim
 
+export PATH=~/bin:$PATH
+
 alias ll="ls -la"
 alias g="git"
 alias v="vim"
