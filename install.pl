@@ -26,6 +26,7 @@ foreach (@files) {
     next if($_ =~ /^\.git$/);
     next if($_ =~ /^\.gitignore$/);
     next if($_ =~ /^install.pl$/);
+    next if($_ =~ /^updateVimPlugins.pl$/);
     next if($_ =~ /^README.md$/);
 
     print join('', runCommand("ln -sfv $cwd/$_ $home"));
