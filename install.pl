@@ -28,6 +28,7 @@ foreach (@files) {
     next if($_ =~ /^install.pl$/);
     next if($_ =~ /^updateVimPlugins.pl$/);
     next if($_ =~ /^README.md$/);
+    next if($_ =~ /^Notes.md$/);
     next if($_ =~ /^vimstuff$/);
 
     print join('', runCommand("ln -sfv $cwd/$_ $home"));
