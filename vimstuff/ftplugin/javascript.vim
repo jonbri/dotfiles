@@ -5,7 +5,7 @@ set expandtab
 
 " openui5 projects use a special .eslintrc
 if expand('%:p') =~# "openui"
-    set makeprg=eslint\ --format\ compact\ --no-eslintrc\ --config\ /home/jonbri/.eslintrc\ %
+    set makeprg=eslint\ --format\ compact\ --no-eslintrc\ --config\ /home/jonbri/.eslintrc_openui5\ %
 else
     set makeprg=eslint\ --format\ compact\ %
 endif
