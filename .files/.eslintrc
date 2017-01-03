@@ -1,6 +1,7 @@
 env:
   browser: true
   es6: true
+  node: true
 extends: 'eslint:recommended'
 parserOptions:
   sourceType: module
@@ -26,3 +27,4 @@ globals:
   Mustache: true
   QUnit: true
   sinon: true
+  phantom: true
