@@ -1,7 +1,9 @@
 #!/usr/bin/perl -w
 
 use strict;
+use Cwd 'cwd';
 
+my $cwd = cwd();
 my $dotVimDir;
 my @repos=qw(
     https://github.com/tpope/vim-fugitive|tpope-fugitive
@@ -73,8 +75,8 @@ MAIN: {
     runCommand("mkdir -p $dotVimDir");
     runCommand("mkdir -p $dotVimDir/bundle");
 
-    runCommand("cp -R ./vimstuff/autoload $dotVimDir");
-    runCommand("cp -R ./vimstuff/ftplugin $dotVimDir");
+    runCommand("ln -sfv $cwd/vimstuff/autoload $dotVimDir/autoload");
+    runCommand("ln -sfv $cwd/vimstuff/ftplugin $dotVimDir/ftplugin");
 
     my ($repo,$folderName);
     foreach(@repos) {
