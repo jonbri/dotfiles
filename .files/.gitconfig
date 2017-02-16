@@ -28,6 +28,21 @@
     mend = !git add . && git commit --amend --reuse-message=HEAD
     mendd = !git mend && git review --draft
     mendr = !git mend && git review
+    change-num = "!f() \
+           { \
+                ssh -p 29418 gerrit-html5.unx.sas.com gerrit query --dependencies --current-patch-set $1 \
+                    | perl -n -e 'chomp and print if /^\\s\\snumber/ or /project/' \
+                    | perl -n -e ' \
+                          BEGIN { \
+                              $remote = `git config --get remote.origin.url`; \
+                              chomp $remote; \
+                              $remote =~ s/.*\\/(.*)$/$1/; \
+                          } \
+                          m/${remote}\\s+number:\\s+(\\d+)/ and print $1 \
+                      ' \
+                ; \
+                echo; \
+           };f"
 
 [gitreview]
     remote = origin
