@@ -11,4 +11,5 @@ export NVM_DIR=/home/jonbri/.nvm
 wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.4/install.sh | bash
 source ~/.nvm/nvm.sh
 nvm install stable
+npm install --global prettier eslint
 ```
