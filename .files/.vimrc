@@ -47,22 +47,6 @@ nnoremap <leader>bo :BufOnly<CR>
 
 
 """"""""""""""""""""""""""""""""""""""""""
-" prettifier
-function! PrettierCurrentBuffer()
-    let b:output=system('./node_modules/.bin/prettier index.js')
-    " TODO: store cursor line
-    execute "normal! ggdG"
-    $put=b:output
-    execute "normal! ggdd"
-    echo "prettifier done"
-    " TODO: move to stored cursor line
-endfunction
-
-nnoremap <leader>p :call PrettierCurrentBuffer()<CR>
-""""""""""""""""""""""""""""""""""""""""""
-
-
-""""""""""""""""""""""""""""""""""""""""""
 " syntastic options
 let g:syntastic_enable_css_checker = 1
 let g:syntastic_css_checkers = ['csslint']
