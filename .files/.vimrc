@@ -127,22 +127,6 @@ nnoremap <leader>sp :put+<CR>
 
 
 """"""""""""""""""""""""""""""""""""""""""
-" window management
-noremap <up> <C-W>+
-noremap <down> <C-W>-
-noremap <right> 3<C-W><
-noremap <left> 3<C-W>>
-
-function! MinimizeOtherWindows()
-    :90wincmd+
-    :90wincmd>
-endfunction
-nnoremap <leader>o :only<CR>
-nnoremap <leader>O :call MinimizeOtherWindows()<CR>
-""""""""""""""""""""""""""""""""""""""""""
-
-
-""""""""""""""""""""""""""""""""""""""""""
 " Fugitive shortcuts
 noremap <leader>gs :Gstatus<CR>
 noremap <leader>gw :Gwrite<CR>
