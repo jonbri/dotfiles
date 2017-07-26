@@ -26,3 +26,6 @@ foreach (@files) {
 
     print join('', runCommand("ln -sfv $cwd/.files/$_ $home"));
 }
+
+print join('', runCommand("$cwd/bin/updateTools.pl"));
+print join('', runCommand("$cwd/bin/updateVimPlugins.pl"));
