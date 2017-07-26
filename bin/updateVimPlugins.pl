@@ -76,8 +76,8 @@ MAIN: {
     runCommand("mkdir -p $dotVimDir");
     runCommand("mkdir -p $dotVimDir/bundle");
 
-    runCommand("ln -sfv $cwd/vimstuff/autoload $dotVimDir/autoload");
-    runCommand("ln -sfv $cwd/vimstuff/ftplugin $dotVimDir/ftplugin");
+    runCommand("ln -sfvn $cwd/vimstuff/autoload $dotVimDir/autoload");
+    runCommand("ln -sfvn $cwd/vimstuff/ftplugin $dotVimDir/ftplugin");
 
     my ($repo,$folderName);
     foreach(@repos) {
