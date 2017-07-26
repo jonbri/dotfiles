@@ -65,7 +65,9 @@ MAIN: {
         my $fullPath="$toolsDir/$folderName";
         if (-d "$fullPath") {
             runCommand("git -C $fullPath stash -u");
-            runCommand("git -C $fullPath pull origin master");
+            runCommand("git -C $fullPath fetch");
+            runCommand("git -C $fullPath checkout master");
+            runCommand("git -C $fullPath reset --hard origin/master");
         } else {
             runCommand("git clone $repo $fullPath");
         }
