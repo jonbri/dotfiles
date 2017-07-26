@@ -14,11 +14,13 @@ sub runCommand($) {
     return @output;
 }
 
+print "This script will install/update various config files, tools, and Vim plugins.\n\n";
+
+print "update dotfiles...\n";
 # read dot files directory
 opendir(DH, "$cwd/.files");
 my @files = readdir(DH);
 closedir(DH);
-
 foreach (@files) {
     # skip . and ..
     next if($_ =~ /^\.$/);
@@ -27,5 +29,10 @@ foreach (@files) {
     print join('', runCommand("ln -sfv $cwd/.files/$_ $home"));
 }
 
+print "\nupdate tools...\n";
 print join('', runCommand("$cwd/bin/updateTools.pl"));
+
+print "\nupdate vim plugins...\n";
 print join('', runCommand("$cwd/bin/updateVimPlugins.pl"));
+
+print "\njonbri dotfiles install done\n";
