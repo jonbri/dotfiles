@@ -31,6 +31,7 @@ my @repos=qw(
     https://github.com/jonbri/vim-copybuddy.git|jonbri-copybuddy
     https://github.com/jonbri/vim-win.git|jonbri-win
     https://github.com/jonbri/vim-pretty.git|jonbri-pretty
+    https://github.com/jonbri/vim-spaced.git|jonbri-spaced
     https://github.com/goldfeld/ctrlr.vim.git|goldfeld-ctrl
 );
 
