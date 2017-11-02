@@ -165,6 +165,10 @@ nnoremap <leader>bb :b#<cr>
 
 " open up split below
 command! -complete=file -nargs=* Bsp rightbelow split +edit <args>
+
+" quick-fix window always spans windows at bottom
+" https://stackoverflow.com/a/47077341/2295034
+au FileType qf wincmd J
 """"""""""""""""""""""""""""""""""""""""""
 
 
