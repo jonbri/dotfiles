@@ -27,19 +27,6 @@ endif
 
 
 """"""""""""""""""""""""""""""""""""""""""
-" configure vim fast
-nnoremap <leader>ev :vsplit $MYVIMRC<cr>
-nnoremap <leader>sv :source $MYVIMRC<cr>
-
-nnoremap <leader>egv :vsplit $MYGVIMRC<cr>
-nnoremap <leader>sgv :source $MYGVIMRC<cr>
-
-nnoremap <leader>ecv :vsplit $HOME/config/dotfiles/.vimrc<cr>
-nnoremap <leader>ecgv :vsplit $HOME/config/dotfiles/.gvimrc<cr>
-""""""""""""""""""""""""""""""""""""""""""
-
-
-""""""""""""""""""""""""""""""""""""""""""
 " venerable shortcuts
 nnoremap gb :ls<CR>:b<Space>
 nnoremap <leader>bo :BufOnly<CR>
@@ -127,17 +114,6 @@ nnoremap <leader>do :call DeleteOthers()<cr><cr>
 """"""""""""""""""""""""""""""""""""""""""
 " Grep helpers
 nnoremap <leader>g :silent execute "grep! -R " . shellescape(expand("<cWORD>")) . " ."<CR>:copen<CR>
-""""""""""""""""""""""""""""""""""""""""""
-
-
-""""""""""""""""""""""""""""""""""""""""""
-" source current buffer
-function! SourceCurrentBuffer()
-    source %
-    echo "sourced"
-endfunction
-
-nnoremap <leader>s :call SourceCurrentBuffer()<CR>
 """"""""""""""""""""""""""""""""""""""""""
 
 

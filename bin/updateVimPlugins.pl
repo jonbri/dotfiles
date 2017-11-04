@@ -22,6 +22,7 @@ my @repos=qw(
     https://github.com/chriskempson/base16-vim.git|base16
     https://github.com/genoma/vim-less.git|genoma-less
     https://github.com/JulesWang/css.vim.git|wang-css
+    https://github.com/jonbri/vim-configure.git|jonbri-configure
     https://github.com/jonbri/vim-flash.git|jonbri-flash
     https://github.com/jonbri/vim-lorum.git|jonbri-lorum
     https://github.com/jonbri/vim-colorstepper.git|jonbri-colorstepper
