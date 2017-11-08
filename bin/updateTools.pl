@@ -56,6 +56,7 @@ MAIN: {
     runCommand("mkdir -p $toolsDir");
     runCommand("mkdir -p $homeBinDir");
     runCommand("curl --silent https://raw.githubusercontent.com/jonbri/copybuddy/master/copybuddy > $homeBinDir/copybuddy");
+    runCommand("cp bin/bin/* $homeBinDir");
     runCommand("chmod +x $homeBinDir/copybuddy");
 
     my ($repo,$folderName);
