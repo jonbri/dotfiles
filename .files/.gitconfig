@@ -28,6 +28,8 @@
     mend = !git add . && git commit --amend --reuse-message=HEAD
     mendd = !git mend && git review --draft
     mendr = !git mend && git review
+    revd = !git review -d $1
+    revl = !git review -l
 
     gerr-look = "!f() \
             { \
