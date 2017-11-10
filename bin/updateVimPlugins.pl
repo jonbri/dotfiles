@@ -91,7 +91,7 @@ MAIN: {
             runCommand("git -C $fullPath stash -u");
             runCommand("git -C $fullPath pull origin master");
         } else {
-            runCommand("git clone $repo $fullPath");
+            runCommand("git clone $repo $fullPath --depth 1");
         }
     }
 

@@ -70,7 +70,7 @@ MAIN: {
             runCommand("git -C $fullPath checkout master");
             runCommand("git -C $fullPath reset --hard origin/master");
         } else {
-            runCommand("git clone $repo $fullPath");
+            runCommand("git clone $repo $fullPath --depth 1");
         }
 
         if (-e "$fullPath/.cb") {
