@@ -28,7 +28,13 @@
     mend = !git add . && git commit --amend --reuse-message=HEAD
     mendd = !git mend && git review --draft
     mendr = !git mend && git review
-    revd = !git review -d $1
+    revd = "!f() \
+        { \
+            case $1 in \
+                ''|*[!0-9]*) git gerr-look-go $1 ;; \
+                *) git review -d $1 ;; \
+            esac \
+        };f"
     revl = !git review -l
 
     gerr-look = "!f() \
