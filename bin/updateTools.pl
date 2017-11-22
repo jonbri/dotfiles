@@ -4,7 +4,7 @@ use strict;
 
 my @repos=qw(
     https://github.com/jonbri/killer|killer
-    https://github.com/jonbri/whereami|whereami
+    https://github.com/jonbri/persona|persona
 );
 
 sub doHelp(;$) {
