@@ -147,6 +147,12 @@ command! -complete=file -nargs=* Bsp rightbelow split +edit <args>
 au FileType qf wincmd J
 """"""""""""""""""""""""""""""""""""""""""
 
+" auto-source .vim files when leaving buffer window
+augroup filetype_html
+  autocmd!
+  autocmd WinLeave *.vim :call SourceCurrentBuffer()
+augroup END
+
 
 """"""""""""""""""""""""""""""""""""""""""
 " scratch
