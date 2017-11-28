@@ -39,7 +39,7 @@
 
     gerr-look = "!f() \
             { \
-                local SEMANTIC_ID=$1; \
+                local SEMANTIC_ID=`echo $1 | awk '{print toupper($0)}'`; \
                 ssh -p 29418 gerrit-html5.unx.sas.com gerrit query --dependencies --current-patch-set \"topic:${SEMANTIC_ID}\" \
                     | perl -n -e ' \
                           BEGIN { \
