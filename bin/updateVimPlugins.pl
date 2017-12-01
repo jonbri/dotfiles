@@ -6,7 +6,6 @@ use Cwd 'cwd';
 my $cwd = cwd();
 my $dotVimDir;
 my @repos=qw(
-    https://github.com/editorconfig/editorconfig-vim.git|editorconfig-vim
     https://github.com/junegunn/vader.vim.git|junegunn-vader
     https://github.com/tpope/vim-fugitive|tpope-fugitive
     https://github.com/tpope/vim-flagship|tpope-flagship
