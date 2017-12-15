@@ -40,6 +40,10 @@
     gerr-look = "!f() \
             { \
                 local SEMANTIC_ID=`echo $1 | awk '{print toupper($0)}'`; \
+                if [ \"${SEMANTIC_ID}\" = \"HOSTNAME\" ]; then \
+                    local SEMANTIC_ID=`hostname | grep -Poi 'htmlcommons-\\d+'`;\
+                fi; \
+                local SEMANTIC_ID=`echo ${SEMANTIC_ID} | awk '{print toupper($0)}'`; \
                 ssh -p 29418 gerrit-html5.unx.sas.com gerrit query --dependencies --current-patch-set \"topic:${SEMANTIC_ID}\" \
                     | perl -n -e ' \
                           BEGIN { \
