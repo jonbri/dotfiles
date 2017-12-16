@@ -1,0 +1,75 @@
+#!/usr/bin/env node
+
+const { exec } = require('child_process');
+
+let sInput;
+
+// process command-line arg
+if (process.argv[2] === undefined) {
+  console.error('Argument required');
+  process.exit(1);
+}
+sInput = process.argv[2].toUpperCase();
+
+// ability to parse hostname for topic
+if (/hostname/i.test(sInput)) {
+  // `hostname | grep -Poi 'htmlcommons-\\d+'`;
+  console.error('This feature is not-yet implemented');
+  process.exit(1);
+}
+
+// if a number is passed-in, just return the number and exit,
+// it's probably a change-number that does not need to be converted
+if (/^\d+$/.test(sInput)) {
+  console.log(sInput);
+  process.exit(0);
+}
+
+(async function() {
+  async function getProjectList() {
+    return new Promise(function(resolve) {
+      exec("ssh -p 29418 gerrit-html5.unx.sas.com gerrit ls-projects", (err, stdout, stderr) => {
+        resolve(stdout.split('\n'));
+      });
+    });
+  }
+
+  async function getRepoName() {
+    return new Promise(function(resolve) {
+      exec("git rev-parse --show-toplevel", (err, stdout, stderr) => {
+        resolve(stdout.split('/').reverse()[0]);
+      });
+    });
+  }
+
+  async function getQueryJSON(sTopic, sProjectName) {
+    var sQuery = `
+      ssh -p 29418 gerrit-html5.unx.sas.com gerrit query
+      --format JSON
+      status:OPEN
+      topic:${sTopic}
+      project:${sProjectName}
+    `.replace(/\n/g, '').replace(/\s+/g, ' ');
+    return new Promise(function(resolve) {
+      exec(sQuery, (err, stdout, stderr) => {
+        if (/"rowCount":0/.test(stdout)) {
+          console.error('No results found');
+          process.exit(1);
+        }
+        resolve(JSON.parse(stdout.replace(/{"type":"stats".*/, '')));
+      });
+    });
+  }
+
+  let aProjectNames = await getProjectList(),
+    sRepoName = await getRepoName(),
+    sProjectName = aProjectNames.filter(s => new RegExp(sRepoName + "$").test(s))[0];
+
+  if (sProjectName === undefined) {
+    console.error('Cannot determine project name');
+    process.exit(1);
+  }
+
+  // print final result
+  console.log((await getQueryJSON(sInput, sProjectName)).number);
+}());

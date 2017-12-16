@@ -37,33 +37,7 @@
         };f"
     revl = !git review -l
 
-    gerr-look = "!f() \
-            { \
-                local SEMANTIC_ID=`echo $1 | awk '{print toupper($0)}'`; \
-                if [ \"${SEMANTIC_ID}\" = \"HOSTNAME\" ]; then \
-                    local SEMANTIC_ID=`hostname | grep -Poi 'htmlcommons-\\d+'`;\
-                fi; \
-                local SEMANTIC_ID=`echo ${SEMANTIC_ID} | awk '{print toupper($0)}'`; \
-                ssh -p 29418 gerrit-html5.unx.sas.com gerrit query --dependencies --current-patch-set \"topic:${SEMANTIC_ID}\" \
-                    | perl -n -e ' \
-                          BEGIN { \
-                              $remote = `git config --get remote.origin.url`; \
-                              chomp $remote; \
-                              $remote =~ s/.*\\/(.*)$/$1/; \
-                              $match_string = \"\"; \
-                          } \
-                          if (/^\\s\\snumber/ or /project/) { \
-                              chomp $_; \
-                              $match_string = $match_string.$_; \
-                          } \
-                          END { \
-                              ($match_string =~ m/${remote}\\s+number:\\s+(\\d+)/) and print $1 \
-                          } \
-                      ' \
-                ; \
-                echo; \
-            };f"
-
+    gerr-look = !gerr-look $1
     gerr-look-go = "!f() { git review -d `git gerr-look $1`; };f"
 
 [gitreview]
