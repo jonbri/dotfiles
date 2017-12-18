@@ -37,7 +37,7 @@ if (/^\d+$/.test(sInput)) {
   async function getRepoName() {
     return new Promise(function(resolve) {
       exec("git rev-parse --show-toplevel", (err, stdout, stderr) => {
-        resolve(stdout.split('/').reverse()[0]);
+        resolve(stdout.split('/').reverse()[0].trim());
       });
     });
   }
