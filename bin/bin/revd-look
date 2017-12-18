@@ -2,60 +2,73 @@
 
 const { exec } = require('child_process');
 
+// Resolve strings to Gerrit change numbers
+// Input/Output comes from stdio
+//
+// Input examples:
+// * topic - change-set topic
+// * abbreviation - (hc->htmlcommons, gi->guidesinf)
+// * hostname - a topic name pattern will be searched for
+// * number - will just return the number
+//
+// The name of the Git repo that corresponds to `pwd` will be
+// used to determine which Gerrit project to use for the lookup
+
+const sServer = 'gerrit-html5.unx.sas.com';
+const sPort = '29418';
+
 (async function() {
 
-  async function getHostname() {
-    return new Promise(function(resolve) {
-      exec("hostname", (err, stdout, stderr) => {
-        resolve(stdout.trim());
+  //
+  // FUNCTIONS
+  //
+
+  // resolve hc/gi or just return argument as-is
+  function resolveAbbreviation(s) {
+    // abbreviation for htmlcommons (hc-123 => HTMLCOMMONS-123)
+    const aHCAbbrevExec = /^hc-(\d+)$/i.exec(s);
+    if (aHCAbbrevExec !== null) {
+      return 'HTMLCOMMONS-' + aHCAbbrevExec[1];
+    }
+    // abbreviation for guidesinf (gi-123 => GUIDESINF-123)
+    const aGIAbbrevExec = /^gi-(\d+)$/i.exec(s);
+    if (aGIAbbrevExec !== null) {
+      return 'GUIDESINF-' + aGIAbbrevExec[1];
+    }
+    return s;
+  }
+
+  // resolve hostname or just return argument as-is
+  async function resolveHostname(s) {
+    // get system hostname
+    async function getHostname() {
+      return new Promise(function(resolve) {
+        exec('hostname', (err, stdout, stderr) => {
+          resolve(stdout.trim());
+        });
       });
+    }
+    return new Promise(async function(resolve) {
+      // if not using the hostname feature just return
+      if (/hostname/i.test(s) === false) {
+        resolve(s);
+        return;
+      }
+      const sHostname = await getHostname();
+      const aHostnameMatch =  sHostname.match(/-(\w+-\d+)-/);
+      if (aHostnameMatch !== null && aHostnameMatch.length >= 1) {
+        resolve(aHostnameMatch[1].toUpperCase());
+      } else {
+        console.error('Hostname could not be resolved');
+        process.exit(1);
+      }
     });
   }
 
-
-  let sInput;
-
-  // process command-line arg
-  if (process.argv[2] === undefined) {
-    console.error('Argument required');
-    process.exit(1);
-  }
-  sInput = process.argv[2].toUpperCase();
-
-  // ability to parse hostname for topic
-  if (/hostname/i.test(sInput)) {
-    const sHostname = await getHostname();
-    const aHostnameMatch =  sHostname.match(/-(\w+-\d+)-/);
-    if (aHostnameMatch !== null && aHostnameMatch.length >= 1) {
-      sInput = aHostnameMatch[1].toUpperCase();
-    } else {
-      console.error('Hostname could not be resolved');
-      process.exit(1);
-    }
-  }
-
-  // if a number is passed-in, just return the number and exit,
-  // it's probably a change-number that does not need to be converted
-  if (/^\d+$/.test(sInput)) {
-    console.log(sInput);
-    process.exit(0);
-  }
-
-  // abbreviation for htmlcommons (hc-123 => HTMLCOMMONS-123)
-  const aHCAbbrevExec = /^hc-(\d+)$/i.exec(sInput);
-  if (aHCAbbrevExec !== null) {
-    sInput = "HTMLCOMMONS-" + aHCAbbrevExec[1];
-  }
-  // abbreviation for guidesinf (gi-123 => GUIDESINF-123)
-  const aGIAbbrevExec = /^gi-(\d+)$/i.exec(sInput);
-  if (aGIAbbrevExec !== null) {
-    sInput = "GUIDESINF-" + aGIAbbrevExec[1];
-  }
-
-
+  // get list of all projects on the gerrit server
   async function getProjectList() {
     return new Promise(function(resolve) {
-      exec("ssh -p 29418 gerrit-html5.unx.sas.com gerrit ls-projects", (err, stdout, stderr) => {
+      exec(`ssh -p ${sPort} ${sServer} gerrit ls-projects`, (err, stdout) => {
         resolve(stdout.split('\n'));
       });
     });
@@ -63,15 +76,15 @@ const { exec } = require('child_process');
 
   async function getRepoName() {
     return new Promise(function(resolve) {
-      exec("git rev-parse --show-toplevel", (err, stdout, stderr) => {
+      exec('git rev-parse --show-toplevel', (err, stdout, stderr) => {
         resolve(stdout.split('/').reverse()[0].trim());
       });
     });
   }
 
   async function getQueryJSON(sTopic, sProjectName) {
-    var sQuery = `
-      ssh -p 29418 gerrit-html5.unx.sas.com gerrit query
+    const sQuery = `
+      ssh -p ${sPort} ${sServer} gerrit query
       --format JSON
       status:OPEN
       topic:${sTopic}
@@ -88,9 +101,31 @@ const { exec } = require('child_process');
     });
   }
 
-  let aProjectNames = await getProjectList(),
+  //
+  // EXECUTION STARTS HERE
+  //
+
+  // verify command-line arg was passed-in
+  if (process.argv[2] === undefined) {
+    console.error('Argument required');
+    process.exit(1);
+  }
+
+  // if a number is passed-in, just return the number and exit,
+  // it's probably a change-number that does not need to be converted
+  if (/^\d+$/.test(process.argv[2])) {
+    console.log(process.argv[2]);
+    process.exit(0);
+  }
+
+  let sInput = process.argv[2].toUpperCase();
+  sInput = await resolveHostname(sInput);
+  sInput = resolveAbbreviation(sInput);
+
+  const aProjectNames = await getProjectList(),
     sRepoName = await getRepoName(),
-    sProjectName = aProjectNames.filter(s => new RegExp(sRepoName + "$").test(s))[0];
+    sProjectName = aProjectNames
+      .filter(s => new RegExp(sRepoName + '$').test(s))[0];
 
   if (sProjectName === undefined) {
     console.error('Cannot determine project name');
