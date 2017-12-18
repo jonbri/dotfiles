@@ -25,6 +25,19 @@ if (/^\d+$/.test(sInput)) {
   process.exit(0);
 }
 
+
+// abbreviation for htmlcommons (hc-123 => HTMLCOMMONS-123)
+const aHCAbbrevExec = /^hc-(\d+)$/i.exec(sInput);
+if (aHCAbbrevExec !== null) {
+  sInput = "HTMLCOMMONS-" + aHCAbbrevExec[1];
+}
+// abbreviation for guidesinf (gi-123 => GUIDESINF-123)
+const aGIAbbrevExec = /^gi-(\d+)$/i.exec(sInput);
+if (aGIAbbrevExec !== null) {
+  sInput = "GUIDESINF-" + aGIAbbrevExec[1];
+}
+
+
 (async function() {
   async function getProjectList() {
     return new Promise(function(resolve) {
