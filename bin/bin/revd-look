@@ -2,43 +2,57 @@
 
 const { exec } = require('child_process');
 
-let sInput;
-
-// process command-line arg
-if (process.argv[2] === undefined) {
-  console.error('Argument required');
-  process.exit(1);
-}
-sInput = process.argv[2].toUpperCase();
-
-// ability to parse hostname for topic
-if (/hostname/i.test(sInput)) {
-  // `hostname | grep -Poi 'htmlcommons-\\d+'`;
-  console.error('This feature is not-yet implemented');
-  process.exit(1);
-}
-
-// if a number is passed-in, just return the number and exit,
-// it's probably a change-number that does not need to be converted
-if (/^\d+$/.test(sInput)) {
-  console.log(sInput);
-  process.exit(0);
-}
-
-
-// abbreviation for htmlcommons (hc-123 => HTMLCOMMONS-123)
-const aHCAbbrevExec = /^hc-(\d+)$/i.exec(sInput);
-if (aHCAbbrevExec !== null) {
-  sInput = "HTMLCOMMONS-" + aHCAbbrevExec[1];
-}
-// abbreviation for guidesinf (gi-123 => GUIDESINF-123)
-const aGIAbbrevExec = /^gi-(\d+)$/i.exec(sInput);
-if (aGIAbbrevExec !== null) {
-  sInput = "GUIDESINF-" + aGIAbbrevExec[1];
-}
-
-
 (async function() {
+
+  async function getHostname() {
+    return new Promise(function(resolve) {
+      exec("hostname", (err, stdout, stderr) => {
+        resolve(stdout.trim());
+      });
+    });
+  }
+
+
+  let sInput;
+
+  // process command-line arg
+  if (process.argv[2] === undefined) {
+    console.error('Argument required');
+    process.exit(1);
+  }
+  sInput = process.argv[2].toUpperCase();
+
+  // ability to parse hostname for topic
+  if (/hostname/i.test(sInput)) {
+    const sHostname = await getHostname();
+    const aHostnameMatch =  sHostname.match(/-(\w+-\d+)-/);
+    if (aHostnameMatch !== null && aHostnameMatch.length >= 1) {
+      sInput = aHostnameMatch[1].toUpperCase();
+    } else {
+      console.error('Hostname could not be resolved');
+      process.exit(1);
+    }
+  }
+
+  // if a number is passed-in, just return the number and exit,
+  // it's probably a change-number that does not need to be converted
+  if (/^\d+$/.test(sInput)) {
+    console.log(sInput);
+    process.exit(0);
+  }
+
+  // abbreviation for htmlcommons (hc-123 => HTMLCOMMONS-123)
+  const aHCAbbrevExec = /^hc-(\d+)$/i.exec(sInput);
+  if (aHCAbbrevExec !== null) {
+    sInput = "HTMLCOMMONS-" + aHCAbbrevExec[1];
+  }
+  // abbreviation for guidesinf (gi-123 => GUIDESINF-123)
+  const aGIAbbrevExec = /^gi-(\d+)$/i.exec(sInput);
+  if (aGIAbbrevExec !== null) {
+    sInput = "GUIDESINF-" + aGIAbbrevExec[1];
+  }
+
+
   async function getProjectList() {
     return new Promise(function(resolve) {
       exec("ssh -p 29418 gerrit-html5.unx.sas.com gerrit ls-projects", (err, stdout, stderr) => {
