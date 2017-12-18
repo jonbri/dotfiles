@@ -28,17 +28,9 @@
     mend = !git add . && git commit --amend --reuse-message=HEAD
     mendd = !git mend && git review --draft
     mendr = !git mend && git review
-    revd = "!f() \
-        { \
-            case $1 in \
-                ''|*[!0-9]*) git gerr-look-go $1 ;; \
-                *) git review -d $1 ;; \
-            esac \
-        };f"
     revl = !git review -l
-
-    gerr-look = !gerr-look $1
-    gerr-look-go = "!f() { git review -d `git gerr-look $1`; };f"
+    revd = "!f() { git review -d `git revd-look $1`; };f"
+    revd-look = !revd-look $1
 
 [gitreview]
     remote = origin
