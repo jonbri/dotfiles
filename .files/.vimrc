@@ -125,6 +125,20 @@ nnoremap <leader>M :cclose<CR>
 
 
 """"""""""""""""""""""""""""""""""""""""""
+" commit message prefix
+function! OnBranch()
+  :/^# On branch /yank
+  :normal P
+  :normal 3dw
+  :normal I(
+  :normal A) 
+  :startinsert!
+endfunction
+command! OnBranch call OnBranch()
+""""""""""""""""""""""""""""""""""""""""""
+
+
+""""""""""""""""""""""""""""""""""""""""""
 " misc
 set showtabline=2
 set guioptions-=e
