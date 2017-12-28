@@ -27,12 +27,12 @@ let sPort;
   // resolve hc/gi or just return argument as-is
   function resolveAbbreviation(s) {
     // abbreviation for htmlcommons (hc-123 => HTMLCOMMONS-123)
-    const aHCAbbrevExec = /^hc-(\d+)$/i.exec(s);
+    const aHCAbbrevExec = /^hc[-]?(\d+)$/i.exec(s);
     if (aHCAbbrevExec !== null) {
       return 'HTMLCOMMONS-' + aHCAbbrevExec[1];
     }
     // abbreviation for guidesinf (gi-123 => GUIDESINF-123)
-    const aGIAbbrevExec = /^gi-(\d+)$/i.exec(s);
+    const aGIAbbrevExec = /^gi[-]?(\d+)$/i.exec(s);
     if (aGIAbbrevExec !== null) {
       return 'GUIDESINF-' + aGIAbbrevExec[1];
     }
