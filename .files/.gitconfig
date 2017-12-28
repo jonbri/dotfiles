@@ -29,7 +29,7 @@
     mendd = !git mend && git review --draft
     mendr = !git mend && git review
     revl = !git review -l
-    revd = "!f() { git review -d `git revd-look $1`; };f"
+    revd = !revd $1
     revd-look = !revd-look $1
 
 [gitreview]

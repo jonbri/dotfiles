@@ -1,0 +1,13 @@
+#!/bin/bash
+# revd - wrapper around `git-review -d`
+
+REVDL=`git revd-look $1`
+REVDL_RESULT=$?
+
+# check for error
+if [ $REVDL_RESULT -ne 0 ]; then
+  echo "revd-look failed"
+  exit 1
+fi
+
+git review -d $REVDL
