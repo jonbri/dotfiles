@@ -14,8 +14,9 @@ const { exec } = require('child_process');
 // The name of the Git repo that corresponds to `pwd` will be
 // used to determine which Gerrit project to use for the lookup
 
-const sServer = 'gerrit-html5.unx.sas.com';
-const sPort = '29418';
+// global vars
+let sServer;
+let sPort;
 
 (async function() {
 
@@ -74,6 +75,24 @@ const sPort = '29418';
     });
   }
 
+  // determine url and port from origin remote
+  async function getServerInfo() {
+    return new Promise(function(resolve) {
+      exec('git config --get remote.origin.url', (err, stdout, stderr) => {
+        const aParts = stdout.match(/[@](.*)[:]([\d]+)/);
+        if (!aParts || aParts.length < 2) {
+          console.error('"origin" remote has non-expected format');
+          process.exit(1);
+        } else {
+          resolve({
+            url: aParts[1],
+            port: aParts[2]
+          });
+        }
+      });
+    });
+  }
+
   async function getRepoName() {
     return new Promise(function(resolve) {
       exec('git rev-parse --show-toplevel', (err, stdout, stderr) => {
@@ -118,6 +137,12 @@ const sPort = '29418';
     process.exit(0);
   }
 
+  // populate sServer and sPort global variables
+  const oServerInfo = await getServerInfo();
+  sServer = oServerInfo.url;
+  sPort = oServerInfo.port;
+
+  // process input
   let sInput = process.argv[2].toUpperCase();
   sInput = await resolveHostname(sInput);
   sInput = resolveAbbreviation(sInput);
