@@ -30,6 +30,9 @@ endif
 " venerable shortcuts
 nnoremap gb :ls<CR>:b<Space>
 nnoremap <leader>bo :BufOnly<CR>
+
+" switch windows with ctrl-r
+nnoremap <C-r> <C-w>
 """"""""""""""""""""""""""""""""""""""""""
 
 
