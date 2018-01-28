@@ -142,6 +142,16 @@ command! OnBranch call OnBranch()
 
 
 """"""""""""""""""""""""""""""""""""""""""
+" invoke vimgrep with word under cursor
+function! NormalStartVimGrep()
+  let wordUnderCursor = expand("<cword>")
+  call feedkeys(':vimgrep '.wordUnderCursor.' ')
+endfunction
+nnoremap <leader>grep :call NormalStartVimGrep()<cr>
+""""""""""""""""""""""""""""""""""""""""""
+
+
+""""""""""""""""""""""""""""""""""""""""""
 " misc
 set showtabline=2
 set guioptions-=e
