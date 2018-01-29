@@ -148,6 +148,12 @@ function! NormalStartVimGrep()
   call feedkeys(':vimgrep '.wordUnderCursor.' ')
 endfunction
 nnoremap <leader>grep :call NormalStartVimGrep()<cr>
+" invoke vimgrep with visually selected text
+function! VisualStartVimGrep()
+  let selectedText = getline("'<")[getpos("'<")[2]-1:getpos("'>")[2]-1]
+  call feedkeys(':vimgrep '.selectedText.' ')
+endfunction
+vnoremap <leader>grep :call VisualStartVimGrep()<cr>
 """"""""""""""""""""""""""""""""""""""""""
 
 
