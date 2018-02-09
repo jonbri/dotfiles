@@ -180,6 +180,19 @@ command! -complete=file -nargs=* Bsp rightbelow split +edit <args>
 au FileType qf wincmd J
 """"""""""""""""""""""""""""""""""""""""""
 
+
+""""""""""""""""""""""""""""""""""""""""""
+" OpenUI5 stuff
+function! AssociationMapping()
+  normal Isap.ui.getCore().byId(get
+  normal l~A());
+  normal 2F(l
+  startinsert
+endfunction
+nnoremap cass :call AssociationMapping()<cr>
+""""""""""""""""""""""""""""""""""""""""""
+
+
 " auto-source .vim files when leaving buffer window
 augroup filetype_html
   autocmd!
