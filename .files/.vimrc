@@ -30,6 +30,7 @@ endif
 " venerable shortcuts
 nnoremap gb :ls<CR>:b<Space>
 nnoremap <leader>bo :BufOnly<CR>
+nnoremap <leader>e :windo edit<CR>
 
 " switch windows without using ctrl-w
 nnoremap gw <C-w>
