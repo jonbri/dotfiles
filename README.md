@@ -1,3 +1,3 @@
 # dotfiles
 
-Run `install.pl` to get started
+Run `install` to get started
