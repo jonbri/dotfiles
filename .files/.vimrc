@@ -191,6 +191,11 @@ function! AssociationMapping()
   startinsert
 endfunction
 nnoremap cass :call AssociationMapping()<cr>
+
+function! OpenUI5Search()
+  normal /\vprototype\.(init|On(Before|After)Rendering|exit)+\c
+endfunction
+nnoremap g] :silent! call OpenUI5Search()<cr>
 """"""""""""""""""""""""""""""""""""""""""
 
 
