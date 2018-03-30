@@ -26,6 +26,7 @@
     wipa = !git add . && git commit -m "wip" --amend
     master = !git stash -u && git checkout master && git fetch && git reset --hard origin/master && echo "done"
     master-hard = !git master && git rm --cached -r . && git reset --hard
+    stash-hard = !git stash && git rm --cached -r . && git reset --hard
     mend = !git add . && git commit --amend --reuse-message=HEAD
     mendd = !git mend && git review --draft
     mendr = !git mend && git review
