@@ -1,3 +1,3 @@
-colorscheme pink
+colorscheme desert
 cd ~
 
