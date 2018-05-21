@@ -29,8 +29,8 @@
     master-hard = !git master && git rm --cached -r . && git reset --hard
     stash-hard = !git stash && git rm --cached -r . && git reset --hard
     mend = !git add . && git commit --amend --reuse-message=HEAD
-    mendd = !git mend && git review --draft
-    mendr = !git mend && git review
+    mendd = !git mend && git push origin HEAD:refs/drafts/master
+    mendr = !git mend && git push origin HEAD:refs/for/master
     revl = !git review -l
     revd = !revd $1
     revd-look = !revd-look $1
