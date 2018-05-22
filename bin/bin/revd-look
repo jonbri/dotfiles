@@ -31,6 +31,13 @@ let sPort;
     if (aHCAbbrevExec !== null) {
       return 'HTMLCOMMONS-' + aHCAbbrevExec[1];
     }
+
+    // abbreviation for htmlinternal (hi-123 => HTMLINTERNAL-123)
+    const aHIAbbrevExec = /^hi[-]?(\d+)$/i.exec(s);
+    if (aHIAbbrevExec !== null) {
+      return 'HTMLINTERNAL-' + aHIAbbrevExec[1];
+    }
+
     // abbreviation for guidesinf (gi-123 => GUIDESINF-123)
     const aGIAbbrevExec = /^gi[-]?(\d+)$/i.exec(s);
     if (aGIAbbrevExec !== null) {
