@@ -123,13 +123,6 @@ nnoremap <leader>g :silent execute "grep! -R " . shellescape(expand("<cWORD>")) 
 
 
 """"""""""""""""""""""""""""""""""""""""""
-" make
-nnoremap <leader>m :Make<CR>
-nnoremap <leader>M :cclose<CR>
-""""""""""""""""""""""""""""""""""""""""""
-
-
-""""""""""""""""""""""""""""""""""""""""""
 " commit message prefix
 function! OnBranch()
   :/^# On branch /yank

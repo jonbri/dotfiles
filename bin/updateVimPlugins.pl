@@ -19,7 +19,6 @@ my @repos=qw(
     https://github.com/tpope/vim-eunuch|tpope-eunuch
     https://github.com/tpope/vim-dispatch|tpope-dispatch
     https://github.com/duff/vim-bufonly.git|bufonly
-    https://github.com/scrooloose/syntastic|syntastic
     https://github.com/chriskempson/base16-vim.git|base16
     https://github.com/genoma/vim-less.git|genoma-less
     https://github.com/JulesWang/css.vim.git|wang-css
