@@ -90,7 +90,7 @@ nnoremap <leader>/f :call GotoFirstMatch()<CR>
 """"""""""""""""""""""""""""""""""""""""""
 " system clipboard copy/paste
 vnoremap <leader>sy "+y
-nnoremap <leader>sp :put+<CR>
+nnoremap <leader>sp :put!+<CR>
 """"""""""""""""""""""""""""""""""""""""""
 
 
