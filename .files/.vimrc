@@ -77,6 +77,21 @@ nnoremap <leader>cc :call GetCC()<CR>
 
 
 """"""""""""""""""""""""""""""""""""""""""
+" brace-jump
+function! BraceJump()
+  normal 0
+  execute "normal! /\v[\[{]<cr>"
+  normal 0$%$
+  execute "normal! /\\v\\S\<cr>"
+endfunction
+" nnoremap g} :call BraceJump()<CR>
+nnoremap <silent> <Plug>JonbriBraceJump :call BraceJump()<cr>
+\:call repeat#set("\<Plug>JonbriBraceJump")<CR>
+nmap g} <Plug>JonbriBraceJump
+""""""""""""""""""""""""""""""""""""""""""
+
+
+""""""""""""""""""""""""""""""""""""""""""
 " search matching
 function! GotoFirstMatch()
     call inputsave()
