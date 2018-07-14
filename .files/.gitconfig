@@ -19,8 +19,8 @@
     br = branch
     ci = commit
     st = status
-    s = status --short
-    d = diff
+    s = "!clear && git status"
+    d = "!clear && git diff"
     dc = diff --cached
     wip = !git add . && git commit -m "wip"
     wipa = !git add . && git commit -m "wip" --amend
