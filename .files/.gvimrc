@@ -1,3 +1,3 @@
-colorscheme desert
+colorscheme murphy
 cd ~
 
