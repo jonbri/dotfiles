@@ -132,12 +132,6 @@ nnoremap <leader>do :call DeleteOthers()<cr><cr>
 
 
 """"""""""""""""""""""""""""""""""""""""""
-" Grep helpers
-nnoremap <leader>g :silent execute "grep! -R " . shellescape(expand("<cWORD>")) . " ."<CR>:copen<CR>
-""""""""""""""""""""""""""""""""""""""""""
-
-
-""""""""""""""""""""""""""""""""""""""""""
 " commit message prefix
 function! OnBranch()
   :/^# On branch /yank
