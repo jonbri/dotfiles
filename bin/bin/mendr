@@ -1,0 +1,4 @@
+#!/bin/bash
+# mendr - Amend changes to HEAD commit and push to Gerrit as review
+
+git mend && git push origin HEAD:refs/for/master

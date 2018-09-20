@@ -29,9 +29,9 @@
     mastera = !echo "" && echo "clearing both frame and hon..." && sleep 1 && cd $OPENUIFRAMEWORK && pwd &&  git master && cd $OPENUIHONEYCOMB && pwd && sleep 1 && git master && echo "mastera done"
     master-hard = !git master && git rm --cached -r . && git reset --hard
     stash-hard = !git stash && git rm --cached -r . && git reset --hard
-    mend = !git add . && git commit --amend --reuse-message=HEAD
-    mendd = !git mend && git push origin HEAD:refs/drafts/master
-    mendr = !git mend && git push origin HEAD:refs/for/master
+    mend = !mend
+    mendd = !mendd
+    mendr = !mendr
     revl = !git review -l
     revd = !revd $1
     revd-look = !revd-look $1
