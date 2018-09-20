@@ -1,5 +1,5 @@
 #!/bin/bash
-# revd - wrapper around `git-review -d`
+# revd - Look-up and check-out latest patch-sets. Replacement for `git-review -d`
 
 REVDL=`git revd-look $1`
 REVDL_RESULT=$?
@@ -10,4 +10,9 @@ if [ $REVDL_RESULT -ne 0 ]; then
   exit 1
 fi
 
-git review -d $REVDL
+array=($REVDL)
+server=${array[0]}
+port=${array[1]}
+project=${array[2]}
+ref=${array[3]}
+git fetch ssh://${USER}@${server}:${port}/${project} ${ref} && git reset --hard FETCH_HEAD

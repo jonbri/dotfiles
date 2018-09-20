@@ -2,7 +2,7 @@
 
 const { exec } = require('child_process');
 
-// Resolve strings to Gerrit change numbers
+// Resolve strings to Gerrit change-sets and returns metadata
 // Input/Output comes from stdio
 //
 // Input examples:
@@ -13,6 +13,9 @@ const { exec } = require('child_process');
 //
 // The name of the Git repo that corresponds to `pwd` will be
 // used to determine which Gerrit project to use for the lookup
+//
+// Output format is space-delimited: {server} {port} {project} {ref}
+// Example: gerrit-html5.unx.sas.com 29418 htmlcommons-samples/openui-honeycomb refs/changes/25/31725/4
 
 // global vars
 let sServer;
@@ -108,13 +111,14 @@ let sPort;
     });
   }
 
-  async function getQueryJSON(sTopic, sProjectName) {
+  async function getQueryJSON(sArg, sProjectName) {
     const sQuery = `
       ssh -p ${sPort} ${sServer} gerrit query
       --format JSON
       status:OPEN
-      topic:${sTopic}
+      --current-patch-set
       project:${sProjectName}
+      ${sArg}
     `.replace(/\n/g, '').replace(/\s+/g, ' ');
     return new Promise(function(resolve) {
       exec(sQuery, (err, stdout, stderr) => {
@@ -137,22 +141,18 @@ let sPort;
     process.exit(1);
   }
 
-  // if a number is passed-in, just return the number and exit,
-  // it's probably a change-number that does not need to be converted
-  if (/^\d+$/.test(process.argv[2])) {
-    console.log(process.argv[2]);
-    process.exit(0);
+  let sInput = process.argv[2].toUpperCase();
+
+  // if a number is passed-in, don't try to resolve, it's probably a change-number
+  if (/^\d+$/.test(process.argv[2]) === false) {
+    sInput = await resolveHostname(sInput);
+    sInput = resolveAbbreviation(sInput);
   }
 
   // populate sServer and sPort global variables
   const oServerInfo = await getServerInfo();
   sServer = oServerInfo.url;
   sPort = oServerInfo.port;
-
-  // process input
-  let sInput = process.argv[2].toUpperCase();
-  sInput = await resolveHostname(sInput);
-  sInput = resolveAbbreviation(sInput);
 
   const aProjectNames = await getProjectList(),
     sRepoName = await getRepoName(),
@@ -165,5 +165,6 @@ let sPort;
   }
 
   // print final result
-  console.log((await getQueryJSON(sInput, sProjectName)).number);
+  const oJSON = await getQueryJSON(sInput, sProjectName);
+  console.log(sServer + " " + sPort + " " + oJSON.project + " " + oJSON.currentPatchSet.ref);
 }());
