@@ -1,4 +1,9 @@
 #!/bin/bash
 # mendd - Amend changes to HEAD commit and push to Gerrit as draft
 
-git mend && git push origin HEAD:refs/drafts/master
+topic=`determine-topic`
+if [ -z "$topic" ]; then
+    git mend && git push origin HEAD:refs/drafts/master
+else
+    git mend && git push origin HEAD:refs/drafts/master/$topic
+fi
