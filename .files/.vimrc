@@ -39,16 +39,6 @@ nnoremap gw <C-w>
 
 
 """"""""""""""""""""""""""""""""""""""""""
-" syntastic options
-let g:syntastic_enable_css_checker = 1
-let g:syntastic_css_checkers = ['csslint']
-
-let g:syntastic_enable_perl_checker = 1
-let g:syntastic_perl_checkers = ['perl', 'podchecker']
-""""""""""""""""""""""""""""""""""""""""""
-
-
-""""""""""""""""""""""""""""""""""""""""""
 " put semi-colon at end of line
 nnoremap <leader>pe; mp:normal A;<esc>`p
 """"""""""""""""""""""""""""""""""""""""""
