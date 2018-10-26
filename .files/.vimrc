@@ -3,7 +3,7 @@ let mapleader = " "
 """"""""""""""""""""""""""""""""""""""""""
 " fix mingw32 runtimepath issue
 if filereadable($HOME."/_vimrc")
-    let &runtimepath.=','.$HOME."/vimfiles"
+  let &runtimepath.=','.$HOME."/vimfiles"
 endif
 """"""""""""""""""""""""""""""""""""""""""
 
@@ -18,10 +18,10 @@ autocmd VimEnter * set expandtab
 """"""""""""""""""""""""""""""""""""""""""
 " pathogen
 if !empty(findfile('autoload/pathogen.vim', &rtp))
-        execute pathogen#infect()
-        syntax on
-        filetype plugin indent on
-        :Helptags
+  execute pathogen#infect()
+  syntax on
+  filetype plugin indent on
+  :Helptags
 endif
 """"""""""""""""""""""""""""""""""""""""""
 
@@ -57,12 +57,12 @@ nnoremap <leader>pe; mp:normal A;<esc>`p
 """"""""""""""""""""""""""""""""""""""""""
 " toggle colorcolumn
 function! GetCC()
-    let b:defaultCC = 80
-    if &colorcolumn
-        set colorcolumn=0
-    else
-        execute "set colorcolumn=".b:defaultCC
-    endif
+  let b:defaultCC = 80
+  if &colorcolumn
+    set colorcolumn=0
+  else
+    execute "set colorcolumn=".b:defaultCC
+  endif
 endfunction
 
 nnoremap <leader>cc :call GetCC()<CR>
@@ -87,9 +87,9 @@ nmap g} <Plug>JonbriBraceJump
 """"""""""""""""""""""""""""""""""""""""""
 " search matching
 function! GotoFirstMatch()
-    call inputsave()
-    let userInput = input('')
-    execute "keepjumps normal! gg/".userInput."/\<CR>"
+  call inputsave()
+  let userInput = input('')
+  execute "keepjumps normal! gg/".userInput."/\<CR>"
 endfunction
 nnoremap <leader>/f :call GotoFirstMatch()<CR>
 """"""""""""""""""""""""""""""""""""""""""
@@ -110,8 +110,8 @@ noremap <leader>gc :Gcommit<CR>
 """"""""""""""""""""""""""""""""""""""""""
 " delete everything but current line
 function! DeleteOthers()
-    :0,.-1g/.*/d
-    :.+1,$g/.*/d
+  :0,.-1g/.*/d
+  :.+1,$g/.*/d
 endfunction
 nnoremap <leader>do :call DeleteOthers()<cr><cr>
 """"""""""""""""""""""""""""""""""""""""""
