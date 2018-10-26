@@ -49,24 +49,6 @@ let g:syntastic_perl_checkers = ['perl', 'podchecker']
 
 
 """"""""""""""""""""""""""""""""""""""""""
-" Yank/Put mappings
-
-" whole-file yank/put operations
-nnoremap <leader>yf :%yank f<CR>
-nnoremap <leader>pf gg"_dG"fP:w<CR>
-
-" system clipboard copy/paste
-vnoremap <leader>sy "+y
-function! BufferSystemYank()
-  :silent! %y+
-  echo "buffer yanked"
-endfunction
-nnoremap <leader>sy :call BufferSystemYank()<CR>
-nnoremap <leader>sp :put!+<CR>
-""""""""""""""""""""""""""""""""""""""""""
-
-
-""""""""""""""""""""""""""""""""""""""""""
 " put semi-colon at end of line
 nnoremap <leader>pe; mp:normal A;<esc>`p
 """"""""""""""""""""""""""""""""""""""""""
