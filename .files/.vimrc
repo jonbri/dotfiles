@@ -49,9 +49,15 @@ let g:syntastic_perl_checkers = ['perl', 'podchecker']
 
 
 """"""""""""""""""""""""""""""""""""""""""
+" Yank/Put mappings
+
 " whole-file yank/put operations
 nnoremap <leader>yf :%yank f<CR>
 nnoremap <leader>pf gg"_dG"fP:w<CR>
+
+" system clipboard copy/paste
+vnoremap <leader>sy "+y
+nnoremap <leader>sp :put!+<CR>
 """"""""""""""""""""""""""""""""""""""""""
 
 
@@ -99,13 +105,6 @@ function! GotoFirstMatch()
     execute "keepjumps normal! gg/".userInput."/\<CR>"
 endfunction
 nnoremap <leader>/f :call GotoFirstMatch()<CR>
-""""""""""""""""""""""""""""""""""""""""""
-
-
-""""""""""""""""""""""""""""""""""""""""""
-" system clipboard copy/paste
-vnoremap <leader>sy "+y
-nnoremap <leader>sp :put!+<CR>
 """"""""""""""""""""""""""""""""""""""""""
 
 
