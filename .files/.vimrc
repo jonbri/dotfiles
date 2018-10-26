@@ -17,7 +17,7 @@ autocmd VimEnter * set expandtab
 
 """"""""""""""""""""""""""""""""""""""""""
 " pathogen
-if !empty(findfile('autoload/pathogen.vim', &rtp)) 
+if !empty(findfile('autoload/pathogen.vim', &rtp))
         execute pathogen#infect()
         syntax on
         filetype plugin indent on
@@ -138,7 +138,7 @@ function! OnBranch()
   :normal P
   :normal 3dw
   :normal I(
-  :normal A) 
+  :normal A)
   :startinsert!
 endfunction
 command! OnBranch call OnBranch()
