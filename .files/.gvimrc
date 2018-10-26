@@ -1,3 +1,2 @@
 colorscheme murphy
-cd ~
-
+cd ~/Desktop
