@@ -5,6 +5,7 @@ export PATH=~/bin:$PATH
 
 alias ll="ls -la"
 alias g="git"
+alias gwip="git wip"
 alias v="vim"
 alias mux="tmux attach -d -t 0"
 
