@@ -37,6 +37,7 @@ my @repos=qw(
     https://github.com/jonbri/vim-jessdoc.git|jonbri-jessdoc
     https://github.com/jonbri/vim-zargs.git|jonbri-zargs
     https://github.com/goldfeld/ctrlr.vim.git|goldfeld-ctrl
+    https://github.com/AndrewRadev/discotheque.vim.git|vim-discotheque
 );
 
 sub doHelp(;$) {
