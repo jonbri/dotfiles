@@ -126,7 +126,12 @@ let sPort;
           console.error('No results found');
           process.exit(1);
         }
-        resolve(JSON.parse(stdout.replace(/{"type":"stats".*/, '')));
+
+        // The payload from the ssh request will actually return two groups of json objects.
+        // We just need the first one, so remove the one that starts with a "type" key
+        const sJSON = stdout.replace(/{"type":"stats".*/, '');
+
+        resolve(JSON.parse(sJSON));
       });
     });
   }
