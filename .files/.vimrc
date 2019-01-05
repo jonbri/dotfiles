@@ -86,18 +86,6 @@ nnoremap <leader>/f :call GotoFirstMatch()<CR>
 
 
 """"""""""""""""""""""""""""""""""""""""""
-" Fugitive shortcuts
-noremap <leader>gs :Gstatus<CR>
-noremap <leader>gw :Gwrite<CR>
-noremap <leader>gr :Gread<CR>
-noremap <leader>gd :Gdiff<CR>
-noremap <leader>ge :Gedit<CR>
-noremap <leader>gb :Gblame<CR>
-noremap <leader>gc :Gcommit<CR>
-""""""""""""""""""""""""""""""""""""""""""
-
-
-""""""""""""""""""""""""""""""""""""""""""
 " delete everything but current line
 function! DeleteOthers()
   :0,.-1g/.*/d
