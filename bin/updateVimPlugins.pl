@@ -85,6 +85,7 @@ MAIN: {
 
     runCommand("ln -sfvn $cwd/vimstuff/autoload $dotVimDir/autoload");
     runCommand("ln -sfvn $cwd/vimstuff/ftplugin $dotVimDir/ftplugin");
+    runCommand("ln -sfvn $cwd/vimstuff/dictionaries $dotVimDir/dictionaries");
 
     my ($repo,$folderName);
     foreach(@repos) {
