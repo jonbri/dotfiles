@@ -17,6 +17,8 @@ alias mux="tmux attach -d -t 0"
 
 alias dot="cd ~/dotfiles"
 alias toolbelt="cd ~/tools/toolbelt"
+alias nova="cd ~/nova"
+alias lab="cd ~/nova/lab"
 
 export OPENUIFRAMEWORK=~/dev/openui-framework
 export OPENUIHONEYCOMB=~/dev/openui-honeycomb
