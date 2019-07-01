@@ -19,8 +19,9 @@ alias dot="cd ~/dotfiles"
 alias toolbelt="cd ~/tools/toolbelt"
 alias nova="cd ~/nova"
 alias lab="cd ~/nova/lab"
-alias apps="cd ~/nova/lab/apps"
-alias components="cd ~/nova/lab/components"
+alias react="cd ~/react"
+alias app="cd ~/react/react-app"
+alias lib="cd ~/react/react-lib"
 
 export OPENUIFRAMEWORK=~/dev/openui-framework
 export OPENUIHONEYCOMB=~/dev/openui-honeycomb
