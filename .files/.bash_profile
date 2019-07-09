@@ -22,6 +22,7 @@ alias lab="cd ~/nova/lab"
 alias react="cd ~/react"
 alias app="cd ~/react/react-app"
 alias lib="cd ~/react/react-lib"
+alias start="cd ~/react/react-start"
 
 export OPENUIFRAMEWORK=~/dev/openui-framework
 export OPENUIHONEYCOMB=~/dev/openui-honeycomb
