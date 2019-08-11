@@ -5,6 +5,7 @@ use strict;
 my @repos=qw(
     https://github.com/jonbri/killer|killer
     https://github.com/jonbri/persona|persona
+    https://github.com/jonbri/conny|conny
 );
 
 sub doHelp(;$) {
