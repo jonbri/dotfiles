@@ -126,6 +126,14 @@ vnoremap <leader>grep :call VisualStartVimGrep()<cr>
 
 
 """"""""""""""""""""""""""""""""""""""""""
+" vim-prettier
+""""""""""""""""""""""""""""""""""""""""""
+let g:prettier#exec_cmd_async = 1
+let g:prettier#autoformat = 0
+autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html PrettierAsync
+
+
+""""""""""""""""""""""""""""""""""""""""""
 " misc
 set showtabline=2
 set guioptions-=e

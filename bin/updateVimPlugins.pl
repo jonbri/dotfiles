@@ -31,7 +31,6 @@ my @repos=qw(
     https://github.com/jonbri/vim-amperage.git|jonbri-amperage
     https://github.com/jonbri/vim-copybuddy.git|jonbri-copybuddy
     https://github.com/jonbri/vim-win.git|jonbri-win
-    https://github.com/jonbri/vim-pretty.git|jonbri-pretty
     https://github.com/jonbri/vim-spaced.git|jonbri-spaced
     https://github.com/jonbri/vim-yankee.git|jonbri-yankee
     https://github.com/jonbri/vim-jessdoc.git|jonbri-jessdoc
@@ -39,6 +38,7 @@ my @repos=qw(
     https://github.com/jonbri/vim-dictionary.git|jonbri-dictionary
     https://github.com/goldfeld/ctrlr.vim.git|goldfeld-ctrl
     https://github.com/AndrewRadev/discotheque.vim.git|vim-discotheque
+    https://github.com/jonbri/vim-prettier.git|vim-prettier
 );
 
 sub doHelp(;$) {
