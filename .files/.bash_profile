@@ -20,17 +20,17 @@ alias mux="tmux attach -d -t 0"
 alias dot="cd ~/dotfiles"
 alias toolbelt="cd ~/tools/toolbelt"
 alias nova="cd ~/nova"
-alias lab="cd ~/nova/lab"
-alias react="cd ~/react"
-alias app="cd ~/react/drive-react-poc"
-alias lib="cd ~/react/nova-lib"
-alias start="cd ~/react/react-start"
 
 export OPENUIFRAMEWORK=~/dev/openui-framework
 export OPENUIHONEYCOMB=~/dev/openui-honeycomb
 export OPENUISDK=~/dev/openui-sdk
 export OPENUITHEMES=~/dev/openui-framework-themes
-export REACT=~/react
+
+if grep -q Microsoft /proc/version; then
+    export REACT=/mnt/c/react
+else
+    export REACT=~/react
+fi
 
 alias dev="cd ~/dev"
 alias hon="cd $OPENUIHONEYCOMB"
@@ -38,5 +38,7 @@ alias frame="cd $OPENUIFRAMEWORK"
 alias sdk="cd $OPENUISDK"
 alias theme="cd $OPENUITHEMES"
 alias react="cd $REACT"
+alias app="cd $REACT/drive-react-poc"
+alias lib="cd $REACT/nova-lib"
 
 echo "done with .bash_profile"
