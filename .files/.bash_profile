@@ -39,7 +39,4 @@ alias sdk="cd $OPENUISDK"
 alias theme="cd $OPENUITHEMES"
 alias react="cd $REACT"
 
-export NVM_DIR="/home/jonbri/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-
 echo "done with .bash_profile"

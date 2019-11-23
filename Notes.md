@@ -7,9 +7,5 @@ tree gitk gitg tmux vim vim-gnome chromium-browser filezilla lftp clementine vpn
 
 NodeJS:
 ```
-export NVM_DIR=/home/jonbri/.nvm
-wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.4/install.sh | bash
-source ~/.nvm/nvm.sh
-nvm install stable
-npm install --global prettier eslint
+sudo curl -sL https://deb.nodesource.com/setup_10.x | sudo bash - && sudo apt-get install -y nodejs
 ```
