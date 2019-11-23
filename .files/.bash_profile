@@ -22,8 +22,8 @@ alias toolbelt="cd ~/tools/toolbelt"
 alias nova="cd ~/nova"
 alias lab="cd ~/nova/lab"
 alias react="cd ~/react"
-alias app="cd ~/react/react-app"
-alias lib="cd ~/react/react-lib"
+alias app="cd ~/react/drive-react-poc"
+alias lib="cd ~/react/nova-lib"
 alias start="cd ~/react/react-start"
 
 export OPENUIFRAMEWORK=~/dev/openui-framework
