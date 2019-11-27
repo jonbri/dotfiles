@@ -122,8 +122,13 @@ let sPort;
     `.replace(/\n/g, '').replace(/\s+/g, ' ');
     return new Promise(function(resolve) {
       exec(sQuery, (err, stdout, stderr) => {
-        if (/"rowCount":0/.test(stdout)) {
+        var iMatches = stdout.match(/"rowCount":\d+/g)[0].match(/\d+/)[0];
+        if (iMatches === 0) {
           console.error('No results found');
+          process.exit(1);
+        }
+        if (iMatches > 1) {
+          console.error('Too many results found (' + iMatches + ')');
           process.exit(1);
         }
 
