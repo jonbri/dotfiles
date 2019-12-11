@@ -39,8 +39,8 @@ my @repos=qw(
     https://github.com/jonbri/vim-dictionary.git|jonbri-dictionary
     https://github.com/goldfeld/ctrlr.vim.git|goldfeld-ctrl
     https://github.com/AndrewRadev/discotheque.vim.git|vim-discotheque
-    https://github.com/jonbri/vim-prettier.git|vim-prettier
 );
+# https://github.com/jonbri/vim-prettier.git|vim-prettier
 
 sub doHelp(;$) {
     my ($errMsg) = @_;
