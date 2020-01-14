@@ -5,6 +5,7 @@ export PATH=~/bin:$PATH
 
 alias ll="ls -la"
 alias g="git"
+alias gg="g s"
 alias gwip="git wip"
 alias gmend="git mend"
 alias gmendd="git mendd"
