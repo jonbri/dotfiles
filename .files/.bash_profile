@@ -18,6 +18,7 @@ alias gfetch="git fetch"
 alias gadd="git add ."
 alias v="vim"
 alias mux="tmux attach -d -t 0"
+alias kn="killer node"
 
 alias dot="cd ~/dotfiles"
 alias toolbelt="cd ~/tools/toolbelt"
