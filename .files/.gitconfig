@@ -21,7 +21,7 @@
     st = status
     s = "!clear && git status"
     d = "!clear && git diff"
-    dc = diff --cached
+    dc = "!clear && git diff --cached"
     difff = diff --color-words='[^[:space:]]|([[:alnum:]]|UTF_8_GUARD)+'
     wip = !git add . && git commit -m "wip"
     wipa = !git add . && git commit -m "wip" --amend
