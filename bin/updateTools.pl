@@ -64,6 +64,8 @@ MAIN: {
     foreach(@repos) {
         ($repo,$folderName)=split("\Q|",$_,2);
 
+        print "updating ${folderName}...\n";
+
         my $fullPath="$toolsDir/$folderName";
         if (-d "$fullPath") {
             runCommand("git -C $fullPath stash -u");
