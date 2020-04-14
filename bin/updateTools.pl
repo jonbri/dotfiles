@@ -77,7 +77,7 @@ MAIN: {
         }
 
         if (-e "$fullPath/.cb") {
-            runCommand("copybuddy $fullPath/.cb");
+            runCommand("$homeBinDir/copybuddy $fullPath/.cb");
         }
     }
 
