@@ -46,6 +46,13 @@ let sPort;
     if (aGIAbbrevExec !== null) {
       return 'GUIDESINF-' + aGIAbbrevExec[1];
     }
+
+    // abbreviation for novacommons (nc-123 => NOVACOMMONS-123)
+    const aNCAbbrevExec = /^nc[-]?(\d+)$/i.exec(s);
+    if (aNCAbbrevExec !== null) {
+      return 'NOVACOMMONS-' + aNCAbbrevExec[1];
+    }
+
     return s;
   }
 
