@@ -43,4 +43,8 @@ alias sdk="cd $OPENUISDK"
 alias theme="cd $OPENUITHEMES"
 alias nova="cd $NC"
 
+export NPM_USER=jonbri
+export NPM_PASSWORD=
+export NPM_EMAIL=Jonathan.Brink@sas.com
+
 echo "done with .bash_profile"
