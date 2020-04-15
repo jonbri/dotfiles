@@ -31,9 +31,9 @@ export OPENUISDK=~/dev/openui-sdk
 export OPENUITHEMES=~/dev/openui-framework-themes
 
 if grep -q Microsoft /proc/version; then
-    export REACT=/mnt/c/react
+    export NC=/mnt/c/nova-commons
 else
-    export REACT=~/react
+    export NC=~/nova-commons
 fi
 
 alias dev="cd ~/dev"
@@ -41,8 +41,6 @@ alias hon="cd $OPENUIHONEYCOMB"
 alias frame="cd $OPENUIFRAMEWORK"
 alias sdk="cd $OPENUISDK"
 alias theme="cd $OPENUITHEMES"
-alias react="cd $REACT"
-alias app="cd $REACT/drive-react-poc"
-alias lib="cd $REACT/nova-lib"
+alias nova="cd $NC"
 
 echo "done with .bash_profile"
