@@ -10,9 +10,10 @@ if [ $REVDL_RESULT -ne 0 ]; then
   exit 1
 fi
 
+user=`whoami`
 array=($REVDL)
 server=${array[0]}
 port=${array[1]}
 project=${array[2]}
 ref=${array[3]}
-git fetch ssh://${USER}@${server}:${port}/${project} ${ref} && git reset --hard FETCH_HEAD
+git fetch ssh://${user}@${server}:${port}/${project} ${ref} && git reset --hard FETCH_HEAD
