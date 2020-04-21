@@ -1,0 +1,11 @@
+#!/bin/bash
+# cna - run create-nova-app locally
+
+# usage: pass in name of app to be created
+
+NC=/home/jonbri/nova-commons
+
+mkdir -p /home/jonbri/apps
+cd /home/jonbri/apps
+
+node $NC/tools/create-nova-app/createNovaApp.js $1 --scripts-version file:$NC/tools/nova-scripts --template file:$NC/tools/templates/base
