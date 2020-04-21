@@ -18,6 +18,7 @@ print "This script will install/update various config files, tools, and Vim plug
 sleep 1;
 
 print "updating dotfiles...\n";
+sleep 1;
 # read dot files directory
 opendir(DH, "$cwd/.files");
 my @files = readdir(DH);
@@ -29,15 +30,19 @@ foreach (@files) {
 
     print join('', runCommand("ln -sfv $cwd/.files/$_ $home"));
 }
-print "dotfiles updated...feel free to ctrl-c\n";
-sleep 2;
+print "\ndotfiles updated...feel free to ctrl-c\n";
+print "next: tools\n";
+sleep 2.5;
 
 print "\nupdating tools...\n";
+sleep 1;
 print join('', runCommand("$cwd/bin/updateTools.pl"));
 print "\ntools updated...feel free to ctrl-c\n";
-sleep 2;
+print "next: vim plugins\n";
+sleep 2.5;
 
 print "\nupdating vim plugins...\n";
+sleep 1;
 print join('', runCommand("$cwd/bin/updateVimPlugins.pl"));
 print "\nvim plugins updated\n";
 
