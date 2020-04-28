@@ -31,6 +31,7 @@
     stash-hard = !git stash && git rm --cached -r . && git reset --hard
     mend = !mend
     mendd = !mendd
+    mendp = !mendp
     mendr = !mendr
     revl = !git review -l
     revd = !revd $1

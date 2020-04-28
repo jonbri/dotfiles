@@ -5,5 +5,5 @@ topic=`determine-topic`
 if [ -z "$topic" ]; then
     git mend && git push origin HEAD:refs/for/master
 else
-    git mend && git push origin HEAD:refs/for/master/$topic
+    git mend && git push origin HEAD:refs/for/master -o topic=$topic
 fi

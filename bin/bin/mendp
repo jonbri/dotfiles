@@ -1,0 +1,9 @@
+#!/bin/bash
+# mendp - Amend changes to HEAD commit and push to Gerrit as a private change
+
+topic=`determine-topic`
+if [ -z "$topic" ]; then
+    git mend && git push origin HEAD:refs/for/master%private
+else
+    git mend && git push origin HEAD:refs/for/master%private -o topic=$topic
+fi
