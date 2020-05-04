@@ -1,0 +1,30 @@
+#!/bin/bash
+# cna-cp - copy nova-scripts to local deployment for fast iteration
+
+# usage: pass in name of app (e.g., "app0")
+
+NC=/home/jonbri/nova-commons
+
+# bin folder
+cp $NC/tools/nova-scripts/bin/nova-scripts.js /home/jonbri/apps/$1/node_modules/@sas/nova-scripts/bin/nova-scripts.js
+
+# scripts folder
+cp $NC/tools/nova-scripts/scripts/start.js /home/jonbri/apps/$1/node_modules/@sas/nova-scripts/scripts/start.js
+cp $NC/tools/nova-scripts/scripts/build.js /home/jonbri/apps/$1/node_modules/@sas/nova-scripts/scripts/build.js
+cp $NC/tools/nova-scripts/scripts/eject.js /home/jonbri/apps/$1/node_modules/@sas/nova-scripts/scripts/eject.js
+cp $NC/tools/nova-scripts/scripts/update.js /home/jonbri/apps/$1/node_modules/@sas/nova-scripts/scripts/update.js
+cp $NC/tools/nova-scripts/scripts/test.js /home/jonbri/apps/$1/node_modules/@sas/nova-scripts/scripts/test.js
+cp $NC/tools/nova-scripts/scripts/utils/createJestConfig.js /home/jonbri/apps/$1/node_modules/@sas/nova-scripts/scripts/utils/createJestConfig.js
+cp $NC/tools/nova-scripts/scripts/utils/packagingUtil.js /home/jonbri/apps/$1/node_modules/@sas/nova-scripts/scripts/utils/packagingUtil.js
+cp $NC/tools/nova-scripts/scripts/utils/run.js /home/jonbri/apps/$1/node_modules/@sas/nova-scripts/scripts/utils/run.js
+
+# config folder
+cp $NC/tools/nova-scripts/config/eslintrc-base.js /home/jonbri/apps/$1/node_modules/@sas/nova-scripts/config/eslintrc-base.js
+cp $NC/tools/nova-scripts/config/modules.js /home/jonbri/apps/$1/node_modules/@sas/nova-scripts/config/modules.js
+cp $NC/tools/nova-scripts/config/paths.js /home/jonbri/apps/$1/node_modules/@sas/nova-scripts/config/paths.js
+cp $NC/tools/nova-scripts/config/prettier-base.config.js /home/jonbri/apps/$1/node_modules/@sas/nova-scripts/config/prettier-base.config.js
+cp $NC/tools/nova-scripts/config/tsconfig-base.json /home/jonbri/apps/$1/node_modules/@sas/nova-scripts/config/tsconfig-base.json
+cp $NC/tools/nova-scripts/config/webpack-base.config.js /home/jonbri/apps/$1/node_modules/@sas/nova-scripts/config/webpack-base.config.js
+cp $NC/tools/nova-scripts/config/jest/babelTransform.js /home/jonbri/apps/$1/node_modules/@sas/nova-scripts/config/jest/babelTransform.js
+cp $NC/tools/nova-scripts/config/jest/cssTransform.js /home/jonbri/apps/$1/node_modules/@sas/nova-scripts/config/jest/cssTransform.js
+cp $NC/tools/nova-scripts/config/jest/fileTransform.js /home/jonbri/apps/$1/node_modules/@sas/nova-scripts/config/jest/fileTransform.js
