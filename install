@@ -5,6 +5,8 @@ use Cwd 'cwd';
 
 my $home=$ENV{HOME};
 my $cwd = cwd();
+my @commands = ("dotfiles","tools","vim");
+my $command = $ARGV[0];
 
 sub runCommand($) {
     my ($command) = @_;
@@ -14,36 +16,57 @@ sub runCommand($) {
     return @output;
 }
 
-print "This script will install/update various config files, tools, and Vim plugins.\n\n";
-sleep 1;
-
-print "updating dotfiles...\n";
-sleep 1;
-# read dot files directory
-opendir(DH, "$cwd/.files");
-my @files = readdir(DH);
-closedir(DH);
-foreach (@files) {
-    # skip . and ..
-    next if($_ =~ /^\.$/);
-    next if($_ =~ /^\.\.$/);
-
-    print join('', runCommand("ln -sfv $cwd/.files/$_ $home"));
+if (length $command) {
+    if (!grep { $_ eq $command } @commands) {
+        print "ERROR: $command not found!\n";
+        print "Available commands: ";
+        print join(", ", @commands);
+        print "\n";
+        exit 0;
+    }
+    print "just updating $command...\n";
+} else {
+    print "This script will install/update various config files, tools, and Vim plugins.\n\n";
 }
-print "\ndotfiles updated...feel free to ctrl-c\n";
-print "next: tools\n";
-sleep 2.5;
-
-print "\nupdating tools...\n";
 sleep 1;
-print join('', runCommand("$cwd/bin/updateTools.pl"));
-print "\ntools updated...feel free to ctrl-c\n";
-print "next: vim plugins\n";
-sleep 2.5;
 
-print "\nupdating vim plugins...\n";
-sleep 1;
-print join('', runCommand("$cwd/bin/updateVimPlugins.pl"));
-print "\nvim plugins updated\n";
+if (!length $command || $command eq "dotfiles") {
+    print "updating dotfiles...\n";
+    sleep 1;
+    # read dot files directory
+    opendir(DH, "$cwd/.files");
+    my @files = readdir(DH);
+    closedir(DH);
+    foreach (@files) {
+        # skip . and ..
+        next if($_ =~ /^\.$/);
+        next if($_ =~ /^\.\.$/);
 
-print "\njonbri dotfiles install done\n";
+        print join('', runCommand("ln -sfv $cwd/.files/$_ $home"));
+    }
+    if (!length $command) {
+        print "\ndotfiles updated...feel free to ctrl-c\n";
+        print "next: tools\n\n";
+        sleep 2.5;
+    }
+}
+
+if (!length $command || $command eq "tools") {
+    print "updating tools...\n";
+    sleep 1;
+    print join('', runCommand("$cwd/bin/updateTools.pl"));
+    if (!length $command) {
+        print "\ntools updated...feel free to ctrl-c\n";
+        print "next: vim plugins\n\n";
+        sleep 2.5;
+    }
+}
+
+if (!length $command || $command eq "vim") {
+    print "updating vim plugins...\n";
+    sleep 1;
+    print join('', runCommand("$cwd/bin/updateVimPlugins.pl"));
+    print "\nvim plugins updated\n";
+}
+
+print "\nDone\n";
