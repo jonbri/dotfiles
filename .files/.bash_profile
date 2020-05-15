@@ -8,7 +8,6 @@ export OPENUISDK=~/dev/openui-sdk
 export OPENUITHEMES=~/dev/openui-framework-themes
 
 export NPM_USER=jonbri
-export NPM_PASSWORD=
 export NPM_EMAIL=Jonathan.Brink@sas.com
 
 if grep -q Microsoft /proc/version; then
