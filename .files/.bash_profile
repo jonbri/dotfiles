@@ -11,7 +11,7 @@ export NPM_USER=jonbri
 export NPM_EMAIL=Jonathan.Brink@sas.com
 
 if grep -q Microsoft /proc/version; then
-    export NC=/mnt/c/nova-commons
+    export NC=/mnt/c/nova/nova-commons
 else
     export NC=~/nova-commons
 fi
