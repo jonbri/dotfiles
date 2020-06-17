@@ -1,0 +1,14 @@
+#!/bin/bash
+# name - easier system identification
+
+NAME=$1
+
+# if name provided, populate name file
+if [ -z $NAME ]; then
+    cat ~/name
+    exit 0;
+fi
+
+echo $NAME > ~/name
+echo "name updated"
+cat ~/name
