@@ -17,6 +17,7 @@ else
 fi
 
 alias ll="ls -la"
+alias ee="exit"
 alias g="git"
 alias gg="g s; sleep 1; git diff"
 alias ggg="g s;"
