@@ -3,10 +3,11 @@
 
 # usage: pass in name of app to be created
 
-NC=/home/jonbri/nova-commons
+# Note: $NC should be defined in .bash_profile
+
 APP_NAME=$1
 
-mkdir -p /home/jonbri/apps
-cd /home/jonbri/apps
+mkdir -p $NC/../apps
+cd $NC/../apps
 
 npx cross-env CNA_DEV=true node $NC/tools/create-nova-app/createNovaApp.js $APP_NAME --scripts-version file:$NC/tools/nova-scripts --template file:$NC/tools/templates/base
