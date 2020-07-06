@@ -1,14 +1,24 @@
 #!/bin/bash
 # name - easier system identification
 
-NAME=$1
+NAME_ARG=$1
+NAME_FILE=~/name
 
-# if name provided, populate name file
-if [ -z $NAME ]; then
-    cat ~/name
-    exit 0;
+# if the name file is empty,
+# and no argument was given,
+# prompt for it, and exit
+if [ ! -f $NAME_FILE ] && [ -z $NAME_ARG ]; then
+    echo "Error: The name file (${NAME_FILE}) is not populated"
+    echo "Provide a name with:"
+    echo ">> name foo"
+    exit 1;
 fi
 
-echo $NAME > ~/name
-echo "name updated"
-cat ~/name
+# if a name arg was given,
+# populate file
+if [ ! -z $NAME_ARG ]; then
+    echo $NAME_ARG > $NAME_FILE
+    echo "name updated"
+fi
+
+cat $NAME_FILE
