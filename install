@@ -5,7 +5,7 @@ use Cwd 'cwd';
 
 my $home=$ENV{HOME};
 my $cwd = cwd();
-my @commands = ("dotfiles","tools","vim");
+my @commands = ("dot","tools","vim");
 my $command = $ARGV[0];
 
 sub runCommand($) {
@@ -30,7 +30,7 @@ if (length $command) {
 }
 sleep 1;
 
-if (!length $command || $command eq "dotfiles") {
+if (!length $command || $command eq "dot") {
     print "updating dotfiles...\n";
     sleep 1;
     # read dot files directory
