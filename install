@@ -46,7 +46,8 @@ if (!length $command || $command eq "dot") {
     }
     if (!length $command) {
         print "\ndotfiles updated...feel free to ctrl-c\n";
-        print "next: tools\n\n";
+        print "next: tools\n";
+        print "sleeping...\n\n";
         sleep 2.5;
     }
 }
@@ -57,7 +58,8 @@ if (!length $command || $command eq "tools") {
     print join('', runCommand("$cwd/bin/updateTools.pl"));
     if (!length $command) {
         print "\ntools updated...feel free to ctrl-c\n";
-        print "next: vim plugins\n\n";
+        print "next: vim plugins\n";
+        print "sleeping...\n\n";
         sleep 2.5;
     }
 }
