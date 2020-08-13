@@ -64,6 +64,6 @@ alias sdk="cd $OPENUISDK"
 alias theme="cd $OPENUITHEMES"
 alias nova="cd $NC"
 alias snip="cd $NC"/../nova-snippets
-alias showcase="cd $NC"/../nova-showcase
+alias showcase="cd $NC"/apps/showcase/ui
 
 echo "done with .bash_profile"
