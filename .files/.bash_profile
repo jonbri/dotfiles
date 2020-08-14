@@ -65,5 +65,6 @@ alias theme="cd $OPENUITHEMES"
 alias nova="cd $NC"
 alias snip="cd $NC"/../nova-snippets
 alias showcase="cd $NC"/apps/showcase/ui
+alias show=showcase
 
 echo "done with .bash_profile"
