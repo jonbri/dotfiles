@@ -66,6 +66,7 @@ alias frame="cd $OPENUIFRAMEWORK"
 alias sdk="cd $OPENUISDK"
 alias theme="cd $OPENUITHEMES"
 alias nova="cd $NC"
+alias apps="cd $NC"/../apps
 alias snip="cd $NC"/../nova-snippets
 alias showcase="cd $NC"/apps/showcase/ui
 alias show=showcase
