@@ -2,11 +2,6 @@ set -o vi
 export EDITOR=vim
 export PATH=~/bin:$PATH
 
-export OPENUIFRAMEWORK=~/dev/openui-framework
-export OPENUIHONEYCOMB=~/dev/openui-honeycomb
-export OPENUISDK=~/dev/openui-sdk
-export OPENUITHEMES=~/dev/openui-framework-themes
-
 export NPM_USER=jonbri
 export NPM_EMAIL=Jonathan.Brink@sas.com
 
@@ -15,6 +10,18 @@ if grep -q Microsoft /proc/version; then
 else
     export NC=~/nova-commons
 fi
+
+if grep -q Microsoft /proc/version; then
+    export UI5=/mnt/c/dev
+else
+    export UI5=~/dev
+fi
+
+export OPENUIFRAMEWORK=$UI5/openui-framework
+export OPENUIHONEYCOMB=$UI5/openui-honeycomb
+export OPENUISDK=$UI5/openui-sdk
+export OPENUITHEMES=$UI5/openui-framework-themes
+
 
 alias ll="ls -la"
 alias ee="exit"
@@ -60,7 +67,7 @@ alias kj="killer java"
 alias kja="killer java --yes_all"
 alias dot="cd ~/dotfiles"
 alias toolbelt="cd ~/tools/toolbelt"
-alias dev="cd ~/dev"
+alias ui5="cd $UI5"
 alias hon="cd $OPENUIHONEYCOMB"
 alias frame="cd $OPENUIFRAMEWORK"
 alias sdk="cd $OPENUISDK"
