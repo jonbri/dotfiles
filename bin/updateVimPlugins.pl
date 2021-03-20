@@ -7,6 +7,7 @@ my $cwd = cwd();
 my $dotVimDir;
 my @repos=qw(
     https://github.com/junegunn/vader.vim.git|junegunn-vader
+    https://github.com/junegunn/goyo.vim.git|junegunn-goyo
     https://github.com/tpope/vim-fugitive|tpope-fugitive
     https://github.com/tpope/vim-flagship|tpope-flagship
     https://github.com/tpope/vim-unimpaired|tpope-unimpaired
