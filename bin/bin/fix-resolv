@@ -2,16 +2,17 @@
 
 RESOLV_CONF=/etc/resolv.conf
 
+clear
 cat << EOF
-
 nameserver 10.19.1.23
 nameserver 10.19.1.24
 search lan rmt.sas.com
 search na.sas.com unx.sas.com fyi.sas.com emea.sas.com apac.sas.com sas.com
-
----
-
 EOF
 
-echo "sudo vim $RESOLV_CONF"
 echo
+echo ">> cat $RESOLV_CONF"
+cat $RESOLV_CONF
+
+echo
+echo "sudo vim $RESOLV_CONF"
