@@ -4,10 +4,10 @@ RESOLV_CONF=/etc/resolv.conf
 
 clear
 cat << EOF
+search sas.com na.sas.com fyi.sas.com unx.sas.com net.sas.com na.sas.com exnet.sas.com apac.sas.com emea.sas.com sdk.sas.com swe.sas.com in.sas.com
 nameserver 10.19.1.23
-nameserver 10.19.1.24
-search lan rmt.sas.com
-search na.sas.com unx.sas.com fyi.sas.com emea.sas.com apac.sas.com sas.com
+nameserver 172.25.1.14
+nameserver 192.168.122.1
 EOF
 
 echo
