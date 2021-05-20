@@ -22,6 +22,7 @@ export OPENUIHONEYCOMB=$UI5/openui-honeycomb
 export OPENUISDK=$UI5/openui-sdk
 export OPENUITHEMES=$UI5/openui-framework-themes
 
+export DOTFILES_DIR=~/dotfiles
 
 alias ll="ls -la"
 alias ee="exit"
@@ -82,7 +83,7 @@ alias kyt="kna && yarn test"
 alias kytw="kna && yarn test --watch"
 alias kj="killer java"
 alias kja="killer java --yes_all"
-alias dot="cd ~/dotfiles"
+alias dot="cd $DOTFILES_DIR"
 alias toolbelt="cd ~/tools/toolbelt"
 alias ui5="cd $UI5"
 alias hon="cd $OPENUIHONEYCOMB"
