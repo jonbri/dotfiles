@@ -5,11 +5,15 @@ PREVIEW_HEAD_INPUT_FILE="$DOTFILES_DIR/bin/bin/preview-head.html"
 PREVIEW_HEAD_OUTPUT_FILE="$NC/src/nova-commons/.storybook/preview-head.html"
 STORYBOOK_MAIN_FILE="$NC/tools/nova-scripts/scripts/storybook/main.js"
 
+echo $NC
+
 # reset
+rm -f $PREVIEW_HEAD_OUTPUT_FILE
+git reset -- $STORYBOOK_MAIN_FILE
+git checkout -- $STORYBOOK_MAIN_FILE
+
+# if only wanting a reset, exit
 if [ ! -z $1 ] && [ $1 == 'reset' ]; then
-    rm -f $PREVIEW_HEAD_OUTPUT_FILE
-    git reset -- $STORYBOOK_MAIN_FILE
-    git checkout -- $STORYBOOK_MAIN_FILE
     exit 0
 fi
 
