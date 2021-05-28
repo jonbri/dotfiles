@@ -9,7 +9,7 @@ echo $NC
 
 # reset
 rm -f $PREVIEW_HEAD_OUTPUT_FILE
-git reset -- $STORYBOOK_MAIN_FILE
+git reset --quiet -- $STORYBOOK_MAIN_FILE
 git checkout -- $STORYBOOK_MAIN_FILE
 
 # if only wanting a reset, exit
