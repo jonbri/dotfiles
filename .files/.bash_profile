@@ -5,9 +5,14 @@ export PATH=~/bin:$PATH
 export NPM_USER=jonbri
 export NPM_EMAIL=Jonathan.Brink@sas.com
 
-export NC=~/nova-commons
-export UI5=~/dev
+NC_CACHE_FILE="${HOME}/.nc"
+if [ -f $NC_CACHE_FILE ]; then
+    export NC=`cat $NC_CACHE_FILE`
+else
+    export NC=~/nova-commons
+fi
 
+export UI5=~/dev
 export OPENUIFRAMEWORK=$UI5/openui-framework
 export OPENUIHONEYCOMB=$UI5/openui-honeycomb
 export OPENUISDK=$UI5/openui-sdk

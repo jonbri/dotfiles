@@ -2,12 +2,21 @@
 # nc-set - manage NC environment variable
 # This file needs to be sourced
 
+# if the input command is something like "another",
+# the resulting path will be ~/another/nova-commons
+
+# Environment variable needed: NC_CACHE_FILE
+# Set in your .bash_profile
+
 ARG=$1
+NC_PATH=${HOME}/nova-commons
 if [ ! -z $ARG ]; then
-    export NC=${HOME}/${ARG}/nova-commons
-else
-    export NC=${HOME}/nova-commons
+    NC_PATH=${HOME}/${ARG}/nova-commons
 fi
+
+export NC=${NC_PATH}
+
+echo $NC > ${NC_CACHE_FILE}
 
 echo $NC
 cd $NC
