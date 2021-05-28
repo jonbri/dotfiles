@@ -5,7 +5,7 @@ export PATH=~/bin:$PATH
 export NPM_USER=jonbri
 export NPM_EMAIL=Jonathan.Brink@sas.com
 
-NC_CACHE_FILE="${HOME}/.nc"
+export NC_CACHE_FILE="${HOME}/.nc"
 if [ -f $NC_CACHE_FILE ]; then
     export NC=`cat $NC_CACHE_FILE`
 else
@@ -87,9 +87,9 @@ alias hon="cd $OPENUIHONEYCOMB"
 alias frame="cd $OPENUIFRAMEWORK"
 alias sdk="cd $OPENUISDK"
 alias theme="cd $OPENUITHEMES"
-alias nova="source ${DOTFILES_DIR}/bin/bin/nc-set"
-alias another="source ${DOTFILES_DIR}/bin/bin/nc-set another"
-alias yet="source ${DOTFILES_DIR}/bin/bin/nc-set yet"
+alias nova0="source nc-set nova0"
+alias nova1="source nc-set nova1"
+alias nova2="source nc-set nova2"
 alias apps="cd $NC"/../apps
 alias snip="cd $NC"/../nova-snippets
 alias showcase="cd $NC"/apps/showcase/ui
