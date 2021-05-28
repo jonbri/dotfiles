@@ -5,17 +5,8 @@ export PATH=~/bin:$PATH
 export NPM_USER=jonbri
 export NPM_EMAIL=Jonathan.Brink@sas.com
 
-if grep -q Microsoft /proc/version; then
-    export NC=/mnt/c/nova/nova-commons
-else
-    export NC=~/nova-commons
-fi
-
-if grep -q Microsoft /proc/version; then
-    export UI5=/mnt/c/dev
-else
-    export UI5=~/dev
-fi
+export NC=~/nova-commons
+export UI5=~/dev
 
 export OPENUIFRAMEWORK=$UI5/openui-framework
 export OPENUIHONEYCOMB=$UI5/openui-honeycomb
@@ -91,7 +82,9 @@ alias hon="cd $OPENUIHONEYCOMB"
 alias frame="cd $OPENUIFRAMEWORK"
 alias sdk="cd $OPENUISDK"
 alias theme="cd $OPENUITHEMES"
-alias nova="cd $NC"
+alias nova="source ${DOTFILES_DIR}/bin/bin/nc-set"
+alias another="source ${DOTFILES_DIR}/bin/bin/nc-set another"
+alias yet="source ${DOTFILES_DIR}/bin/bin/nc-set yet"
 alias apps="cd $NC"/../apps
 alias snip="cd $NC"/../nova-snippets
 alias showcase="cd $NC"/apps/showcase/ui

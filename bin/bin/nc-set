@@ -1,0 +1,13 @@
+#!/bin/bash
+# nc-set - manage NC environment variable
+# This file needs to be sourced
+
+ARG=$1
+if [ ! -z $ARG ]; then
+    export NC=${HOME}/${ARG}/nova-commons
+else
+    export NC=${HOME}/nova-commons
+fi
+
+echo $NC
+cd $NC
