@@ -1,0 +1,25 @@
+#!/bin/bash
+# yet - report on various nova playpens
+
+NOVA0=${HOME}/nova0/nova-commons
+NOVA1=${HOME}/nova1/nova-commons
+NOVA2=${HOME}/nova2/nova-commons
+
+if [ -d $NOVA0 ]; then
+    echo "nova0) `git -C $NOVA0 log --pretty=oneline --abbrev-commit | head -n 1 | cut -d ' ' -f2-`"
+else
+    echo "nova0) Path does not exist: $NOVA0"
+fi
+
+if [ -d $NOVA1 ]; then
+    echo "nova1) `git -C $NOVA1 log --pretty=oneline --abbrev-commit | head -n 1 | cut -d ' ' -f2-`"
+else
+    echo "nova1) Path does not exist: $NOVA1"
+fi
+
+if [ -d $NOVA2 ]; then
+    echo "nova2) `git -C $NOVA2 log --pretty=oneline --abbrev-commit | head -n 1 | cut -d ' ' -f2-`"
+else
+    echo "nova2) Path does not exist: $NOVA2"
+fi
+
