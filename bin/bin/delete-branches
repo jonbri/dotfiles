@@ -1,4 +1,6 @@
 #!/usr/bin/perl -w
+# delete-branches
+
 use strict;
 
 sub runCommand($) {

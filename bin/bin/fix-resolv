@@ -1,4 +1,5 @@
 #!/bin/bash
+# fix-resolv
 
 RESOLV_CONF=/etc/resolv.conf
 
