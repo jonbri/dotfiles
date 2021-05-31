@@ -5,6 +5,8 @@ NOVA0=${HOME}/nova0/nova-commons
 NOVA1=${HOME}/nova1/nova-commons
 NOVA2=${HOME}/nova2/nova-commons
 
+echo $NC
+
 if [ -d $NOVA0 ]; then
     echo "nova0 `git -C $NOVA0 log --pretty=oneline --abbrev-commit | head -n 1 | cut -d ' ' -f2-`"
 else
