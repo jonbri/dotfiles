@@ -1,5 +1,5 @@
 #!/bin/bash
-# nacho - repeat blank lines
+# nacho - Repeat blank lines
 
 ARG=$1
 if [ -z $ARG ]; then

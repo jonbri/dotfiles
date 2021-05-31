@@ -1,5 +1,5 @@
 #!/bin/bash
-# len - show the length of each line passed to stdin
+# len - Show the length of each line passed to stdin
 
 while read line
 do

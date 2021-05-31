@@ -1,5 +1,5 @@
 #!/bin/bash
-# cna-cp - copy nova-scripts to local deployment for fast iteration
+# cna-cp - Copy nova-scripts to local deployment for fast iteration
 
 # usage: pass in name of app (e.g., "app0")
 

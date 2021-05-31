@@ -1,5 +1,5 @@
 #!/bin/bash
-# name - easier system identification
+# name - Easier system identification
 
 NAME_ARG=$1
 NAME_FILE=~/name

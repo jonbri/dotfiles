@@ -1,5 +1,5 @@
 #!/bin/bash
-# nc-set - manage NC environment variable
+# nc-set - Manage NC environment variable
 # This file needs to be sourced
 
 # if the input command is something like "nova0",

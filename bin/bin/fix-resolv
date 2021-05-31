@@ -1,5 +1,5 @@
 #!/bin/bash
-# fix-resolv
+# fix-resolv - Update /etc/resolv.conf in WSL2
 
 RESOLV_CONF=/etc/resolv.conf
 

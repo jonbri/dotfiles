@@ -1,8 +1,7 @@
 #!/bin/bash
-# cna - run create-nova-app locally
+# cna - Run create-nova-app locally
 
 # usage: pass in name of app to be created
-
 # Note: $NC should be defined in .bash_profile
 
 APP_NAME=$1

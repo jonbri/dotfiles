@@ -1,5 +1,5 @@
 #!/bin/bash
-# conny - pass-through to node script
+# conny - Pass-through to node script
 
 # node ~/tools/conny/index.js ~/Desktop/test ~/Desktop/test/mp3 true
 node ~/tools/conny/index.js ${1} ${2} ${3}
