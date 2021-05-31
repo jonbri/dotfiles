@@ -2,6 +2,10 @@
 # nacho - repeat blank lines
 
 ARG=$1
+if [ -z $ARG ]; then
+    ARG=20
+fi
+
 counter=1
 while [ $counter -le $ARG ]
 do
