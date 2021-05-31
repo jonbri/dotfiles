@@ -11,3 +11,8 @@ tree gitk gitg tmux vim vim-gnome chromium-browser filezilla lftp clementine vpn
 ```sh
 sudo curl -sL https://deb.nodesource.com/setup_10.x | sudo bash - && sudo apt-get install -y nodejs
 ```
+
+## Global Node Tools
+```sh
+sudo npm install --global yarn conny
+```
