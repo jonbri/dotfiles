@@ -94,6 +94,7 @@ alias apps="cd $NC"/../apps
 alias snip="cd $NC"/../nova-snippets
 alias showcase="cd $NC"/apps/showcase/ui
 alias show=showcase
+alias jon="my-tools"
 
 # export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}'):0.0
 # export LIBGL_ALWAYS_INDIRECT=1
