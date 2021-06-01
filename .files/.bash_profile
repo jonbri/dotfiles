@@ -10,6 +10,15 @@ if [ -f $NC_CACHE_FILE ]; then
     export NC=`cat $NC_CACHE_FILE`
 else
     export NC=~/nova-commons
+    echo $NC > $NC_CACHE_FILE
+fi
+
+export MASTER_OR_MAIN_CACHE_FILE="${HOME}/.master-or-main"
+if [ -f $MASTER_OR_MAIN_CACHE_FILE ]; then
+    export MASTER_OR_MAIN=`cat $MASTER_OR_MAIN_CACHE_FILE`
+else
+    export MASTER_OR_MAIN=master
+    echo $MASTER_OR_MAIN > $MASTER_OR_MAIN_CACHE_FILE
 fi
 
 export UI5=~/dev
@@ -41,6 +50,7 @@ alias gmendp="pw && git mendp"
 alias gmendr="pw && git mendr"
 alias gmaster="git master"
 alias gmast="gmaster"
+alias gmain="gmaster"
 alias gadd="git add"
 alias ga="gadd"
 alias gdiff="git d"
@@ -49,8 +59,8 @@ alias gstatus="git s"
 alias gfetch="git fetch"
 alias gf="gfetch"
 alias gadd="git add ."
-alias gpom="git push origin master"
-alias grom="git rebase origin/master"
+alias gpom="git push origin $MASTER_OR_MAIN"
+alias grom="git rebase origin/$MASTER_OR_MAIN"
 alias gfgrom="gf && grom"
 alias grevd="git revd"
 alias grh="git reset HEAD~"
@@ -97,6 +107,8 @@ alias snip="cd $NC"/../nova-snippets
 alias showcase="cd $NC"/apps/showcase/ui
 alias show=showcase
 alias jon="my-tools"
+alias master="source master-or-main master"
+alias main="source master-or-main main"
 
 # export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}'):0.0
 # export LIBGL_ALWAYS_INDIRECT=1

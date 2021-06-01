@@ -3,7 +3,7 @@
 
 topic=`determine-topic`
 if [ -z "$topic" ]; then
-    git mend && git push origin HEAD:refs/for/master%private
+    git mend && git push origin HEAD:refs/for/${MASTER_OR_MAIN}%private
 else
-    git mend && git push origin HEAD:refs/for/master%private -o topic=$topic
+    git mend && git push origin HEAD:refs/for/${MASTER_OR_MAIN}%private -o topic=$topic
 fi

@@ -26,6 +26,7 @@ MAIN: {
     chomp($currentBranch);
 
     # exclude master and the current branch
+    # TODO: use $MASTER_OR_MAIN
     @branches = grep(!/^master$/, @branches);
     @branches = grep(!/$currentBranch/, @branches);
 
