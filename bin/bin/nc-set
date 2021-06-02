@@ -25,3 +25,4 @@ else
     cd $NC
 fi
 
+source master-or-main master

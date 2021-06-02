@@ -27,7 +27,7 @@ export OPENUIHONEYCOMB=$UI5/openui-honeycomb
 export OPENUISDK=$UI5/openui-sdk
 export OPENUITHEMES=$UI5/openui-framework-themes
 
-export DOTFILES_DIR=~/dotfiles
+export DOTFILES_DIR=${HOME}/dotfiles
 
 alias ll="ls -la"
 alias ee="exit"
@@ -91,7 +91,6 @@ alias kyt="kna && yarn test"
 alias kytw="kna && yarn test --watch"
 alias kj="killer java"
 alias kja="killer java --yes_all"
-alias dot="cd $DOTFILES_DIR"
 alias toolbelt="cd ~/tools/toolbelt"
 alias ui5="cd $UI5"
 alias hon="cd $OPENUIHONEYCOMB"
@@ -102,6 +101,8 @@ alias nova="yet"
 alias nova0="source nc-set nova0"
 alias nova1="source nc-set nova1"
 alias nova2="source nc-set nova2"
+alias pet="source pet"
+alias dot="source dot"
 alias apps="cd $NC"/../apps
 alias snip="cd $NC"/../nova-snippets
 alias showcase="cd $NC"/apps/showcase/ui
