@@ -7,3 +7,4 @@
 
 cd $DOTFILES_DIR
 source master-or-main master
+persona home
