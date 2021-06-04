@@ -1,0 +1,7 @@
+#!/bin/bash
+# icecoldnugrape - Enter icecoldnugrape playpen
+# This file needs to be sourced
+
+cd $HOME/icecoldnugrape
+source master-or-main master
+persona home

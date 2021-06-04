@@ -106,6 +106,7 @@ alias pet="source pet"
 alias dot="source dot"
 alias me="source me"
 alias thyme="source thyme"
+alias icecoldnugrape="source icecoldnugrape"
 alias apps="cd $NC"/../apps
 alias snip="cd $NC"/../nova-snippets
 alias showcase="cd $NC"/apps/showcase/ui
