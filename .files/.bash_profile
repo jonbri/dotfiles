@@ -18,7 +18,7 @@ if [ -f $MASTER_OR_MAIN_CACHE_FILE ]; then
     export MASTER_OR_MAIN=`cat $MASTER_OR_MAIN_CACHE_FILE`
 else
     export MASTER_OR_MAIN=master
-    echo $MASTER_OR_MAIN > $MASTER_OR_MAIN_CACHE_FILE
+    echo master > $MASTER_OR_MAIN_CACHE_FILE
 fi
 
 export UI5=~/dev
