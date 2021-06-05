@@ -16,7 +16,9 @@ sub runCommand($) {
     return @output;
 }
 
+my $isRunningSubset = 0;
 if (length $command) {
+    $isRunningSubset = 1;
     if (!grep { $_ eq $command } @commands) {
         print "ERROR: $command not found!\n";
         print "Available commands: ";
@@ -28,11 +30,16 @@ if (length $command) {
 } else {
     print "This script will install/update various config files, tools, and Vim plugins.\n\n";
 }
-sleep 1;
+
+if (!$isRunningSubset) {
+    sleep 1;
+}
 
 if (!length $command || $command eq "dot") {
     print "updating dotfiles...\n";
-    sleep 1;
+    if (!$isRunningSubset) {
+        sleep 1;
+    }
     # read dot files directory
     opendir(DH, "$cwd/.files");
     my @files = readdir(DH);
@@ -47,26 +54,34 @@ if (!length $command || $command eq "dot") {
     if (!length $command) {
         print "\ndotfiles updated...feel free to ctrl-c\n";
         print "next: tools\n";
-        print "sleeping...\n\n";
-        sleep 2.5;
+        if (!$isRunningSubset) {
+            print "sleeping...\n\n";
+            sleep 2.5;
+        }
     }
 }
 
 if (!length $command || $command eq "tools") {
     print "updating tools...\n";
-    sleep 1;
+    if (!$isRunningSubset) {
+        sleep 1;
+    }
     print join('', runCommand("$cwd/bin/updateTools.pl"));
     if (!length $command) {
         print "\ntools updated...feel free to ctrl-c\n";
         print "next: vim plugins\n";
-        print "sleeping...\n\n";
-        sleep 2.5;
+        if (!$isRunningSubset) {
+            print "sleeping...\n\n";
+            sleep 2.5;
+        }
     }
 }
 
 if (!length $command || $command eq "vim") {
     print "updating vim plugins...\n";
-    sleep 1;
+    if (!$isRunningSubset) {
+        sleep 1;
+    }
     print join('', runCommand("$cwd/bin/updateVimPlugins.pl"));
     print "\nvim plugins updated\n";
 }
