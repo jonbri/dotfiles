@@ -1,0 +1,4 @@
+#!/bin/bash
+# gpom - git push origin $MASTER_OR_MAIN
+
+git push origin $MASTER_OR_MAIN
