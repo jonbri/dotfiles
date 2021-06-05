@@ -1,5 +1,5 @@
 #!/bin/bash
-# yet - Report on various nova playpens
+# nova - Report on various nova playpens
 
 NOVA0=${HOME}/nova0/nova-commons
 NOVA1=${HOME}/nova1/nova-commons

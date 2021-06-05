@@ -95,7 +95,6 @@ alias hon="cd $OPENUIHONEYCOMB"
 alias frame="cd $OPENUIFRAMEWORK"
 alias sdk="cd $OPENUISDK"
 alias theme="cd $OPENUITHEMES"
-alias nova="yet"
 alias nova0="source nc-set nova0"
 alias nova1="source nc-set nova1"
 alias nova2="source nc-set nova2"
@@ -109,7 +108,6 @@ alias apps="cd $NC"/../apps
 alias snip="cd $NC"/../nova-snippets
 alias showcase="cd $NC"/apps/showcase/ui
 alias show=showcase
-alias jon="my-tools"
 alias master="source master-or-main master"
 alias main="source master-or-main main"
 
