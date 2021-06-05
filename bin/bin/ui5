@@ -1,0 +1,7 @@
+#!/bin/bash
+# ui5 - Enter OpenUI5 playpen
+# This file needs to be sourced
+
+cd $HOME/ui5
+source master-or-main master
+persona work
