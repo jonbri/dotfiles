@@ -27,3 +27,4 @@ fi
 
 source master-or-main master
 persona work
+zargs
