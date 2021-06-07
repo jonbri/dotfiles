@@ -1,0 +1,5 @@
+#!/bin/bash
+# whereami - Which playpen am I pointing to?
+
+echo $MASTER_OR_MAIN
+persona
