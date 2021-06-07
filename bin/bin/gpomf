@@ -1,0 +1,4 @@
+#!/bin/bash
+# gpomf - git push --force origin $MASTER_OR_MAIN
+
+git push --force origin $MASTER_OR_MAIN
