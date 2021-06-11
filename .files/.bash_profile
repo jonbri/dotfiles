@@ -29,6 +29,7 @@ export OPENUITHEMES=$UI5/openui-framework-themes
 
 export DOTFILES_DIR=${HOME}/dotfiles
 
+alias c="clear"
 alias ll="ls -la"
 alias ee="exit"
 alias g="git"
