@@ -9,7 +9,7 @@ function! PrintCommitHeaderPrefix(prefix)
   normal gg0
 
   " write first line
-  execute "normal i(".a:prefix."-)"
+  execute "normal ifeat: foo (".a:prefix."-)"
 
   " put user in insert mode so they can start typing the issue number
   startinsert
