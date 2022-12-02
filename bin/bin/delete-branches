@@ -1,0 +1,55 @@
+#!/usr/bin/perl -w
+# delete-branches - Clean up stray branches
+
+use strict;
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+sub confirm($) {
+    my ($message)=@_;
+    print $message;
+    my $ok=<>;
+    chomp $ok;
+    return $ok;
+}
+
+
+MAIN: {
+    my @branches = runCommand("git for-each-ref --format='%(refname:short)' refs/heads/");
+    my $currentBranch = join('', runCommand("git rev-parse --abbrev-ref HEAD"));
+    chomp($currentBranch);
+
+    # exclude master and the current branch
+    # TODO: use $MASTER_OR_MAIN
+    @branches = grep(!/^master$/, @branches);
+    @branches = grep(!/$currentBranch/, @branches);
+
+    if (scalar @branches == 0) {
+        print "no branches to delete\n";
+        exit 0;
+    }
+
+    my $count = 1;
+    foreach (@branches) {
+        chomp;
+
+        my $prefix = "($count/".(scalar @branches).")";
+        my $prompt = "$prefix $_\ndelete? (y/n) ";
+
+        if (confirm($prompt) =~ /^y/i) {
+            runCommand("git branch -D $_");
+            print "branch deleted\n";
+        }
+
+        print "\n";
+        $count = $count + 1;
+    }
+
+    exit 0;
+}

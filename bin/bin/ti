@@ -1,0 +1,7 @@
+#!/bin/bash
+# ti - Enter ti playpen
+# This file needs to be sourced
+
+cd $HOME/ti
+source master-or-main master
+persona home

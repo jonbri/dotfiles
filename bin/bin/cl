@@ -1,0 +1,17 @@
+#!/bin/bash
+# cl - commitlint shortcut
+
+SHA=$1
+
+# by default, check against HEAD
+if [ -z $SHA ]; then
+    SHA="HEAD"
+fi
+COMMIT_MSG=`git log $SHA --format=%B -n 1`
+
+clear
+echo "$COMMIT_MSG"
+echo
+echo
+
+echo $COMMIT_MSG | commitlint --verbose

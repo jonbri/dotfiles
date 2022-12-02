@@ -1,0 +1,20 @@
+#!/bin/bash
+# gpob - git push origin `branch`
+
+BRANCH=`git rev-parse --abbrev-ref HEAD`;
+
+if [[ `git status --porcelain` ]]; then
+  echo "outstanding changes"
+  exit 1
+fi
+
+ARG=$1
+if [ "$ARG" = "--yes" ] || [ "$ARG" = "-y" ]; then
+    echo "skipping confirmation"
+else
+    read -p "git push --force origin $BRANCH (press enter) " yn
+fi
+
+git push --force origin $BRANCH
+echo "done"
+

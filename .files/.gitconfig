@@ -1,0 +1,39 @@
+[user]
+	name = Jonathan Brink
+	email = jonathandavidbrink@gmail.com
+[alias]
+    l = "!git log --graph --pretty='tformat:%C(yellow)%h{%C(green)%ar{%C(bold blue)%an{%C(red)%d%C(reset) %s' $* | column -t -s '{' | less -FXRS"
+    l5 = "!git log -5 --graph --pretty='tformat:%C(yellow)%h{%C(green)%ar{%C(bold blue)%an{%C(red)%d%C(reset) %s' $* | column -t -s '{'"
+    lo1 = "!git log --oneline -1"
+    lo2 = "!git log --oneline -2"
+    lo3 = "!git log --oneline -3"
+    lo4 = "!git log --oneline -4"
+    lo5 = "!git log --oneline -5"
+    lo6 = "!git log --oneline -6"
+    lo7 = "!git log --oneline -7"
+    lo8 = "!git log --oneline -8"
+    lo9 = "!git log --oneline -9"
+    lg = log --graph --pretty=format:'%Cred%h%Creset %an -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+    springcleaning = for-each-ref --sort=-committerdate --format='%(refname:short) %(committerdate:short)'
+    email = log --pretty="format:'%C(green)(%h) %s\n%C(yellow)author:    %C(white)%an (%ae)\n%C(yellow)committer: %C(white)%cn (%ce)\n'"
+    co = checkout
+    br = branch
+    ci = commit
+    st = status
+    s = "!clear && git status"
+    d = "!clear && git diff"
+    dc = "!clear && git diff --cached"
+    difff = diff --color-words='[^[:space:]]|([[:alnum:]]|UTF_8_GUARD)+'
+    wip = !git add . && git commit -m "wip"
+    wipa = !git add . && git commit -m "wip" --amend
+    stash-hard = !git stash && git rm --cached -r . && git reset --hard
+    mend = !mend
+    mendd = !mendd
+    mendp = !mendp
+    mendr = !mendr
+    revl = !git review -l
+    revd = !revd $1
+    revd-look = !revd-look $1
+
+[gitreview]
+    remote = origin

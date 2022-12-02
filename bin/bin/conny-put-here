@@ -1,0 +1,12 @@
+#!/bin/bash
+# conny-put-here - Output goes to pwd
+
+# USAGE: conny-put-here ~/test/files
+# If pwd is ~/output, the result will be: ~/output/files
+# where the files are now in mp3 format
+
+conny $1 . --dry-run
+echo "sleeping for 3 seconds..."
+sleep 5
+conny $1 .
+

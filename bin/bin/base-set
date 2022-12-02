@@ -1,0 +1,29 @@
+#!/bin/bash
+# base-set - Manage BASE environment variable
+# This file needs to be sourced
+
+# if the input command is something like "base0",
+# the resulting path will be ~/base0/design-system-lib-base
+
+# Environment variable needed: BASE_CACHE_FILE
+# Set in your .bash_profile
+
+ARG=$1
+if [ -z $ARG ]; then
+    echo "no arg!"
+    exit 1;
+fi
+
+BASE_PATH=${HOME}/${ARG}/design-system-lib-base
+if [ -f $BASE_PATH ]; then
+    echo "Path not found: $BASE_PATH"
+else
+    export BASE=${BASE_PATH}
+    echo $BASE > $BASE_CACHE_FILE
+
+    echo $BASE
+    cd $BASE
+fi
+
+source master-or-main main
+persona work

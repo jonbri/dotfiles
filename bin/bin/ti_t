@@ -1,0 +1,21 @@
+PROJECT_NAME=ti
+tmux has-session -t $PROJECT_NAME
+if [ $? != 0 ]
+then
+  tmux new-session -s $PROJECT_NAME -d
+
+  tmux send-keys -t $PROJECT_NAME 'ti' C-m
+  tmux send-keys -t $PROJECT_NAME 's' C-m
+
+  tmux split-window -v -t $PROJECT_NAME
+  tmux send-keys -t $PROJECT_NAME:0.1 'ti' C-m
+  tmux send-keys -t $PROJECT_NAME:0.1 'gg' C-m
+
+  tmux new-window -t $PROJECT_NAME
+  tmux send-keys -t $PROJECT_NAME:1 'ti' C-m
+
+  tmux select-window -t $PROJECT_NAME:1
+fi
+
+tmux attach -t $PROJECT_NAME
+

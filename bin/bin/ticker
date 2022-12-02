@@ -1,0 +1,7 @@
+#!/bin/bash
+# ticker - Enter ticker-log playpen
+# This file needs to be sourced
+
+cd $HOME/ticker-log
+source master-or-main master
+persona home

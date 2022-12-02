@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# showcase-prune
+# Delete all samples except one
+# This file can be stored/invoked from anywhere
+
+if [[ -z "${APP}" ]]; then
+    >&2 echo "ERROR: Environment variable 'APP' not found."
+    >&2 echo "Run a command like this:"
+    >&2 echo ">> export APP=/src/nova-commons/apps/showcase"
+    >&2 echo "Exiting"
+    exit 1
+fi
+
+UI=$APP/ui
+SAMPLE_PAGES=$UI/src/samplePages
+PRUNE_TMP=/tmp/showcase-prune
+SOLE_SURVIVER=Label
+
+if [ ! -d "$SAMPLE_PAGES/$SOLE_SURVIVER" ]; then
+    >&2 echo "ERROR: samplePages/${SOLE_SURVIVER} directory not found:"
+    >&2 echo "${SAMPLE_PAGES}/${SOLE_SURVIVER}"
+    >&2 echo "Exiting"
+    exit 1
+fi
+
+# ready to start
+echo "Editing: ${UI}..."
+
+# reset tmp folder
+mkdir -p $PRUNE_TMP
+rm -Rf $PRUNE_TMP
+mkdir -p $PRUNE_TMP
+
+# store the one saved sample in tmp
+mv $SAMPLE_PAGES/$SOLE_SURVIVER $PRUNE_TMP
+mv $SAMPLE_PAGES/common $PRUNE_TMP
+mv $SAMPLE_PAGES/assets $PRUNE_TMP
+
+# reset samplePages folder
+rm -Rf $SAMPLE_PAGES
+mkdir -p $SAMPLE_PAGES
+
+# restore the sole remaining sample page
+mv $PRUNE_TMP/$SOLE_SURVIVER $SAMPLE_PAGES
+mv $PRUNE_TMP/common $SAMPLE_PAGES
+mv $PRUNE_TMP/assets $SAMPLE_PAGES
+
+echo "Done"
+exit 0
+

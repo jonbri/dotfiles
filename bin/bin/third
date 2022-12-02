@@ -1,0 +1,45 @@
+#!/bin/bash
+# This file needs to be sourced
+
+THIRD_DIR=$HOME/third
+
+mkdir -p $THIRD_DIR
+cd $THIRD_DIR
+
+source master-or-main master
+persona home
+
+echo;
+
+cat << EOF
+git clone --depth 10 git@github.com:microsoft/fluentui.git;
+git clone --depth 10 git@github.com:mui/material-ui.git;
+git clone --depth 10 git@github.com:chakra-ui/chakra-ui.git;
+git clone --depth 10 git@github.com:reach/reach-ui.git;
+EOF
+
+echo;
+
+cat << EOF
+Fluent:
+  https://master--628d031b55e942004ac95df1.chromatic.com
+  https://github.com/microsoft/fluentui
+
+MUI:
+  https://mui.com/base/react-input/
+  https://github.com/mui/material-ui
+  https://mui.com/base/api/input-unstyled/
+
+Chakra:
+  https://chakra-ui.com/docs/components/form/input
+  https://github.com/chakra-ui/chakra-ui/tree/main/packages/input
+
+Reach:
+  https://reach.tech/
+  https://github.com/reach/reach-ui
+EOF
+
+echo;
+
+tree -L 1
+

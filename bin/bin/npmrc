@@ -1,0 +1,15 @@
+#!/bin/bash
+
+COMMAND=$1
+NPMRC_FILE=$HOME/.npmrc
+
+if [[ "$COMMAND" == "help" ]]; then
+  echo "Commands: disable, enable"
+  exit 0
+elif [[ "$COMMAND" == "disable" ]]; then
+  sed -i 's/^/# /' $NPMRC_FILE
+elif [[ "$COMMAND" == "enable" ]]; then
+  sed -i 's/^#[ ]*//' $NPMRC_FILE
+fi
+
+cat $NPMRC_FILE

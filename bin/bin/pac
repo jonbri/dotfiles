@@ -1,0 +1,7 @@
+#!/bin/bash
+# pac
+# This file needs to be sourced
+
+cd $HOME/pacman
+source master-or-main master
+persona home

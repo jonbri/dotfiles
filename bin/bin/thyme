@@ -1,0 +1,7 @@
+#!/bin/bash
+# thyme - Enter thyme playpen
+# This file needs to be sourced
+
+cd $HOME/thyme
+source master-or-main master
+persona home

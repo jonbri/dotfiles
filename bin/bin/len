@@ -1,0 +1,8 @@
+#!/bin/bash
+# len - Show the length of each line passed to stdin
+
+while read line
+do
+  chrlen=${#line}
+  echo "$chrlen: $line"
+done < "${1:-/dev/stdin}"

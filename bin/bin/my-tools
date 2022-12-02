@@ -1,0 +1,15 @@
+#!/bin/bash
+# my-tools - Give a summary of my tools
+
+DOTFILES=${HOME}/dotfiles
+DOTFILES_BIN=${DOTFILES}/bin/bin/*
+
+for filepath in $DOTFILES_BIN; do
+    if [[ `cat ${filepath}` == *"bash"* ]]; then
+        filename=`echo $filepath | awk -F "/" '{ print $NF }'`
+        description=`sed -n '2p' $filepath`
+        description=`echo $description | awk -F " - " '{ print $NF }'`
+        printf "%-10s $description\n" $filename
+    fi
+done
+

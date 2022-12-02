@@ -1,0 +1,15 @@
+#!/bin/bash
+# nacho - Repeat blank lines
+
+ARG=$1
+if [ -z $ARG ]; then
+    ARG=10
+fi
+
+counter=1
+while [ $counter -le $ARG ]
+do
+    echo
+    ((counter++))
+done
+

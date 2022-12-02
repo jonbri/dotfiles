@@ -1,0 +1,7 @@
+#!/bin/bash
+# nova-ui
+# This file needs to be sourced
+
+cd $HOME/nova-ui
+source master-or-main main
+persona work

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+ARG=$1
+if [ ! -z $ARG ]; then
+    ARG=" $ARG"
+fi
+
+git update-ref -m "mark: SAVE$ARG" HEAD HEAD

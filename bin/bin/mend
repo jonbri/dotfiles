@@ -1,0 +1,4 @@
+#!/bin/bash
+# mend - Amend changes to HEAD commit
+
+git add . && git commit --amend --reuse-message=HEAD

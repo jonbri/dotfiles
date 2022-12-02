@@ -1,0 +1,20 @@
+#!/bin/bash
+
+IS_MASTER=`git br | grep -e " master$" | tr -d " *"`
+
+if [ "$IS_MASTER" = "master" ]; then
+  echo "detected master branch..."
+  BRANCH=master
+else
+  echo "detected main branch..."
+  BRANCH=main
+fi
+
+git stash -u && \
+  git checkout $BRANCH && \
+  git fetch && \
+  git reset --hard origin/$BRANCH && \
+  echo "done" && \
+  exit 0;
+
+exit 1

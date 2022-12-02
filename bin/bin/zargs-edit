@@ -1,0 +1,6 @@
+#!/bin/bash
+# zargs-edit - Edit zargs config
+
+echo "run 'zargs' after edit"
+sleep 1
+vim $DOTFILES_DIR/zargs

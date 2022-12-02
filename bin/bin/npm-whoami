@@ -1,0 +1,38 @@
+#!/bin/bash
+# npm-whoami - Verify NPM login
+
+NPMRC_PATH=~/.npmrc
+
+if [ ! -f $NPMRC_PATH ]; then
+    >&2 echo "~/.npmrc file not found"
+    exit 1
+fi
+echo "GOOD: $NPMRC_PATH file is present"
+
+REGISTRY=`cat ~/.npmrc | grep "registry=" | cut -d "=" -f2`
+if [ -z "$REGISTRY" ]; then
+    >&2 echo "BAD: registry entry not found"
+    exit 1
+fi
+echo "GOOD: registry: $REGISTRY"
+
+ALWAYS_AUTH=`cat ~/.npmrc | grep "always-auth=" | cut -d "=" -f2`
+if [ -z "$ALWAYS_AUTH" ]; then
+    >&2 echo "BAD: always-auth entry not found"
+    exit 1
+fi
+echo "GOOD: always-auth: $ALWAYS_AUTH"
+
+WHOAMI_COMMAND="npm whoami --registry $REGISTRY"
+echo
+echo "detecting user..."
+echo $WHOAMI_COMMAND
+NPM_WHOAMI=`$WHOAMI_COMMAND`
+if [ -z "$NPM_WHOAMI" ]; then
+    >&2 echo "BAD: user not found"
+    exit 1
+fi
+echo "GOOD: $NPM_WHOAMI"
+
+echo
+echo "all good, done"

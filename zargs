@@ -1,0 +1,26 @@
+#!/bin/bash
+
+ZARGS_LOC=$HOME/.vim/bundle/jonbri-zargs/zargs
+
+mkdir -p $ZARGS_LOC
+
+# next-august md and mdx files
+find $HOME/ds/next/next-august/content -type f -iname "*.md*" -not -path "*/node_modules/*" > $ZARGS_LOC/mdx
+
+# object manager
+find $NC/src/nova-commons/src/components/ObjectManager -type f > $ZARGS_LOC/objectmgr
+
+# package.json
+find $NC -type f -iname "*package.json*" -not -path "*/node_modules/*" > $ZARGS_LOC/packagejson
+cat << EOF >> $ZARGS_LOC/packagejson
+${NC}/tools/create-nova-app/createNovaApp.js
+EOF
+
+# tsconfig
+find $NC -type f -iname "*tsconfig.json*" -not -path "*/node_modules/*" > $ZARGS_LOC/tsconfig
+
+# babel
+find $NC -type f -iname "*babel.*config*" -not -path "*/node_modules/*" > $ZARGS_LOC/babel
+
+echo "zargs updated"
+

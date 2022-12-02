@@ -1,0 +1,7 @@
+#!/bin/bash
+# pet - Enter PET offline playpen
+# This file needs to be sourced
+
+cd $HOME/pet-app
+source master-or-main main
+persona work

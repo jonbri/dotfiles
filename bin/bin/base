@@ -1,0 +1,7 @@
+#!/bin/bash
+# base
+# This file needs to be sourced
+
+cd $HOME/design-system-lib-base
+source master-or-main main
+persona work

@@ -1,0 +1,40 @@
+#!/usr/bin/perl -w
+
+use strict;
+use Cwd 'cwd';
+
+my $home=$ENV{HOME};
+my $cwd = cwd();
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+print "Updating dotfiles...\n";
+# read dot files directory
+opendir(DH, "$cwd/.files");
+my @files = readdir(DH);
+closedir(DH);
+foreach (@files) {
+    # skip . and ..
+    next if($_ =~ /^\.$/);
+    next if($_ =~ /^\.\.$/);
+
+    print join('', runCommand("ln -sfv $cwd/.files/$_ $home"));
+}
+
+print "\nUpdating tools...\n";
+print join('', runCommand("$cwd/bin/updateTools.pl"));
+
+print "\nUpdating vim plugins...\n";
+print join('', runCommand("$cwd/bin/updateVimPlugins.pl"));
+print "\nvim plugins updated\n";
+
+print "\nDone\n";
+
+print join('', runCommand("buffaloes 3"));
+

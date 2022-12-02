@@ -1,0 +1,7 @@
+#!/bin/bash
+# enter "bowlingball" playpen
+# This file needs to be sourced
+
+cd $HOME/bowlingball
+source master-or-main master
+persona home

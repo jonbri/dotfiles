@@ -1,0 +1,13 @@
+#!/bin/bash
+# master-or-main - Toggle between master and main
+# This file needs to be sourced
+
+# Environment variable needed: MASTER_OR_MAIN_CACHE_FILE
+# Set in your .bash_profile
+
+if [ ! -z $1 ]; then
+  export MASTER_OR_MAIN=$1
+  echo $MASTER_OR_MAIN > $MASTER_OR_MAIN_CACHE_FILE
+fi
+
+echo $MASTER_OR_MAIN

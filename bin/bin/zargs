@@ -1,0 +1,4 @@
+#!/bin/bash
+# zargs - Deploy zargs config
+
+$DOTFILES_DIR/zargs
