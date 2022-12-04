@@ -32,7 +32,6 @@ my @repos=qw(
     https://github.com/jonbri/vim-win.git|jonbri-win
     https://github.com/jonbri/vim-spaced.git|jonbri-spaced
     https://github.com/jonbri/vim-yankee.git|jonbri-yankee
-    https://github.com/jonbri/vim-jessdoc.git|jonbri-jessdoc
     https://github.com/jonbri/vim-zargs.git|jonbri-zargs
     https://github.com/jonbri/vim-dictionary.git|jonbri-dictionary
     https://github.com/goldfeld/ctrlr.vim.git|goldfeld-ctrl
