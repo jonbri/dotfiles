@@ -45,9 +45,6 @@ MAIN: {
     } elsif($platform eq 'msys') {
         $toolsDir="$home/tools";
         $homeBinDir="$home/bin";
-    } elsif($platform eq 'MSWin32') {
-        $toolsDir='C:\Users\jonbri\tools';
-        $homeBinDir='C:\Users\jonbri\bin';
     } else {
         print "unknown platform\n";
         exit 1;

@@ -65,13 +65,11 @@ sub runCommand($) {
 
 MAIN: {
     my $platform=$^O;
+    my $home=$ENV{HOME};
     if($platform eq 'linux') {
-        my $home=$ENV{HOME};
         $dotVimDir="$home/.vim";
     } elsif($platform eq 'msys') {
-        $dotVimDir='/c/Users/jonbri/vimfiles';
-    } elsif($platform eq 'MSWin32') {
-        $dotVimDir='C:\Users\jonbri\vimfiles';
+        $dotVimDir="$home/vimfiles";
     } else {
         print "unknown platform\n";
         exit 1;
