@@ -1,0 +1,39 @@
+#!/bin/bash
+
+if [[ `git status --porcelain` ]]; then
+  echo "error: outstanding changes"
+  exit 1
+fi
+
+FILTER=$1
+
+if [ -z $FILTER ]; then
+    echo "error: need arg"
+    exit 1
+fi
+
+git fetch --all
+TARGET_BRANCH=`git branch --all | grep "remotes.*$FILTER" | awk -F "/" -e '{ print $3 }'`;
+
+function has-space {
+  [[ "$1" != "${1%[[:space:]]*}" ]] && return 0 || return 1
+}
+if has-space "$TARGET_BRANCH" ; then
+  echo "error: multiple matches"
+  echo "$TARGET_BRANCH"
+  exit 1
+fi
+
+if [ "$TARGET_BRANCH" = ""  ]; then
+    echo "error: no match"
+    exit 1
+fi
+
+echo "switching to: $TARGET_BRANCH"
+CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
+reflog "switch:${CURRENT_BRANCH}_to_${TARGET_BRANCH}"
+git checkout $TARGET_BRANCH --quiet
+git reset --hard origin/$TARGET_BRANCH
+
+echo "done"
+
