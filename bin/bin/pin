@@ -12,6 +12,18 @@ ARG=$1
 if [ "$ARG" = "--yes" ] || [ "$ARG" = "-y" ]; then
     echo "skipping confirmation"
 else
+    # HEAD_SHA=`git rev-parse HEAD`
+    # TARGET_SHA=`git rev-parse origin/$BRANCH`
+    # echo $HEAD_SHA
+    # echo $TARGET_SHA
+    # if [ "$HEAD_SHA" = "$TARGET_SHA" ]; then
+    #     echo "same"
+    # else
+    #     echo "different"
+    # fi
+
+    git rev-list --left-right --count HEAD...origin/$BRANCH
+
     read -p "git push --force origin $BRANCH (press enter) " yn
 fi
 

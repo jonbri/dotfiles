@@ -5,21 +5,29 @@ if [[ `git status --porcelain` ]]; then
   exit 1
 fi
 
-FILTER=$1
-
-if [ -z $FILTER ]; then
-    echo "error: need arg"
-    exit 1
+IS_MASTER=`git br | grep -e " master$" | tr -d " *"`
+if [ "$IS_MASTER" = "master" ]; then
+  echo "detected master branch..."
+  MAST=master
+else
+  echo "detected main branch..."
+  MAST=main
 fi
 
+FILTER=$1
+
 git fetch --all
-TARGET_BRANCH=`git branch --all | grep "remotes.*$FILTER" | awk -F "/" -e '{ print $3 }'`;
+if [ -z $FILTER ]; then
+    TARGET_BRANCH=$MAST
+else
+    TARGET_BRANCH=`git branch --all | grep "remotes.*$FILTER" | awk -F "/" -e '{ print $3 }'`;
+fi
 
 function has-space {
   [[ "$1" != "${1%[[:space:]]*}" ]] && return 0 || return 1
 }
 if has-space "$TARGET_BRANCH" ; then
-  echo "error: multiple matches"
+  echo "matches:"
   echo "$TARGET_BRANCH"
   exit 1
 fi
