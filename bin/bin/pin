@@ -1,5 +1,5 @@
 #!/bin/bash
-# gpob - git push origin `branch`
+# pin - git push origin `branch`
 
 BRANCH=`git rev-parse --abbrev-ref HEAD`;
 
