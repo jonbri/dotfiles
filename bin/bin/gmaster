@@ -3,9 +3,9 @@
 MAST=`master-or-main`
 
 git stash -u && \
-  git checkout $BRANCH && \
+  git checkout $MAST && \
   git fetch && \
-  git reset --hard origin/$BRANCH && \
+  git reset --hard origin/$MAST && \
   echo "done" && \
   exit 0;
 
