@@ -1,6 +1,10 @@
 #!/bin/bash
 # revd - Look-up and check-out latest patch-sets. Replacement for `git-review -d`
 
+if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    exit 1
+fi
+
 REVDL=`git revd-look $1`
 REVDL_RESULT=$?
 

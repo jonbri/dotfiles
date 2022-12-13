@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    exit 1
+fi
+
 NUM_OF_CHANGES=`git status --porcelain=v1 2>/dev/null | wc -l`
 
 if [ "$NUM_OF_CHANGES" = "0" ]; then

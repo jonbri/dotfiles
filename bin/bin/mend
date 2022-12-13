@@ -1,4 +1,8 @@
 #!/bin/bash
 # mend - Amend changes to HEAD commit
 
+if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    exit 1
+fi
+
 git add . && git commit --amend --reuse-message=HEAD

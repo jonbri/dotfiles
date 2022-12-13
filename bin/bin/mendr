@@ -1,6 +1,10 @@
 #!/bin/bash
 # mendr - Amend changes to HEAD commit and push to Gerrit as review
 
+if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    exit 1
+fi
+
 # any Gerrit work will be work-related
 persona --quiet work
 
