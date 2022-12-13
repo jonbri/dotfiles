@@ -1,0 +1,10 @@
+#!/bin/bash
+
+targetScript=`find-start`
+
+echo "detected $targetScript"
+sleep 1;
+
+yarn $targetScript
+
+echo "done"

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+function has-script {
+  search=`npm run | grep -e "^  [a-zA-Z]" | sed -e 's/^[ ]*//' | grep $1`
+  if [ "$search" = "" ]; then
+    return 1
+  fi
+  return 0
+}
+if has-script "storybook" ; then
+  echo storybook
+  exit 0
+fi
+if has-script "dev" ; then
+  echo dev
+  exit 0
+fi
+if has-script "start" ; then
+  echo start
+  exit 0
+fi
+
+echo "start script not found"
+exit 1
