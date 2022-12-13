@@ -18,14 +18,6 @@ else
     echo $BASE > $BASE_CACHE_FILE
 fi
 
-export MASTER_OR_MAIN_CACHE_FILE="${HOME}/.master-or-main"
-if [ -f $MASTER_OR_MAIN_CACHE_FILE ]; then
-    export MASTER_OR_MAIN=`cat $MASTER_OR_MAIN_CACHE_FILE`
-else
-    export MASTER_OR_MAIN=master
-    echo master > $MASTER_OR_MAIN_CACHE_FILE
-fi
-
 export UI5=~/dev
 export OPENUIFRAMEWORK=$UI5/openui-framework
 export OPENUIHONEYCOMB=$UI5/openui-honeycomb
@@ -157,8 +149,6 @@ alias apps="cd $NC"/../apps
 alias snip="cd $NC"/../nova-snippets
 alias showcase="cd $NC"/apps/showcase/ui
 alias show=showcase
-alias master="source master-or-main master"
-alias main="source master-or-main main"
 alias sb="tmux save-buffer $TMUX_BUFFER && notepad.exe $TMUX_BUFFER"
 alias sb+="tmux save-buffer $TMUX_BUFFER && /mnt/c/Program\ Files\ \(x86\)/Notepad++/notepad++.exe $TMUX_BUFFER"
 alias sb++="sb+"

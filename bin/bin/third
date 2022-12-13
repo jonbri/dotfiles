@@ -6,7 +6,6 @@ THIRD_DIR=$HOME/third
 mkdir -p $THIRD_DIR
 cd $THIRD_DIR
 
-source master-or-main master
 persona home
 
 echo;

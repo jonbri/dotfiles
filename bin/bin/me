@@ -3,5 +3,4 @@
 # This file needs to be sourced
 
 cd $HOME/me
-source master-or-main master
 persona home

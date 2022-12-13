@@ -25,5 +25,4 @@ else
     cd $BASE
 fi
 
-source master-or-main main
 persona work

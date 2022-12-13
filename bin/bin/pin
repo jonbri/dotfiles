@@ -4,24 +4,14 @@
 BRANCH=`git rev-parse --abbrev-ref HEAD`;
 
 if [[ `git status --porcelain` ]]; then
-  echo "outstanding changes"
-  exit 1
+    echo "outstanding changes"
+    exit 1
 fi
 
 ARG=$1
 if [ "$ARG" = "--yes" ] || [ "$ARG" = "-y" ]; then
     echo "skipping confirmation"
 else
-    # HEAD_SHA=`git rev-parse HEAD`
-    # TARGET_SHA=`git rev-parse origin/$BRANCH`
-    # echo $HEAD_SHA
-    # echo $TARGET_SHA
-    # if [ "$HEAD_SHA" = "$TARGET_SHA" ]; then
-    #     echo "same"
-    # else
-    #     echo "different"
-    # fi
-
     if [ ! `git rev-parse --verify origin/$BRANCH 2>/dev/null` ]; then
         echo "origin/$BRANCH does not exist"
     else
