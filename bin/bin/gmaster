@@ -1,14 +1,6 @@
 #!/bin/bash
 
-IS_MASTER=`git br | grep -e " master$" | tr -d " *"`
-
-if [ "$IS_MASTER" = "master" ]; then
-  echo "detected master branch..."
-  BRANCH=master
-else
-  echo "detected main branch..."
-  BRANCH=main
-fi
+MAST=`master-or-main`
 
 git stash -u && \
   git checkout $BRANCH && \

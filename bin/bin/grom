@@ -1,4 +1,6 @@
 #!/bin/bash
-# grom - git rebase origin $MASTER_OR_MAIN
+# grom - git rebase origin mast
 
-git rebase origin/$MASTER_OR_MAIN
+MAST=`master-or-main`
+
+git rebase origin/$MAST

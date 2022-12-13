@@ -5,15 +5,7 @@ if [[ `git status --porcelain` ]]; then
   exit 1
 fi
 
-IS_MASTER=`git br | grep -e " master$" | tr -d " *"`
-if [ "$IS_MASTER" = "master" ]; then
-  echo "detected master branch..."
-  MAST=master
-else
-  echo "detected main branch..."
-  MAST=main
-fi
-
+MAST=`master-or-main`
 FILTER=$1
 
 git fetch --all
