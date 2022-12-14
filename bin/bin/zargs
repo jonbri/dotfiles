@@ -1,4 +1,78 @@
-#!/bin/bash
-# zargs - Deploy zargs config
+#!/usr/bin/perl -w
 
-$DOTFILES_DIR/zargs
+use strict;
+
+use Getopt::Long;
+
+my $home=$ENV{HOME};
+my $dotfiles_dir = $ENV{"DOTFILES_DIR"};
+my $a_install;
+my $a_list;
+my $a_help;
+
+sub help() {
+    print STDERR <<'HELP';
+
+zargs
+
+USAGE:
+  >> zargs [<zarg>] [options]
+
+Options:
+  --install (-i) Write zargs lists
+  --list    (-l) List zargs
+  --help    (-h) See this message
+
+EXAMPLES:
+  >> zargs          - same as --list
+  >> zargs dotfiles - open dotfiles zarg
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+sub printZargs {
+    print `ls -l $home/.vim/bundle/jonbri-zargs/zargs | tail -n +2 | awk -e '{ print \$NF }'`;
+}
+
+MAIN: {
+    GetOptions(
+        'install' => \$a_install,
+        'list' => \$a_list,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if (defined $a_install) {
+        print `$dotfiles_dir/zargs\n`;
+        exit 0;
+    }
+
+    if (defined $a_list) {
+        printZargs();
+        exit 0;
+    }
+
+    # no args, just show list
+    if (!defined $firstArg) {
+        printZargs();
+        exit 0;
+    }
+
+    my $command = "vim \$(cat $home/.vim/bundle/jonbri-zargs/zargs/$firstArg)";
+    print "$command\n";
+}
+
