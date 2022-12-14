@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    exit 1
+fi
+
+IS_MAIN=`git br | grep -e " main$" | tr -d " *"`
+if [ "$IS_MAIN" = "main" ]; then
+  MAIN=main
+else
+  MAIN=master
+fi
+echo $MAIN

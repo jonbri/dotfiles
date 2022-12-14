@@ -4,12 +4,12 @@ if ! git rev-parse --git-dir > /dev/null 2>&1; then
     exit 1
 fi
 
-MAST=`master-or-main`
+MAIN=`main`
 
 git stash -u && \
-  git checkout $MAST && \
+  git checkout $MAIN && \
   git fetch && \
-  git reset --hard origin/$MAST && \
+  git reset --hard origin/$MAIN && \
   echo "done" && \
   exit 0;
 

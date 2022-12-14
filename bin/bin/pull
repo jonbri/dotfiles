@@ -5,12 +5,12 @@ if [[ `git status --porcelain` ]]; then
   exit 1
 fi
 
-MAST=`master-or-main`
+MAIN=`main`
 FILTER=$1
 
 git fetch --all
 if [ -z $FILTER ]; then
-    TARGET_BRANCH=$MAST
+    TARGET_BRANCH=$MAIN
 else
     TARGET_BRANCH=`git branch --all | grep "remotes.*$FILTER" | awk -F "/" -e '{ print $3 }'`;
 fi

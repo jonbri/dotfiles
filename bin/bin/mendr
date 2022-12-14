@@ -8,10 +8,10 @@ fi
 # any Gerrit work will be work-related
 persona --quiet work
 
-MAST=`master-or-main`
+MAIN=`main`
 topic=`determine-topic`
 if [ -z "$topic" ]; then
-    git mend && git push origin HEAD:refs/for/$MAST
+    git mend && git push origin HEAD:refs/for/$MAIN
 else
-    git mend && git push origin HEAD:refs/for/$MAST -o topic=$topic
+    git mend && git push origin HEAD:refs/for/$MAIN -o topic=$topic
 fi
