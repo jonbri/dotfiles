@@ -3,6 +3,40 @@
 
 use strict;
 
+use Getopt::Long;
+
+my $a_list;
+my $a_help;
+
+sub help() {
+    print STDERR <<'HELP';
+
+purge - delete local branches
+
+USAGE:
+  >> purge [pattern] [options]
+
+Options:
+  --list    (-l) List zargs
+  --help    (-h) See this message
+
+EXAMPLES:
+  >> purge          # interactive mode
+  >> purge -l       # see local branches
+  >> purge feat-abc # delete via pattern
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+
 sub runCommand($) {
     my ($command) = @_;
     open CMD, "$command |" || die "Unable to run $command: $!";
@@ -19,8 +53,26 @@ sub confirm($) {
     return $ok;
 }
 
+sub deleteBranch($) {
+    my ($branch) = @_;
+    runCommand("reflog purge_$branch");
+    runCommand("git branch -D $branch");
+}
+
 
 MAIN: {
+    GetOptions(
+        'list' => \$a_list,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
     my @branches = runCommand("git for-each-ref --format='%(refname:short)' refs/heads/");
     my $currentBranch = join('', runCommand("git rev-parse --abbrev-ref HEAD"));
     chomp($currentBranch);
@@ -31,25 +83,63 @@ MAIN: {
     @branches = grep(!/$currentBranch/, @branches);
 
     if (scalar @branches == 0) {
-        print "no branches to delete\n";
+        print "no branches found\n";
         exit 0;
     }
 
-    my $count = 1;
-    foreach (@branches) {
-        chomp;
-
-        my $prefix = "($count/".(scalar @branches).")";
-        my $prompt = "$prefix $_\ndelete? (y/n) ";
-
-        if (confirm($prompt) =~ /^y/i) {
-            runCommand("git branch -D $_");
-            print "branch deleted\n";
+    if (defined $a_list) {
+        foreach (@branches) {
+            print "  $_";
         }
-
-        print "\n";
-        $count = $count + 1;
+        exit 0;
     }
 
+    # pattern
+    if (defined $firstArg) {
+        my @toBeDeleted = ();
+        foreach (@branches) {
+            chomp;
+            if ($_ =~ /$firstArg/i) {
+                # print "delete branch $_...\n";
+                # deleteBranch("$_");
+                # print "deleted: $_\n";
+                push(@toBeDeleted, $_);
+            }
+        }
+
+        print "branches to delete:\n";
+        foreach (@toBeDeleted) {
+            chomp;
+            print "  $_\n";
+        }
+        if (confirm("continue (y/n)? ") =~ /^y/i) {
+            foreach (@toBeDeleted) {
+                chomp;
+                deleteBranch($_);
+            }
+            print "done\n";
+        }
+        exit 0;
+    }
+
+    # no args, enter interactive mode
+    if (!defined $firstArg) {
+        my $count = 1;
+        foreach (@branches) {
+            chomp;
+
+            my $prefix = "($count/".(scalar @branches).")";
+            my $prompt = "$prefix $_\ndelete? (y/n) ";
+
+            if (confirm($prompt) =~ /^y/i) {
+                deleteBranch("$_");
+                print "branch deleted\n";
+            }
+
+            print "\n";
+            $count = $count + 1;
+        }
+        exit 0;
+    }
     exit 0;
 }
