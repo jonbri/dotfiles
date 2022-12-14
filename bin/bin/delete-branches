@@ -25,9 +25,9 @@ MAIN: {
     my $currentBranch = join('', runCommand("git rev-parse --abbrev-ref HEAD"));
     chomp($currentBranch);
 
-    # exclude master and the current branch
-    # TODO: use MAIN
+    # exclude main and the current branch
     @branches = grep(!/^master$/, @branches);
+    @branches = grep(!/^main$/, @branches);
     @branches = grep(!/$currentBranch/, @branches);
 
     if (scalar @branches == 0) {
