@@ -8,6 +8,7 @@ my $home=$ENV{HOME};
 my $dotfiles_dir = $ENV{"DOTFILES_DIR"};
 my $a_install;
 my $a_list;
+my $a_edit;
 my $a_help;
 
 sub help() {
@@ -21,6 +22,7 @@ USAGE:
 Options:
   --install (-i) Write zargs lists
   --list    (-l) List zargs
+  --edit    (-e) Edit zargs
   --help    (-h) See this message
 
 EXAMPLES:
@@ -46,6 +48,7 @@ MAIN: {
     GetOptions(
         'install' => \$a_install,
         'list' => \$a_list,
+        'edit' => \$a_edit,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -63,6 +66,11 @@ MAIN: {
 
     if (defined $a_list) {
         printZargs();
+        exit 0;
+    }
+
+    if (defined $a_edit) {
+        system("vim", "$dotfiles_dir/zargs");
         exit 0;
     }
 
