@@ -4,6 +4,9 @@ ZARGS_LOC=$HOME/.vim/bundle/jonbri-zargs/zargs
 
 mkdir -p $ZARGS_LOC
 
+# dotfiles
+find $DOTFILES_DIR -type f -not -path "*.git/*" -not -path "*/standard.dictionary" > $ZARGS_LOC/dotfiles
+
 # next-august md and mdx files
 find $HOME/ds/next/next-august/content -type f -iname "*.md*" -not -path "*/node_modules/*" > $ZARGS_LOC/mdx
 
