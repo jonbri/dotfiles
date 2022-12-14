@@ -5,7 +5,9 @@ BRANCH=`git rev-parse --abbrev-ref HEAD`;
 
 if [[ `git status --porcelain` ]]; then
     echo "outstanding changes"
-    exit 1
+    git status --short
+    read -p "amend? (press enter) " yn
+    git add . && git commit --quiet --amend --reuse-message=HEAD
 fi
 
 ARG=$1
