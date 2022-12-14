@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# delete-branches - Clean up stray branches
+# purge - Clean up local stray branches
 
 use strict;
 
