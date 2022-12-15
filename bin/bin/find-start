@@ -1,5 +1,11 @@
 #!/bin/bash
 
+OVERRIDE=$1
+if [ ! -z $OVERRIDE ]; then
+    echo $OVERRIDE
+    exit 0
+fi
+
 function has-script {
   search=`npm run | grep -e "^  [a-zA-Z]" | sed -e 's/^[ ]*//' | grep -e "^$1$"`
   if [ "$search" = "" ]; then

@@ -1,6 +1,7 @@
 #!/bin/bash
 
-targetScript=`find-start`
+OVERRIDE=$1
+targetScript=`find-start $OVERRIDE`
 
 echo "detected $targetScript"
 sleep 1;
