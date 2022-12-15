@@ -80,7 +80,7 @@ MAIN: {
         exit 0;
     }
 
-    my $command = "vim \$(cat $home/.vim/bundle/jonbri-zargs/zargs/$firstArg)";
-    print "$command\n";
+    my $files = `cat $home/.vim/bundle/jonbri-zargs/zargs/$firstArg | xargs`;
+    system("vim $files");
 }
 
