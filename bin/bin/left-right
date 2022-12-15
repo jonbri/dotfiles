@@ -5,5 +5,11 @@ if ! git rev-parse --git-dir > /dev/null 2>&1; then
 fi
 
 BRANCH=`git rev-parse --abbrev-ref HEAD`;
+if ! git rev-parse origin/$BRANCH >/dev/null 2>&1
+then
+    echo "n-x"
+    exit 0
+fi
+
 git rev-list --left-right --count HEAD...origin/$BRANCH | awk -e '{ print $1"-"$2 }'
 
