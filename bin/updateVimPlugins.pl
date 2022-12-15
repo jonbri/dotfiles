@@ -87,9 +87,10 @@ MAIN: {
         ($repo,$folderName)=split("\Q|",$_,2);
 
         my $fullPath="$dotVimDir/bundle/$folderName";
+        my $main = `cd $fullPath && main`;
         if (-d "$fullPath") {
             runCommand("git -C $fullPath stash -u");
-            runCommand("git -C $fullPath pull origin master");
+            runCommand("git -C $fullPath pull origin $main");
         } else {
             runCommand("git clone $repo $fullPath --depth 1");
         }

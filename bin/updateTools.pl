@@ -63,11 +63,12 @@ MAIN: {
         print "updating ${folderName}...\n";
 
         my $fullPath="$toolsDir/$folderName";
+        my $main = `cd $fullPath && main`;
         if (-d "$fullPath") {
             runCommand("git -C $fullPath stash -u");
             runCommand("git -C $fullPath fetch");
-            runCommand("git -C $fullPath checkout master");
-            runCommand("git -C $fullPath reset --hard origin/master");
+            runCommand("git -C $fullPath checkout $main");
+            runCommand("git -C $fullPath reset --hard origin/$main");
         } else {
             runCommand("git clone $repo $fullPath --depth 1");
         }
