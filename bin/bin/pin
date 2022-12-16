@@ -1,7 +1,10 @@
 #!/bin/bash
 # pin - git push origin `branch`
 
+ARG=$1
 BRANCH=`git rev-parse --abbrev-ref HEAD`;
+
+git fetch
 
 if [[ `git status --porcelain` ]]; then
     echo "outstanding changes"
@@ -10,7 +13,6 @@ if [[ `git status --porcelain` ]]; then
     git add . && git commit --quiet --amend --reuse-message=HEAD
 fi
 
-ARG=$1
 if [ "$ARG" = "--yes" ] || [ "$ARG" = "-y" ]; then
     echo "skipping confirmation"
 else
