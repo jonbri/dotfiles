@@ -1,0 +1,9 @@
+#!/bin/bash
+# upper - Change case from stdin
+
+while read line
+do
+  chrlen=${line^^}
+  echo "$chrlen"
+done < "${1:-/dev/stdin}"
+
