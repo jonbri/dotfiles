@@ -25,6 +25,7 @@ else
     read -p "git push --force origin $BRANCH (press enter) " yn
 fi
 
+reflog pin_$BRANCH
 git push --force origin $BRANCH
 echo "done"
 
