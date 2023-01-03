@@ -5,9 +5,21 @@ if ! git rev-parse --git-dir > /dev/null 2>&1; then
 fi
 
 NUM_OF_CHANGES=`git status --porcelain=v1 2>/dev/null | wc -l`
-
 if [ "$NUM_OF_CHANGES" = "0" ]; then
     echo "clean"
-else
-    echo "dirty"
+    exit 0;
 fi
+
+WORKING_DIR_SHORTHAND=""
+if ! output=$(git diff --exit-code); then
+    WORKING_DIR_SHORTHAND="W"
+fi
+
+
+CACHE_SHORTHAND=""
+if ! output=$(git diff --cached --exit-code); then
+    CACHE_SHORTHAND="C"
+fi
+
+echo "dirty${WORKING_DIR_SHORTHAND}${CACHE_SHORTHAND}"
+
