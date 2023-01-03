@@ -10,20 +10,22 @@ my $a_help;
 sub help() {
     print STDERR <<'HELP';
 
-reflog - manage entries
+crumb - an additional cache for refs
+
+Per-repo. Using the reflog as a database.
 
 USAGE:
-  >> reflog
-  >> reflog [arg]
+  >> crumb       # see crumbs
+  >> crumb [arg] # create crumb
 
 Options:
-  --list    (-l) List entries
-  --help    (-h) See this message
+  --list (-l) List entries
+  --help (-h) See this message
 
 EXAMPLES:
-  >> reflog          # same as -l
-  >> reflog -l       # see local entries
-  >> reflog list-bug # add "list-bug" entry
+  >> crumb        # same as -l
+  >> crumb -l     # see local entries
+  >> crumb my-bug # add "my-bug" entry
 
 HELP
 }
@@ -59,7 +61,7 @@ MAIN: {
     }
 
     if (!defined $firstArg || defined $a_list) {
-        my @output = runCommand("git reflog | grep \"PIN: \" | head");
+        my @output = runCommand("git reflog | grep \"CRUMB: \" | head");
         foreach (@output) {
             print "  $_";
         }
@@ -67,7 +69,7 @@ MAIN: {
     }
 
     if (defined $firstArg) {
-        runCommand("git update-ref -m \"PIN: $firstArg\" HEAD HEAD");
+        runCommand("git update-ref -m \"CRUMB: $firstArg\" HEAD HEAD");
     }
 
     exit 0;
