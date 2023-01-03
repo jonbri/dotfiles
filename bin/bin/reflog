@@ -1,12 +1,75 @@
-#!/bin/bash
+#!/usr/bin/perl -w
 
-if ! git rev-parse --git-dir > /dev/null 2>&1; then
-    exit 1
-fi
+use strict;
 
-ARG=$1
-if [ ! -z $ARG ]; then
-    ARG=" $ARG"
-fi
+use Getopt::Long;
 
-git update-ref -m "mark: SAVE$ARG" HEAD HEAD
+my $a_list;
+my $a_help;
+
+sub help() {
+    print STDERR <<'HELP';
+
+reflog - manage entries
+
+USAGE:
+  >> reflog
+  >> reflog [arg]
+
+Options:
+  --list    (-l) List entries
+  --help    (-h) See this message
+
+EXAMPLES:
+  >> reflog          # same as -l
+  >> reflog -l       # see local entries
+  >> reflog list-bug # add "list-bug" entry
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+MAIN: {
+    GetOptions(
+        'list' => \$a_list,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if (!defined $firstArg || defined $a_list) {
+        my @output = runCommand("git reflog | grep \"PIN: \" | head");
+        foreach (@output) {
+            print "  $_";
+        }
+        exit 0;
+    }
+
+    if (defined $firstArg) {
+        runCommand("git update-ref -m \"PIN: $firstArg\" HEAD HEAD");
+    }
+
+    exit 0;
+}
+
