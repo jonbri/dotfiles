@@ -1,7 +1,7 @@
 #!/bin/bash
 # mend - Amend changes to HEAD commit
 
-if ! git rev-parse --git-dir > /dev/null 2>&1; then
+if [[ ! `isgit` = "true" ]]; then
     exit 1
 fi
 
