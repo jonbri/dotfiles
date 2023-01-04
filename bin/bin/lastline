@@ -1,0 +1,9 @@
+#!/bin/bash
+
+LASTLINE=""
+while read line
+do
+  LASTLINE="$line";
+done < "${1:-/dev/stdin}"
+
+echo $LASTLINE

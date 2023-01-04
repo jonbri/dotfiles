@@ -64,7 +64,7 @@ MAIN: {
     }
 
     if (defined $a_first) {
-        my @output = runCommand("git reflog | grep \"CRUMB: \" | first | awk '{ print \$1 }'");
+        my @output = runCommand("git reflog | grep \"CRUMB: \" | firstline | awk '{ print \$1 }'");
         foreach (@output) {
             print "  $_";
         }
