@@ -27,7 +27,7 @@ else
     if [ ! `git rev-parse --verify origin/$BRANCH 2>/dev/null` ]; then
         echo "origin/$BRANCH does not exist"
     else
-        left-right
+        leftright
     fi
 
     read -p "git push --force origin $BRANCH (press enter) " yn
