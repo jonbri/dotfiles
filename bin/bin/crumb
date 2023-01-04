@@ -5,6 +5,7 @@ use strict;
 use Getopt::Long;
 
 my $a_list;
+my $a_first;
 my $a_help;
 
 sub help() {
@@ -20,6 +21,7 @@ USAGE:
 
 Options:
   --list (-l) List entries
+  --first (-f) Print most recent matching SHA
   --help (-h) See this message
 
 EXAMPLES:
@@ -50,6 +52,7 @@ sub runCommand($) {
 MAIN: {
     GetOptions(
         'list' => \$a_list,
+        'first' => \$a_first,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -58,6 +61,14 @@ MAIN: {
     if (($firstArg && $firstArg eq "help") || defined $a_help) {
         help();
         exit 1;
+    }
+
+    if (defined $a_first) {
+        my @output = runCommand("git reflog | grep \"CRUMB: \" | first | awk '{ print \$1 }'");
+        foreach (@output) {
+            print "  $_";
+        }
+        exit 0;
     }
 
     if (!defined $firstArg || defined $a_list) {

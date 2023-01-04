@@ -55,7 +55,7 @@ sub confirm($) {
 
 sub deleteBranch($) {
     my ($branch) = @_;
-    runCommand("reflog purge_$branch");
+    runCommand("crumb purge_$branch");
     runCommand("git branch -D $branch");
 }
 
