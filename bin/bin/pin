@@ -6,7 +6,7 @@ BRANCH=`git rev-parse --abbrev-ref HEAD`;
 GIT_NAME=`persona | firstline`;
 GIT_EMAIL=`persona | lastline`;
 
-KNOWN_RESULTS=`persona --known`
+KNOWN_RESULTS=`persona --known-from HEAD~`
 if [[ $KNOWN_RESULTS =~ "not found" ]]; then
   echo "WARNING: ${GIT_NAME}(${GIT_EMAIL}) NOT FOUND in this repo's history";
   read -p "continue? (press enter) " yn
