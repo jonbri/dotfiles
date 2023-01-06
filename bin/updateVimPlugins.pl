@@ -21,8 +21,6 @@ my @repos=qw(
     https://github.com/tpope/vim-dispatch|tpope-dispatch
     https://github.com/tpope/vim-abolish|tpope-abolish
     https://github.com/duff/vim-bufonly.git|bufonly
-    https://github.com/genoma/vim-less.git|genoma-less
-    https://github.com/JulesWang/css.vim.git|wang-css
     https://github.com/jonbri/vim-configure.git|jonbri-configure
     https://github.com/jonbri/vim-flash.git|jonbri-flash
     https://github.com/jonbri/vim-lorum.git|jonbri-lorum
@@ -34,7 +32,6 @@ my @repos=qw(
     https://github.com/jonbri/vim-yankee.git|jonbri-yankee
     https://github.com/jonbri/vim-zargs.git|jonbri-zargs
     https://github.com/jonbri/vim-dictionary.git|jonbri-dictionary
-    https://github.com/goldfeld/ctrlr.vim.git|goldfeld-ctrl
     https://github.com/AndrewRadev/discotheque.vim.git|vim-discotheque
 );
 
