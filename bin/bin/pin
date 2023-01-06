@@ -1,10 +1,10 @@
 #!/bin/bash
-# pin - git push origin `branch`
 
 ARG=$1
 BRANCH=`git rev-parse --abbrev-ref HEAD`;
 GIT_NAME=`persona | firstline`;
 GIT_EMAIL=`persona | lastline`;
+REMOTE="origin"
 
 KNOWN_RESULTS=`persona --known-from HEAD~`
 if [[ $KNOWN_RESULTS =~ "not found" ]]; then
@@ -24,16 +24,16 @@ fi
 if [ "$ARG" = "--yes" ] || [ "$ARG" = "-y" ]; then
     echo "skipping confirmation"
 else
-    if [ ! `git rev-parse --verify origin/$BRANCH 2>/dev/null` ]; then
-        echo "origin/$BRANCH does not exist"
+    if [ ! `git rev-parse --verify $REMOTE/$BRANCH 2>/dev/null` ]; then
+        echo "$REMOTE/$BRANCH does not exist"
     else
         leftright
     fi
 
-    read -p "git push --force origin $BRANCH (press enter) " yn
+    read -p "git push --force $REMOTE $BRANCH (press enter) " yn
 fi
 
 crumb pin_$BRANCH
-git push --force origin $BRANCH
+git push --force $REMOTE $BRANCH
 echo "done"
 

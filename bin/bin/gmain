@@ -5,11 +5,12 @@ if [[ ! `isgit` = "true" ]]; then
 fi
 
 MAIN=`main`
+REMOTE="origin"
 
 git stash -u && \
   git checkout $MAIN && \
   git fetch && \
-  git reset --hard origin/$MAIN && \
+  git reset --hard $REMOTE/$MAIN && \
   echo "done" && \
   exit 0;
 

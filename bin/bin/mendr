@@ -10,8 +10,9 @@ persona --quiet work
 
 MAIN=`main`
 topic=`determine-topic`
+REMOTE="origin"
 if [ -z "$topic" ]; then
-    git mend && git push origin HEAD:refs/for/$MAIN
+    git mend && git push $REMOTE HEAD:refs/for/$MAIN
 else
-    git mend && git push origin HEAD:refs/for/$MAIN -o topic=$topic
+    git mend && git push $REMOTE HEAD:refs/for/$MAIN -o topic=$topic
 fi

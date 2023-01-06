@@ -6,5 +6,6 @@ if [[ ! `isgit` = "true" ]]; then
 fi
 
 MAIN=`main`
+REMOTE="origin"
 
-git rebase origin/$MAIN
+git rebase $REMOTE/$MAIN

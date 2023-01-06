@@ -6,6 +6,7 @@ if [[ `git status --porcelain` ]]; then
 fi
 
 MAIN=`main`
+REMOTE="origin"
 FILTER=$1
 
 git fetch --all
@@ -33,7 +34,7 @@ echo "switching to: $TARGET_BRANCH"
 CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
 crumb "switch:${CURRENT_BRANCH}_to_${TARGET_BRANCH}"
 git checkout $TARGET_BRANCH --quiet
-git reset --hard origin/$TARGET_BRANCH
+git reset --hard $REMOTE/$TARGET_BRANCH
 
 echo "done"
 
