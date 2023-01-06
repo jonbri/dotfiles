@@ -1,8 +1,13 @@
-#!/bin/bash
+#!/bin/sh
 
-if git rev-parse --git-dir > /dev/null 2>&1; then
+DIR=$1
+if [ -z $DIR ]; then
+    DIR=`pwd`
+fi
+
+if git -C "$DIR" rev-parse --git-dir > /dev/null 2>&1; then
   echo "true";
   exit 0;
 fi
 echo "false";
-exit 0;
+exit 1;
