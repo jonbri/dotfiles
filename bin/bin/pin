@@ -1,39 +1,110 @@
-#!/bin/bash
+#!/usr/bin/perl -w
+# pin - wrapper for "git push"
 
-ARG=$1
-BRANCH=`git rev-parse --abbrev-ref HEAD`;
-GIT_NAME=`persona | firstline`;
-GIT_EMAIL=`persona | lastline`;
-REMOTE="origin"
+use strict;
 
-KNOWN_RESULTS=`persona --known-from HEAD~`
-if [[ $KNOWN_RESULTS =~ "not found" ]]; then
-  echo "WARNING: ${GIT_NAME}(${GIT_EMAIL}) NOT FOUND in this repo's history";
-  read -p "continue? (press enter) " yn
-fi
+use Getopt::Long;
 
-git fetch
+my $a_force;
+my $a_help;
 
-if [[ `git status --porcelain` ]]; then
-    echo "outstanding changes"
-    git status --short
-    read -p "amend? (press enter) " yn
-    git add . && git commit --quiet --amend --reuse-message=HEAD
-fi
+sub help() {
+    print STDERR <<'HELP';
 
-if [ "$ARG" = "--yes" ] || [ "$ARG" = "-y" ]; then
-    echo "skipping confirmation"
-else
-    if [ ! `git rev-parse --verify $REMOTE/$BRANCH 2>/dev/null` ]; then
-        echo "$REMOTE/$BRANCH does not exist"
-    else
-        leftright
-    fi
+pin - wrapper for "git push"
 
-    read -p "git push --force $REMOTE $BRANCH (press enter) " yn
-fi
+USAGE:
+  >> pin [options]
 
-crumb pin_$BRANCH
-git push --force $REMOTE $BRANCH
-echo "done"
+Options:
+  --force (-f) Skip confirmations
+  --help  (-h) See this message
+
+EXAMPLES:
+  >> pin    # push up to remote
+  >> pin -f # push w/o confirm
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+sub confirm($) {
+    my ($message)=@_;
+    print $message;
+    my $ok=<>;
+    chomp $ok;
+    return $ok;
+}
+
+MAIN: {
+    GetOptions(
+        'force' => \$a_force,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my $BRANCH=`git rev-parse --abbrev-ref HEAD`;
+    chomp $BRANCH;
+    my $GIT_NAME=`persona | firstline`;
+    chomp $GIT_NAME;
+    my $GIT_EMAIL=`persona | lastline`;
+    chomp $GIT_EMAIL;
+    my $REMOTE="origin";
+
+    my $KNOWN_RESULTS=`persona --known-from HEAD~`;
+    chomp $KNOWN_RESULTS;
+    if ( $KNOWN_RESULTS =~ "not found" ) {
+      print "WARNING: ${GIT_NAME}(${GIT_EMAIL}) NOT FOUND in this repo's history\n";
+      confirm("continue? ");
+    }
+
+    print `git fetch`;
+
+    if (`git status --porcelain`) {
+        print "outstanding changes\n";
+        print `git status --short`;
+        confirm("amend and continue? ");
+        print `git add . && git commit --quiet --amend --reuse-message=HEAD`;
+    }
+
+    if (defined $a_force) {
+        print "skipping confirmation\n";
+    } else {
+        if ( ! `git rev-parse --verify $REMOTE/$BRANCH 2>/dev/null` ) {
+            print "$REMOTE/$BRANCH does not exist\n";
+        } else {
+            print `leftright`;
+        }
+
+        confirm("git push --force $REMOTE $BRANCH (press enter) ");
+    }
+
+    print `crumb pin_$BRANCH`;
+    print `git push --force $REMOTE $BRANCH`;
+    print "done\n";
+
+    exit 0;
+}
 
