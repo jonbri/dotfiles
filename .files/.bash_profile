@@ -150,6 +150,7 @@ alias capturevim="tmux capture-pane && sbvim"
 alias capturev="capturevim"
 alias capturevi="capturevim"
 alias push="echo pin"
+alias crumbs="crumb --list"
 
 novafast() {
   ticker-install
