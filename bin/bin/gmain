@@ -7,6 +7,7 @@ fi
 MAIN=`main`
 REMOTE="origin"
 
+crumb "gmain"
 git stash -u && \
   git checkout $MAIN && \
   git fetch && \

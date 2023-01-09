@@ -8,4 +8,6 @@ fi
 MAIN=`main`
 REMOTE="origin"
 
+crumb "grom"
 git rebase $REMOTE/$MAIN
+
