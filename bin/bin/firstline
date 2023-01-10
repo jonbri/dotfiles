@@ -1,7 +1,4 @@
 #!/bin/bash
 
-while read line
-do
-  echo "$line"
-  exit 0;
-done < "${1:-/dev/stdin}"
+stdin=$(cat; echo x)
+echo -n "${stdin%x}" | nth 0

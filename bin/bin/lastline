@@ -1,9 +1,4 @@
 #!/bin/bash
 
-LASTLINE=""
-while read line
-do
-  LASTLINE="$line";
-done < "${1:-/dev/stdin}"
-
-echo $LASTLINE
+stdin=$(cat; echo x)
+echo -n "${stdin%x}" | tac | nth 0

@@ -1,0 +1,14 @@
+#!/bin/bash
+# nth - print nth line from stdin
+
+TARGET_LINE=$1
+if [ -z $TARGET_LINE ]; then
+    TARGET_LINE=0
+fi
+
+# sed is 1-based
+TARGET_LINE=$((TARGET_LINE+1))
+
+stdin=$(cat; echo x)
+echo -n "${stdin%x}" | sed -n ${TARGET_LINE}p
+
