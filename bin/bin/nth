@@ -1,14 +1,85 @@
-#!/bin/bash
+#!/usr/bin/perl -w
 # nth - print nth line from stdin
 
-TARGET_LINE=$1
-if [ -z $TARGET_LINE ]; then
-    TARGET_LINE=0
-fi
+use strict;
 
-# sed is 1-based
-TARGET_LINE=$((TARGET_LINE+1))
+use Getopt::Long;
 
-stdin=$(cat; echo x)
-echo -n "${stdin%x}" | sed -n ${TARGET_LINE}p
+my $a_first;
+my $a_last;
+my $a_help;
+
+sub help() {
+    print STDERR <<'HELP';
+
+nth - print nth line from stdin
+
+USAGE:
+  >> nth [number] [options]
+
+Options:
+  --first (-f) Print first line
+  --last  (-l) Print last line
+  --help  (-h) See this message
+
+EXAMPLES:
+  >> nth    # print first line
+  >> nth 4  # print fourth line
+  >> nth -f # print first line
+  >> nth -l # print last line
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'first' => \$a_first,
+        'last' => \$a_last,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my $targetLine = $firstArg;
+    if (! defined $targetLine) {
+        $targetLine = 0;
+    }
+    if ($a_first) {
+        $targetLine = 0;
+    } elsif ($a_last) {
+        $targetLine = -1;
+    }
+    my $count = 0;
+    my $lineToPrint = "";
+    my $reachedEnd = 0;
+    while (<>) {
+        $lineToPrint = $_;
+        if ($count == $targetLine) {
+            $reachedEnd = 1;
+            last;
+        }
+        $count = $count + 1;
+    }
+
+    if ($targetLine != -1 && $reachedEnd == 0) {
+        exit 1;
+    }
+
+    print $lineToPrint;
+
+    exit 0;
+}
 
