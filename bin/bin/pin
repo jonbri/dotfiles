@@ -67,9 +67,9 @@ MAIN: {
 
     my $BRANCH=`git rev-parse --abbrev-ref HEAD`;
     chomp $BRANCH;
-    my $GIT_NAME=`persona | firstline`;
+    my $GIT_NAME=`persona | nth --first`;
     chomp $GIT_NAME;
-    my $GIT_EMAIL=`persona | lastline`;
+    my $GIT_EMAIL=`persona | nth --last`;
     chomp $GIT_EMAIL;
     my $REMOTE="origin";
 

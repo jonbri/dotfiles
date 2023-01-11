@@ -1,4 +1,0 @@
-#!/bin/bash
-
-stdin=$(cat; echo x)
-echo -n "${stdin%x}" | nth 0
