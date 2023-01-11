@@ -1,8 +1,0 @@
-#!/bin/bash
-
-git fetch || exit 1
-git branch --all | grep remotes | awk -F '/' '{ print "(" $2 ") " $3 }' | vim -c 'set nonu' -
-
-sleep 1
-echo "Active branch:"
-git rev-parse --abbrev-ref HEAD
