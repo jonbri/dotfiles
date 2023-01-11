@@ -1,39 +1,113 @@
-#!/bin/bash
+#!/usr/bin/perl -w
+# pull - git pull wrapper
 
-if [[ `git status --porcelain` ]]; then
-  echo "error: outstanding changes"
-  exit 1
-fi
+use strict;
 
-MAIN=`main`
-REMOTE="origin"
-FILTER=$1
+use Getopt::Long;
 
-git fetch --all --quiet
-if [ -z $FILTER ]; then
-    TARGET_BRANCH=$MAIN
-else
-    TARGET_BRANCH=`git branch --all | grep "remotes.*$FILTER" | awk -F "/" -e '{ print $3 }'`;
-fi
+my $a_help;
 
-function has-space {
-  [[ "$1" != "${1%[[:space:]]*}" ]] && return 0 || return 1
+sub help() {
+    print STDERR <<'HELP';
+
+pull - git pull wrapper
+
+USAGE:
+  >> pull [pattern] [options]
+
+Options:
+  --help    (-h) See this message
+
+EXAMPLES:
+  >> pull branch-name
+
+HELP
 }
-if has-space "$TARGET_BRANCH" ; then
-  echo "$TARGET_BRANCH"
-  exit 1
-fi
 
-if [ "$TARGET_BRANCH" = ""  ]; then
-    echo "error: no match"
-    exit 1
-fi
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
 
-echo "switching to: $TARGET_BRANCH"
-CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
-crumb "switch:${CURRENT_BRANCH}_to_${TARGET_BRANCH}"
-git checkout $TARGET_BRANCH --quiet
-git reset --hard $REMOTE/$TARGET_BRANCH
 
-echo "done"
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+sub confirm($) {
+    my ($message)=@_;
+    print $message;
+    my $ok=<>;
+    chomp $ok;
+    return $ok;
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my $cleanDirty = `cleandirty`;
+    chomp($cleanDirty);
+    if ($cleanDirty ne "clean") {
+        print "error: outstanding changes\n";
+        exit 1;
+    }
+
+    my $MAIN=`main`;
+    chomp $MAIN;
+    my $REMOTE="origin";
+    my $FILTER=$firstArg;
+
+    `git fetch --all --quiet`;
+
+    my $TARGET_BRANCH=$MAIN;
+    if (defined $FILTER) {
+        my @results = runCommand("git branch --all");
+
+        my @grepResults = grep(/remotes.*${FILTER}/i, @results);
+
+        if (scalar @grepResults == 0) {
+            print "no match\n";
+            exit 1;
+        } elsif (scalar @grepResults > 1) {
+            foreach (@grepResults) {
+                my @s = split('/', $_);
+                print "$s[2]";
+            }
+            exit 0;
+        } else {
+            foreach (@grepResults) {
+                my @s = split('/', $_);
+                $TARGET_BRANCH="$s[2]";
+                chomp($TARGET_BRANCH);
+                last;
+            }
+        }
+    }
+
+    print "switching to: $TARGET_BRANCH\n";
+    my $CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`;
+    chomp($CURRENT_BRANCH);
+    runCommand("crumb \"switch: ${CURRENT_BRANCH} -> ${TARGET_BRANCH}\"");
+
+    `git checkout $TARGET_BRANCH --quiet`;
+    `git reset --hard $REMOTE/$TARGET_BRANCH`;
+
+    exit 0;
+}
 
