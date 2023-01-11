@@ -151,6 +151,11 @@ alias capturev="capturevim"
 alias capturevi="capturevim"
 alias push="echo pin"
 alias crumbs="crumb --list"
+alias first="nth 0"
+alias second="nth 1"
+alias third="nth 2"
+alias fourth="nth 3"
+alias fifth="nth 4"
 
 novafast() {
   ticker-install
