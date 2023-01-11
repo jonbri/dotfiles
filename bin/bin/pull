@@ -9,7 +9,7 @@ MAIN=`main`
 REMOTE="origin"
 FILTER=$1
 
-git fetch --all
+git fetch --all --quiet
 if [ -z $FILTER ]; then
     TARGET_BRANCH=$MAIN
 else
@@ -20,7 +20,6 @@ function has-space {
   [[ "$1" != "${1%[[:space:]]*}" ]] && return 0 || return 1
 }
 if has-space "$TARGET_BRANCH" ; then
-  echo "matches:"
   echo "$TARGET_BRANCH"
   exit 1
 fi
