@@ -5,6 +5,7 @@ use strict;
 
 use Getopt::Long;
 
+my $a_force;
 my $a_help;
 
 sub help() {
@@ -16,7 +17,8 @@ USAGE:
   >> pull [pattern] [options]
 
 Options:
-  --help    (-h) See this message
+  --force (-f) Discard outstanding changes
+  --help  (-h) See this message
 
 EXAMPLES:
   >> pull branch-name
@@ -51,7 +53,8 @@ sub confirm($) {
 
 MAIN: {
     GetOptions(
-        'help' => \$a_help
+        'help' => \$a_help,
+        'force' => \$a_force
     ) || (help() && exit 1);
 
     # show help if either arg or option is given
@@ -64,8 +67,13 @@ MAIN: {
     my $cleanDirty = `cleandirty`;
     chomp($cleanDirty);
     if ($cleanDirty ne "clean") {
-        print "error: outstanding changes\n";
-        exit 1;
+        if (defined $a_force) {
+            print "forcing...\n";
+            `gwip`;
+        } else {
+            print "error: outstanding changes\n";
+            exit 1;
+        }
     }
 
     my $MAIN=`main`;
