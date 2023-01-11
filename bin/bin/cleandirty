@@ -7,19 +7,25 @@ fi
 NUM_OF_CHANGES=`git status --porcelain=v1 2>/dev/null | wc -l`
 if [ "$NUM_OF_CHANGES" = "0" ]; then
     echo "clean"
-    exit 0;
+    exit 0
 fi
 
 WORKING_DIR_SHORTHAND=""
 if ! output=$(git diff --exit-code); then
-    WORKING_DIR_SHORTHAND="W"
+    WORKING_DIR_SHORTHAND="w"
 fi
 
 
 CACHE_SHORTHAND=""
 if ! output=$(git diff --cached --exit-code); then
-    CACHE_SHORTHAND="C"
+    CACHE_SHORTHAND="c"
 fi
 
-echo "dirty${WORKING_DIR_SHORTHAND}${CACHE_SHORTHAND}"
+SEPARATOR=""
+if [ "$WORKING_DIR_SHORTHAND" != "" ] || [ "$CACHE_SHORTHAND" != "" ]; then
+    SEPARATOR="-"
+fi
+
+echo "dirty${SEPARATOR}${WORKING_DIR_SHORTHAND}${CACHE_SHORTHAND}"
+exit 0
 
