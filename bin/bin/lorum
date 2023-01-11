@@ -8,6 +8,7 @@ use Getopt::Long;
 my $a_width;
 my $a_reverse;
 my $a_numbers;
+my $a_integer;
 my $a_help;
 
 sub help() {
@@ -22,6 +23,7 @@ Options:
   --width   (-w) Set line-width
   --reverse (-r) Reverse order
   --numbers (-n) Show line numbers
+  --integer (-i) Numbers intead of words
   --help    (-h) See this message
 
 EXAMPLES:
@@ -86,6 +88,62 @@ my @text = (
     "Sed arcu non odio euismod. Dolor sed viverra ipsum nunc. Eros donec ac odio tempor orci dapibus ultrices in iaculis. Iaculis urna id volutpat lacus laoreet non. Tristique senectus et netus et malesuada fames ac. Cras ornare arcu dui vivamus arcu felis bibendum ut tristique. Est placerat in egestas erat imperdiet. Convallis posuere morbi leo urna. Est pellentesque elit ullamcorper dignissim cras. Duis at consectetur lorem donec massa sapien faucibus et molestie."
 );
 
+
+my @numbers = (
+    "Zero",
+    "One",
+    "Two",
+    "Three",
+    "Four",
+    "Five",
+    "Six",
+    "Seven",
+    "Eight",
+    "Nine",
+    "Ten",
+    "Eleven",
+    "Twelve",
+    "Thirteen",
+    "Fourteen",
+    "Fifteen",
+    "Sixteen",
+    "Seventeen",
+    "Eighteen",
+    "Nineteen",
+    "Twenty",
+    "Twenty one",
+    "Twenty two",
+    "Twenty three",
+    "Twenty four",
+    "Twenty five",
+    "Twenty six",
+    "Twenty seven",
+    "Twenty eight",
+    "Twenty nine",
+    "Thirty",
+    "Thirty one",
+    "Thirty two",
+    "Thirty three",
+    "Thirty four",
+    "Thirty five",
+    "Thirty six",
+    "Thirty seven",
+    "Thirty eight",
+    "Thirty nine",
+    "Forty",
+    "Forty one",
+    "Forty two",
+    "Forty three",
+    "Forty four",
+    "Forty five",
+    "Forty six",
+    "Forty seven",
+    "Forty eight",
+    "Forty nine",
+    "Fifty"
+);
+
+
 sub getFirstNonOptionArg {
     my $arg = shift @ARGV;
     if (!defined $arg) {
@@ -99,6 +157,7 @@ MAIN: {
         'width:i' => \$a_width,
         'reverse' => \$a_reverse,
         'numbers' => \$a_numbers,
+        'integer' => \$a_integer,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -116,11 +175,18 @@ MAIN: {
     }
 
     my @content = ();
-    for my $i (0 .. $#text) {
+    for my $i (0 .. $times) {
         if ($i == $times) {
             last;
         }
-        my $t = $text[$i];
+
+        my $t;
+        if (defined $a_integer) {
+            $t = $numbers[$i % scalar(@numbers)];
+        } else {
+            $t = $text[$i % scalar(@text)];
+        }
+
         if ($a_width && $a_width >= 0) {
             $t = substr($t, 0, $a_width);
         }
