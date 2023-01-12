@@ -7,6 +7,7 @@ use Getopt::Long;
 
 my $a_first;
 my $a_last;
+my $a_char;
 my $a_help;
 
 sub help() {
@@ -21,14 +22,16 @@ USAGE:
 Options:
   --first (-f) Print first line
   --last  (-l) Print last line
+  --char  (-c) Crop line range
   --help  (-h) See this message
 
 EXAMPLES:
-  >> nth     # print first line
-  >> nth 4   # print fourth line
-  >> nth 4-5 # print range of lines
-  >> nth -f  # print first line
-  >> nth -l  # print last line
+  >> nth          # print first line
+  >> nth 4        # print fourth line
+  >> nth 4 -c 3-5 # print subset of line
+  >> nth 4-5      # print range of lines
+  >> nth -f       # print first line
+  >> nth -l       # print last line
 
 HELP
 }
@@ -45,6 +48,7 @@ MAIN: {
     GetOptions(
         'first' => \$a_first,
         'last' => \$a_last,
+        'char:s' => \$a_char,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -88,7 +92,24 @@ MAIN: {
     }
 
     foreach (@linesToPrint) {
-        print $_;
+        if (defined $a_char) {
+            my $c_start = 0;
+            my $c_end = 0;
+            if ($a_char =~ /[\d]+-[\d]+/) {
+                $c_start = `echo $a_char | awk -F "-" '{ print \$1 }'`;
+                $c_end = `echo $a_char | awk -F "-" '{ print \$2 }'`;
+                chomp $c_start;
+                chomp $c_end;
+            } else {
+                $c_start = $a_char;
+                $c_end = $a_char + 1;
+            }
+            my $substring = substr($_, $c_start, ($c_end + 1) - $c_start);
+            chomp $substring;
+            print "$substring\n";
+        } else {
+            print $_;
+        }
     }
 
     exit 0;
