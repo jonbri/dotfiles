@@ -1,11 +1,19 @@
 #!/bin/bash
 
-INDEX=$1
-INPUT=$(</dev/stdin)
+RANGE=$1
+STDIN=$(</dev/stdin)
 
-if [ -z $INDEX ]; then
-    INDEX=0
+if [ -z $RANGE ]; then
+    RANGE=0
 fi
 
-echo "${INPUT:$INDEX:1}"
+START=$RANGE
+END=1
+if [[ $RANGE == *"-"* ]]; then
+    START=`echo $RANGE | awk -F "-" '{ print $1 }'`;
+    END_VALUE=`echo $RANGE | awk -F "-" '{ print $2 }'`;
+    END=$((END_VALUE-START+1))
+fi
+
+echo "${STDIN:$START:$END}"
 
