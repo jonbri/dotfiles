@@ -16,6 +16,7 @@ nth - print nth line from stdin
 
 USAGE:
   >> nth [number] [options]
+  >> nth [range] [options]
 
 Options:
   --first (-f) Print first line
@@ -23,10 +24,11 @@ Options:
   --help  (-h) See this message
 
 EXAMPLES:
-  >> nth    # print first line
-  >> nth 4  # print fourth line
-  >> nth -f # print first line
-  >> nth -l # print last line
+  >> nth     # print first line
+  >> nth 4   # print fourth line
+  >> nth 4-5 # print range of lines
+  >> nth -f  # print first line
+  >> nth -l  # print last line
 
 HELP
 }
@@ -57,28 +59,37 @@ MAIN: {
     if (! defined $targetLine) {
         $targetLine = 0;
     }
+    my $start = 0;
+    my $end = 0;
+    if ($targetLine =~ /[\d]+-[\d]+/) {
+        $start = `echo $targetLine | awk -F "-" '{ print \$1 }'`;
+        $end = `echo $targetLine | awk -F "-" '{ print \$2 }'`;
+        chomp $start;
+        chomp $end;
+    } else {
+        $start = $targetLine;
+        $end = $targetLine;
+    }
+
     if ($a_first) {
-        $targetLine = 0;
+        $start = 0;
+        $end = 1;
     } elsif ($a_last) {
-        $targetLine = -1;
+        $start = -1;
+        $end = -1;
     }
     my $count = 0;
-    my $lineToPrint = "";
-    my $reachedEnd = 0;
+    my @linesToPrint = ();
     while (<>) {
-        $lineToPrint = $_;
-        if ($count == $targetLine) {
-            $reachedEnd = 1;
-            last;
+        if ($count >= $start && $count < ($end + 1)) {
+            push(@linesToPrint, $_);
         }
         $count = $count + 1;
     }
 
-    if ($targetLine != -1 && $reachedEnd == 0) {
-        exit 1;
+    foreach (@linesToPrint) {
+        print $_;
     }
-
-    print $lineToPrint;
 
     exit 0;
 }
