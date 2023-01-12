@@ -21,11 +21,18 @@ if ! output=$(git diff --cached --exit-code); then
     CACHE_SHORTHAND="c"
 fi
 
+UNTRACKED_SHORTHAND=""
+# if output=$(git ls-files --other --directory --exclude-standard | sed q1); then
+untracked=`git ls-files --other --directory --exclude-standard | sed q1`;
+if [ ! -z "${untracked}" ]; then
+    UNTRACKED__SHORTHAND="u"
+fi
+
 SEPARATOR=""
-if [ "$WORKING_DIR_SHORTHAND" != "" ] || [ "$CACHE_SHORTHAND" != "" ]; then
+if [ "$WORKING_DIR_SHORTHAND" != "" ] || [ "$CACHE_SHORTHAND" != "" ] || [ "$UNTRACKED__SHORTHAND" != "" ]; then
     SEPARATOR="-"
 fi
 
-echo "dirty${SEPARATOR}${WORKING_DIR_SHORTHAND}${CACHE_SHORTHAND}"
+echo "dirty${SEPARATOR}${WORKING_DIR_SHORTHAND}${CACHE_SHORTHAND}${UNTRACKED__SHORTHAND}"
 exit 0
 
