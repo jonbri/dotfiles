@@ -1,0 +1,93 @@
+#!/usr/bin/perl -w
+# snowball - make fake git changes
+
+use strict;
+
+use Getopt::Long;
+
+my $a_working;
+my $a_index;
+my $a_untracked;
+my $a_help;
+
+sub help() {
+    print STDERR <<'HELP';
+
+snowball - make fake git changes
+
+USAGE:
+  >> snowball [options]
+
+Options:
+  --working   (-w) working directory dirty
+  --index     (-i) cache (stage) dirty
+  --untracked (-u) create untracked file
+
+EXAMPLES:
+  >> snowball       # create fake commit
+  >> snowball -w    # just dirty working dir
+  >> snowball -i    # just dirty index
+  >> snowball -u    # untracked
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+MAIN: {
+    GetOptions(
+        'working' => \$a_working,
+        'index' => \$a_index,
+        'untracked' => \$a_untracked,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my $EXISTING_FILE = (sort glob "*.*")[0];
+
+    if (!defined $a_working && !defined $a_index && !defined $a_untracked) {
+        print `echo "snowball" >> snowball_commit_log.txt`;
+        print `git add snowball_commit_log.txt`;
+        print `git commit -m 'snowball'`;
+        exit 0;
+    }
+
+    if (defined $a_working) {
+        print `echo "snowball working" >> $EXISTING_FILE`;
+    }
+
+    if (defined $a_index) {
+        print `echo "snowball index" >> $EXISTING_FILE`;
+        print `git add $EXISTING_FILE`;
+    }
+
+    if (defined $a_untracked) {
+        my $random = int(rand(10000));
+        print `echo "snowball" >> snowball_untracked_log$random.txt`;
+    }
+
+    exit 0;
+}
+
+
