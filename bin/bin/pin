@@ -89,20 +89,27 @@ MAIN: {
         print `git add . && git commit --quiet --amend --reuse-message=HEAD`;
     }
 
+    my $leftright = `leftright`;
+    chomp $leftright;
+    my $command = "git push --force $REMOTE $BRANCH";
+    if ($leftright =~ /[\d]+-0/) {
+      $command = "git push $REMOTE $BRANCH";
+    }
+
     if (defined $a_force) {
         print "skipping confirmation\n";
     } else {
         if ( ! `git rev-parse --verify $REMOTE/$BRANCH 2>/dev/null` ) {
             print "$REMOTE/$BRANCH does not exist\n";
         } else {
-            print `leftright`;
+            print "$leftright\n";
         }
 
-        confirm("git push --force $REMOTE $BRANCH (press enter) ");
+        confirm("$command (press enter) ");
     }
 
     print `crumb pin_$BRANCH`;
-    print `git push --force $REMOTE $BRANCH`;
+    print `$command`;
     print "done\n";
 
     exit 0;
