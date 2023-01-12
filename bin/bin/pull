@@ -6,6 +6,7 @@ use strict;
 use Getopt::Long;
 
 my $a_force;
+my $a_dryRun;
 my $a_help;
 
 sub help() {
@@ -17,8 +18,9 @@ USAGE:
   >> pull [pattern] [options]
 
 Options:
-  --force (-f) Discard outstanding changes
-  --help  (-h) See this message
+  --force   (-f) Discard outstanding changes
+  --dry-run (-d) Don't actually update HEAD
+  --help    (-h) See this message
 
 EXAMPLES:
   >> pull branch-name
@@ -54,6 +56,7 @@ sub confirm($) {
 MAIN: {
     GetOptions(
         'help' => \$a_help,
+        'dry-run' => \$a_dryRun,
         'force' => \$a_force
     ) || (help() && exit 1);
 
@@ -106,6 +109,11 @@ MAIN: {
                 last;
             }
         }
+    }
+
+    if (defined $a_dryRun) {
+        print "$TARGET_BRANCH\n";
+        exit 0;
     }
 
     print "switching to: $TARGET_BRANCH\n";
