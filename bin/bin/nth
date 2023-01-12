@@ -8,6 +8,7 @@ use Getopt::Long;
 my $a_first;
 my $a_last;
 my $a_char;
+my $a_reverse;
 my $a_help;
 
 sub help() {
@@ -20,16 +21,17 @@ USAGE:
   >> nth [range] [options]
 
 Options:
-  --first (-f) Print first line
-  --last  (-l) Print last line
-  --char  (-c) Crop line range
-  --help  (-h) See this message
+  --first    (-f) Print first line
+  --last     (-l) Print last line
+  --char     (-c) Crop line range
+  --reverse  (-r) Reverse row order
+  --help     (-h) See this message
 
 EXAMPLES:
   >> nth          # print first line
   >> nth 4        # print fourth line
   >> nth 4 -c 3-5 # print subset of line
-  >> nth 4-5      # print range of lines
+  >> nth 4-5 -r   # print reversed range of lines
   >> nth -f       # print first line
   >> nth -l       # print last line
 
@@ -49,6 +51,7 @@ MAIN: {
         'first' => \$a_first,
         'last' => \$a_last,
         'char:s' => \$a_char,
+        'reverse' => \$a_reverse,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -91,7 +94,12 @@ MAIN: {
         $count = $count + 1;
     }
 
+    if (defined $a_reverse) {
+        @linesToPrint = reverse(@linesToPrint);
+    }
+
     foreach (@linesToPrint) {
+        my $lineToPrint = $_;
         if (defined $a_char) {
             my $c_start = 0;
             my $c_end = 0;
@@ -106,10 +114,9 @@ MAIN: {
             }
             my $substring = substr($_, $c_start, ($c_end + 1) - $c_start);
             chomp $substring;
-            print "$substring\n";
-        } else {
-            print $_;
+            $lineToPrint = $substring;
         }
+        print "$lineToPrint\n";
     }
 
     exit 0;
