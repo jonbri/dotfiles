@@ -83,17 +83,10 @@ MAIN: {
         $end = $targetLine;
     }
 
-    if ($a_first) {
-        $start = 0;
-        $end = 1;
-    } elsif ($a_last) {
-        $start = -1;
-        $end = -1;
-    }
     my $count = 0;
     my @linesToPrint = ();
     while (<>) {
-        if ($count >= $start && $count < ($end + 1)) {
+        if ($a_first || $a_last || ($count >= $start && $count < ($end + 1))) {
             push(@linesToPrint, $_);
         }
         $count = $count + 1;
@@ -101,6 +94,14 @@ MAIN: {
 
     if (defined $a_reverse) {
         @linesToPrint = reverse(@linesToPrint);
+    }
+
+    if ($a_first) {
+        print $linesToPrint[0];
+        exit 0;
+    } if ($a_last) {
+        print $linesToPrint[scalar @linesToPrint - 1];
+        exit 0;
     }
 
     foreach (@linesToPrint) {
