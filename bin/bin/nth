@@ -19,8 +19,7 @@ sub help() {
 nth - print nth line from stdin
 
 USAGE:
-  >> nth [number] [options]
-  >> nth [range] [options]
+  >> nth [number|range] [options]
 
 Options:
   --first     (-f) Print first line
@@ -34,7 +33,7 @@ Options:
 EXAMPLES:
   >> nth          # print first line
   >> nth 4        # print fourth line
-  >> nth 4 -c 3-5 # print subset of line
+  >> nth 4 -c 3-5 # print substring of fourth line
   >> nth 4-5 -r   # print reversed range of lines
   >> nth -f       # print first line
   >> nth -l       # print last line
@@ -130,7 +129,7 @@ MAIN: {
         if (defined $a_trim) {
             $lineToPrint=~ s/\s+$//;
         }
-        print "$lineToPrint\n";
+        print "$lineToPrint";
     }
 
     exit 0;
