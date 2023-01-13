@@ -10,6 +10,7 @@ my $a_last;
 my $a_char;
 my $a_reverse;
 my $a_backwards;
+my $a_trim;
 my $a_help;
 
 sub help() {
@@ -27,6 +28,7 @@ Options:
   --char      (-c) Crop line range
   --reverse   (-r) Reverse row order
   --backwards (-b) Row text is reversed
+  --trim      (-t) Trim trailing spaces
   --help      (-h) See this message
 
 EXAMPLES:
@@ -55,6 +57,7 @@ MAIN: {
         'char:s' => \$a_char,
         'reverse' => \$a_reverse,
         'backwards' => \$a_backwards,
+        'trim' => \$a_trim,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -124,6 +127,9 @@ MAIN: {
             $lineToPrint = reverse $lineToPrint;
         }
 
+        if (defined $a_trim) {
+            $lineToPrint=~ s/\s+$//;
+        }
         print "$lineToPrint\n";
     }
 
