@@ -12,7 +12,7 @@ my $a_edit;
 my $a_help;
 
 sub help() {
-    print STDERR <<'HELP';
+    print STDOUT <<'HELP';
 
 zargs
 

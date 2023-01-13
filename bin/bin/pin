@@ -9,7 +9,7 @@ my $a_force;
 my $a_help;
 
 sub help() {
-    print STDERR <<'HELP';
+    print STDOUT <<'HELP';
 
 pin - wrapper for "git push"
 

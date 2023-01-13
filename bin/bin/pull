@@ -10,7 +10,7 @@ my $a_dryRun;
 my $a_help;
 
 sub help() {
-    print STDERR <<'HELP';
+    print STDOUT <<'HELP';
 
 pull - git pull wrapper
 

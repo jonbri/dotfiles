@@ -14,7 +14,7 @@ my $a_trim;
 my $a_help;
 
 sub help() {
-    print STDERR <<'HELP';
+    print STDOUT <<'HELP';
 
 nth - print nth line from stdin
 

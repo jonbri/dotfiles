@@ -40,7 +40,7 @@ sub doHelp(;$) {
     if ($errMsg) {
         print "error: $errMsg\n";
     }
-    print STDERR <<'HELP';
+    print STDOUT <<'HELP';
 ----------------------------------------------------------------
 updatePlugins
 ----------------------------------------------------------------

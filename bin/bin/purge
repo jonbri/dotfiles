@@ -10,7 +10,7 @@ my $a_force;
 my $a_help;
 
 sub help() {
-    print STDERR <<'HELP';
+    print STDOUT <<'HELP';
 
 purge - delete local branches
 
