@@ -5,7 +5,8 @@ use strict;
 
 use Getopt::Long;
 
-my $a_list;
+my $a_dryRun;
+my $a_force;
 my $a_help;
 
 sub help() {
@@ -17,13 +18,15 @@ USAGE:
   >> purge [pattern] [options]
 
 Options:
-  --list    (-l) List zargs
+  --dry-run (-d) Just show branch matches
+  --force   (-f) Skip confirmation
   --help    (-h) See this message
 
 EXAMPLES:
-  >> purge          # interactive mode
-  >> purge -l       # see local branches
-  >> purge feat-abc # delete via pattern
+  >> purge        # interactive mode with all branches
+  >> purge -d     # see local branches
+  >> purge abc -l # see matches
+  >> purge abc -f # force delete via pattern
 
 HELP
 }
@@ -53,16 +56,20 @@ sub confirm($) {
     return $ok;
 }
 
-sub deleteBranch($) {
-    my ($branch) = @_;
-    runCommand("crumb purge_$branch");
-    runCommand("git branch -D $branch");
+sub deleteBranch($$) {
+    my ($branch, $prefix) = @_;
+    my $command = "git branch -D $branch";
+    if (defined $a_force || confirm("${prefix} ${command} (y/n) ") =~ /^y/i) {
+        runCommand("crumb purge_$branch");
+        runCommand($command);
+    }
 }
 
 
 MAIN: {
     GetOptions(
-        'list' => \$a_list,
+        'dry-run' => \$a_dryRun,
+        'force' => \$a_force,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -80,66 +87,34 @@ MAIN: {
     # exclude main and the current branch
     @branches = grep(!/^master$/, @branches);
     @branches = grep(!/^main$/, @branches);
-    @branches = grep(!/$currentBranch/, @branches);
+    @branches = grep(!/^$currentBranch$/, @branches);
+
+    if (defined $firstArg) {
+        @branches = grep (/.*$firstArg/, @branches);
+    }
 
     if (scalar @branches == 0) {
-        print "no branches found\n";
         exit 0;
     }
 
-    if (defined $a_list) {
+    if (defined $a_dryRun) {
         foreach (@branches) {
-            print "  $_";
+            print $_;
         }
         exit 0;
     }
 
-    # pattern
-    if (defined $firstArg) {
-        my @toBeDeleted = ();
-        foreach (@branches) {
-            chomp;
-            if ($_ =~ /$firstArg/i) {
-                # print "delete branch $_...\n";
-                # deleteBranch("$_");
-                # print "deleted: $_\n";
-                push(@toBeDeleted, $_);
-            }
-        }
-
-        print "branches to delete:\n";
-        foreach (@toBeDeleted) {
-            chomp;
-            print "  $_\n";
-        }
-        if (confirm("continue (y/n)? ") =~ /^y/i) {
-            foreach (@toBeDeleted) {
-                chomp;
-                deleteBranch($_);
-            }
-            print "done\n";
-        }
-        exit 0;
+    if (! defined $a_force) {
+        print "This program only deletes local branches\n";
     }
+    my $count = 1;
+    foreach (@branches) {
+        chomp;
 
-    # no args, enter interactive mode
-    if (!defined $firstArg) {
-        my $count = 1;
-        foreach (@branches) {
-            chomp;
-
-            my $prefix = "($count/".(scalar @branches).")";
-            my $prompt = "$prefix $_\ndelete? (y/n) ";
-
-            if (confirm($prompt) =~ /^y/i) {
-                deleteBranch("$_");
-                print "branch deleted\n";
-            }
-
-            print "\n";
-            $count = $count + 1;
-        }
-        exit 0;
+        my $prefix = "($count/".(scalar @branches).")";
+        deleteBranch("$_", $prefix);
+        $count = $count + 1;
     }
+    print "done\n";
     exit 0;
 }
