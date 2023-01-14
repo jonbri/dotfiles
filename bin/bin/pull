@@ -7,6 +7,7 @@ use Getopt::Long;
 
 my $a_force;
 my $a_dryRun;
+my $a_local;
 my $a_help;
 
 sub help() {
@@ -20,6 +21,7 @@ USAGE:
 Options:
   --force   (-f) Discard outstanding changes
   --dry-run (-d) Don't actually update HEAD
+  --local   (-l) Don't fetch, just reset
   --help    (-h) See this message
 
 EXAMPLES:
@@ -57,7 +59,8 @@ MAIN: {
     GetOptions(
         'help' => \$a_help,
         'dry-run' => \$a_dryRun,
-        'force' => \$a_force
+        'force' => \$a_force,
+        'local' => \$a_local
     ) || (help() && exit 1);
 
     # show help if either arg or option is given
@@ -81,10 +84,14 @@ MAIN: {
 
     my $MAIN=`main`;
     chomp $MAIN;
-    my $REMOTE="origin";
+    my $REMOTE="origin"; # TODO: option
     my $FILTER=$firstArg;
 
-    `git fetch --all --quiet`;
+    if (defined $a_local) {
+        print "skipping fetch\n";
+    } else {
+        `git fetch --all --quiet`;
+    }
 
     my $TARGET_BRANCH=$MAIN;
     if (defined $FILTER) {
