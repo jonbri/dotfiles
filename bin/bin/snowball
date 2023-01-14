@@ -8,6 +8,7 @@ use Getopt::Long;
 my $a_working;
 my $a_index;
 my $a_untracked;
+my $a_conflict;
 my $a_help;
 
 sub help() {
@@ -22,6 +23,7 @@ Options:
   --working   (-w) working directory dirty
   --index     (-i) cache (stage) dirty
   --untracked (-u) create untracked file
+  --conflict  (-c) create merge conflict
 
 EXAMPLES:
   >> snowball       # create fake commit
@@ -54,6 +56,7 @@ MAIN: {
         'working' => \$a_working,
         'index' => \$a_index,
         'untracked' => \$a_untracked,
+        'conflict' => \$a_conflict,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -69,32 +72,47 @@ MAIN: {
     chomp $EXISTING_FILE0;
     my $EXISTING_FILE1 = $trackedFiles[1];
     chomp $EXISTING_FILE1;
+    my $EXISTING_FILE2 = $trackedFiles[2];
+    chomp $EXISTING_FILE2;
 
-    if (! defined $EXISTING_FILE1) {
-        print "repo needs at least two tracked files\n";
-        exit 1;
-    }
-
-    if (!defined $a_working && !defined $a_index && !defined $a_untracked) {
-        print `echo "snowball" >> snowball_commit_log.txt`;
-        print `git add snowball_commit_log.txt`;
-        print `git commit -m 'snowball'`;
+    if (defined $a_working) {
+        if (!defined $EXISTING_FILE0) {
+            print "repo needs at least one tracked file\n";
+            exit 1;
+        }
+        print `echo "snowball working" >> $EXISTING_FILE0`;
         exit 0;
     }
 
-    if (defined $a_working) {
-        print `echo "snowball working" >> $EXISTING_FILE0`;
-    }
-
     if (defined $a_index) {
+        if (!defined $EXISTING_FILE1) {
+            print "repo needs at least two tracked files\n";
+            exit 1;
+        }
         print `echo "snowball index" >> $EXISTING_FILE1`;
         print `git add $EXISTING_FILE1`;
+        exit 0;
     }
 
     if (defined $a_untracked) {
         my $random = int(rand(10000));
         print `echo "snowball" >> snowball_untracked_log$random.txt`;
+        exit 0;
     }
+
+    if (defined $a_conflict) {
+        if (!defined $EXISTING_FILE2) {
+            print "repo needs at least three tracked files\n";
+            exit 1;
+        }
+        print "start --conflict\n";
+        exit 0;
+    }
+
+    # default behavior: create commit
+    print `echo "snowball" >> snowball_commit_log.txt`;
+    print `git add snowball_commit_log.txt`;
+    print `git commit -m 'snowball'`;
 
     exit 0;
 }
