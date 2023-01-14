@@ -8,6 +8,7 @@ use Getopt::Long;
 my $a_force;
 my $a_dryRun;
 my $a_local;
+my $a_remote;
 my $a_help;
 
 sub help() {
@@ -22,6 +23,7 @@ Options:
   --force   (-f) Discard outstanding changes
   --dry-run (-d) Don't actually update HEAD
   --local   (-l) Don't fetch, just reset
+  --remote  (-r) Use a non-origin remote
   --help    (-h) See this message
 
 EXAMPLES:
@@ -47,19 +49,12 @@ sub runCommand($) {
     return @output;
 }
 
-sub confirm($) {
-    my ($message)=@_;
-    print $message;
-    my $ok=<>;
-    chomp $ok;
-    return $ok;
-}
-
 MAIN: {
     GetOptions(
         'help' => \$a_help,
         'dry-run' => \$a_dryRun,
         'force' => \$a_force,
+        'remote:s' => \$a_remote,
         'local' => \$a_local
     ) || (help() && exit 1);
 
@@ -84,7 +79,13 @@ MAIN: {
 
     my $MAIN=`main`;
     chomp $MAIN;
-    my $REMOTE="origin"; # TODO: option
+
+    my $REMOTE="origin";
+    if (defined $a_remote) {
+        $REMOTE=$a_remote;
+        print "remote: $REMOTE\n";
+    }
+
     my $FILTER=$firstArg;
 
     if (defined $a_local) {
