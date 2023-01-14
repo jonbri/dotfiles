@@ -65,6 +65,15 @@ MAIN: {
         exit 1;
     }
 
+    my $cleandirty = `cleandirty`;
+    chomp $cleandirty;
+    my $leftright = `leftright`;
+    chomp $leftright;
+    if ($cleandirty eq 'clean' && $leftright eq '0-0') {
+        print "nothing to do\n";
+        exit 0;
+    }
+
     my $BRANCH=`git rev-parse --abbrev-ref HEAD`;
     chomp $BRANCH;
     my $GIT_NAME=`persona | nth --first`;
@@ -89,8 +98,6 @@ MAIN: {
         print `git add . && git commit --quiet --amend --reuse-message=HEAD`;
     }
 
-    my $leftright = `leftright`;
-    chomp $leftright;
     my $command = "git push --force $REMOTE $BRANCH";
     if ($leftright =~ /[\d]+-0/) {
       $command = "git push $REMOTE $BRANCH";
