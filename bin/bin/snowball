@@ -64,7 +64,16 @@ MAIN: {
         exit 1;
     }
 
-    my $EXISTING_FILE = (sort glob "*.*")[0];
+    my @trackedFiles = runCommand("git ls-tree -r master --name-only");
+    my $EXISTING_FILE0 = $trackedFiles[0];
+    chomp $EXISTING_FILE0;
+    my $EXISTING_FILE1 = $trackedFiles[1];
+    chomp $EXISTING_FILE1;
+
+    if (! defined $EXISTING_FILE1) {
+        print "repo needs at least two tracked files\n";
+        exit 1;
+    }
 
     if (!defined $a_working && !defined $a_index && !defined $a_untracked) {
         print `echo "snowball" >> snowball_commit_log.txt`;
@@ -74,12 +83,12 @@ MAIN: {
     }
 
     if (defined $a_working) {
-        print `echo "snowball working" >> $EXISTING_FILE`;
+        print `echo "snowball working" >> $EXISTING_FILE0`;
     }
 
     if (defined $a_index) {
-        print `echo "snowball index" >> $EXISTING_FILE`;
-        print `git add $EXISTING_FILE`;
+        print `echo "snowball index" >> $EXISTING_FILE1`;
+        print `git add $EXISTING_FILE1`;
     }
 
     if (defined $a_untracked) {
