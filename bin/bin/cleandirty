@@ -22,8 +22,8 @@ if ! output=$(git diff --cached --exit-code); then
 fi
 
 UNTRACKED_SHORTHAND=""
-# if output=$(git ls-files --other --directory --exclude-standard | sed q1); then
-untracked=`git ls-files --other --directory --exclude-standard | sed q1`;
+untracked=`git ls-files -z -o --exclude-standard | sed q1`;
+# untracked=`git ls-files -z -o --exclude-standard`;
 if [ ! -z "${untracked}" ]; then
     UNTRACKED__SHORTHAND="u"
 fi
