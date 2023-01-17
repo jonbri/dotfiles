@@ -10,10 +10,17 @@ my $a_help;
 sub help() {
     print STDOUT <<'HELP';
 
-sand
+sand - hourglass simulation
 
 USAGE:
-  >> sand
+  >> sand [options]
+
+Options:
+  --help (-h) See this message
+
+EXAMPLES:
+  >> sand   # change every second
+  >> sand 3 # modulus
 
 HELP
 }
@@ -47,8 +54,13 @@ MAIN: {
         exit 1;
     }
 
+    my $mod = $firstArg;
+    if (!defined $mod) {
+        $mod = 2;
+    }
+
     my $time = time();
-    if ($time % 2 == 0) {
+    if ($time % $mod == 0) {
         print "_\n";
     } else {
         print "-\n";
