@@ -7,6 +7,8 @@ use Getopt::Long;
 
 my $a_help;
 my $a_numbers;
+my $a_indicator;
+my $a_else;
 
 sub help() {
     print STDOUT <<'HELP';
@@ -17,8 +19,10 @@ USAGE:
   >> sand [options]
 
 Options:
-  --numbers (-n) Incrementing number
-  --help    (-h) See this message
+  --numbers   (-n) Incrementing number
+  --indicator (-i) Custom indicator
+  --else      (-e) Default: empty space
+  --help      (-h) See this message
 
 EXAMPLES:
   >> sand   # change every second
@@ -44,10 +48,14 @@ sub runCommand($) {
     return @output;
 }
 
+my $SPACE = " ";
+
 MAIN: {
     GetOptions(
         'help' => \$a_help,
         'numbers' => \$a_numbers,
+        'indicator:s' => \$a_indicator,
+        'else:s' => \$a_else,
     ) || (help() && exit 1);
 
     # show help if either arg or option is given
@@ -69,9 +77,27 @@ MAIN: {
         print "$last\n";
     } else {
         if ($time % $mod == 0) {
-            print "_\n";
+            if (defined $a_indicator) {
+                print "$a_indicator\n";
+            } else {
+                print ".\n";
+            }
         } else {
-            print "-\n";
+            if (defined $a_else) {
+                print "$a_else\n";
+            } else {
+                if (defined $a_indicator) {
+                    my @spaces = ();
+                    my $length = length($a_indicator);
+                    for(my $i = 1; $i <= $length; $i++) {
+                        push (@spaces, "$SPACE");
+                    }
+                    my $string = join('', @spaces);
+                    print "$string\n";
+                } else {
+                    print "$SPACE\n";
+                }
+            }
         }
     }
 
