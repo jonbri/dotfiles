@@ -26,10 +26,10 @@ Options:
   --conflict  (-c) create merge conflict
 
 EXAMPLES:
-  >> snowball       # create fake commit
-  >> snowball -w    # just dirty working dir
-  >> snowball -i    # just dirty index
-  >> snowball -u    # untracked
+  >> snowball    # create fake commit
+  >> snowball -w # just dirty working dir
+  >> snowball -i # just dirty index
+  >> snowball -u # untracked
 
 HELP
 }
@@ -101,11 +101,21 @@ MAIN: {
     }
 
     if (defined $a_conflict) {
+        my $random = int(rand(10000));
         if (!defined $EXISTING_FILE2) {
             print "repo needs at least three tracked files\n";
             exit 1;
         }
-        print "start --conflict\n";
+        print `git branch conflict${random}`;
+        print `echo "snowball conflict" >> $EXISTING_FILE2`;
+        print `git add $EXISTING_FILE2`;
+        print `git commit -m 'snowball conflict'`;
+        print `git checkout conflict${random}`;
+        print `echo "snowball cause conflict" >> $EXISTING_FILE2`;
+        print `git add $EXISTING_FILE2`;
+        print `git commit -m 'snowball cause conflict'`;
+        print `git checkout -`;
+        print `git merge -`;
         exit 0;
     }
 
