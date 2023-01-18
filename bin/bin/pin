@@ -6,6 +6,7 @@ use strict;
 use Getopt::Long;
 
 my $a_force;
+my $a_verbose;
 my $a_help;
 
 sub help() {
@@ -17,8 +18,9 @@ USAGE:
   >> pin [options]
 
 Options:
-  --force (-f) Skip confirmations
-  --help  (-h) See this message
+  --force   (-f) Skip confirmations
+  --verbose (-v) extra logging
+  --help    (-h) See this message
 
 EXAMPLES:
   >> pin    # push up to remote
@@ -55,6 +57,7 @@ sub confirm($) {
 MAIN: {
     GetOptions(
         'force' => \$a_force,
+        'verbose' => \$a_verbose,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -92,7 +95,9 @@ MAIN: {
     print `git fetch`;
 
     if (`git status --porcelain`) {
-        print "outstanding changes\n";
+        if ($a_verbose) {
+            print "outstanding changes\n";
+        }
         print `git status --short`;
         confirm("amend and continue? ");
         print `git add . && git commit --quiet --amend --reuse-message=HEAD`;
@@ -104,7 +109,9 @@ MAIN: {
     }
 
     if (defined $a_force) {
-        print "skipping confirmation\n";
+        if ($a_verbose) {
+            print "skipping confirmation\n";
+        }
     } else {
         if ( ! `git rev-parse --verify $REMOTE/$BRANCH 2>/dev/null` ) {
             print "$REMOTE/$BRANCH does not exist\n";
