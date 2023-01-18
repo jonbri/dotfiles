@@ -99,7 +99,10 @@ MAIN: {
             print "outstanding changes\n";
         }
         print `git status --short`;
-        confirm("amend and continue? ");
+
+        if (! defined $a_force) {
+            confirm("amend and continue? ");
+        }
         print `git add . && git commit --quiet --amend --reuse-message=HEAD`;
     }
 
