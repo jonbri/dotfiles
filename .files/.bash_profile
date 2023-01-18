@@ -135,7 +135,6 @@ alias apps="cd $NC"/../apps
 alias snip="cd $NC"/../nova-snippets
 alias showcase="cd $NC"/apps/showcase/ui
 alias show=showcase
-alias out="tmux save-buffer $TMUX_BUFFER && notepad.exe $TMUX_BUFFER"
 alias out+="tmux save-buffer $TMUX_BUFFER && /mnt/c/Program\ Files\ \(x86\)/Notepad++/notepad++.exe $TMUX_BUFFER"
 alias out++="sb+"
 alias outvim="tmux save-buffer $TMUX_BUFFER && /mnt/c/Program\ Files/Vim/vim81/gvim.exe $TMUX_BUFFER"
