@@ -1,0 +1,4 @@
+#!/bin/bash
+
+tmux save-buffer $TMUX_BUFFER && /mnt/c/Program\ Files/Vim/vim81/gvim.exe $TMUX_BUFFER
+

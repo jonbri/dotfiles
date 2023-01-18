@@ -1,3 +1,4 @@
 #!/bin/bash
+
 tmux save-buffer $TMUX_BUFFER && notepad.exe $TMUX_BUFFER
 
