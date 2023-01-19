@@ -23,7 +23,7 @@ Options:
   --numbers   (-n) Incrementing number
   --indicator (-i) Custom indicator
   --else      (-e) Default: empty space
-  --mode      (-f) slug, blink, num, cycle
+  --mode      (-f) slug, blink, num, cycle, pass
   --help      (-h) See this message
 
 EXAMPLES:
@@ -85,6 +85,11 @@ MAIN: {
             } else {
                 $a_mode = 'slug';
             }
+        }
+
+        if ($a_mode eq 'pass') {
+            print "$a_indicator\n";
+            exit 0;
         }
 
         if ($a_mode eq 'slug') {
