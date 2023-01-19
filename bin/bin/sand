@@ -8,7 +8,7 @@ use Getopt::Long;
 my $a_help;
 my $a_numbers;
 my $a_indicator;
-my $a_funny;
+my $a_mode;
 my $a_else;
 
 sub help() {
@@ -23,7 +23,7 @@ Options:
   --numbers   (-n) Incrementing number
   --indicator (-i) Custom indicator
   --else      (-e) Default: empty space
-  --funny     (-e) Funny
+  --mode      (-f) Values: slug, blink, num
   --help      (-h) See this message
 
 EXAMPLES:
@@ -57,7 +57,7 @@ MAIN: {
         'help' => \$a_help,
         'numbers' => \$a_numbers,
         'indicator:s' => \$a_indicator,
-        'funny' => \$a_funny,
+        'mode:s' => \$a_mode,
         'else:s' => \$a_else,
     ) || (help() && exit 1);
 
@@ -75,48 +75,72 @@ MAIN: {
 
     my $time = time();
 
-    if (defined $a_numbers) {
-        my $last = substr($time, -1);
-        print "$last\n";
-    } elsif (defined $a_funny) {
-        if (!defined $a_indicator) {
-            print "indicator (-i) required in funny mode\n";
-            die 1;
-        }
-        my @spaces = ();
-        my $length = length($a_indicator);
-        for(my $i = 0; $i < $length; $i++) {
-            my $indicator = substr($a_indicator, $i, 1);
-            if ($i == $time % $length) {
-                push (@spaces, uc($indicator));
-            } else {
-                push (@spaces, $indicator);
+    if (defined $a_mode) {
+        if ($a_mode eq 'slug') {
+            if (!defined $a_indicator) {
+                print "indicator (-i) required when using this mode\n";
+                die 1;
             }
-        }
-        print join('', @spaces)."\n";
-        exit 0;
-    } else {
-        if ($time % $mod == 0) {
-            if (defined $a_indicator) {
+            my @spaces = ();
+            my $length = length($a_indicator);
+            for(my $i = 0; $i < $length; $i++) {
+                my $indicator = substr($a_indicator, $i, 1);
+                if ($i == $time % $length) {
+                    push (@spaces, uc($indicator));
+                } else {
+                    push (@spaces, $indicator);
+                }
+            }
+            print join('', @spaces)."\n";
+            exit 0;
+        } elsif ($a_mode eq 'blink') {
+            if (!defined $a_indicator) {
+                print "indicator (-i) required when using this mode\n";
+                die 1;
+            }
+            if ($time % $mod == 0) {
                 print "$a_indicator\n";
             } else {
-                print ".\n";
-            }
-        } else {
-            if (defined $a_else) {
-                print "$a_else\n";
-            } else {
-                if (defined $a_indicator) {
-                    my @spaces = ();
-                    my $length = length($a_indicator);
-                    for(my $i = 1; $i <= $length; $i++) {
-                        push (@spaces, "$SPACE");
-                    }
-                    my $string = join('', @spaces);
-                    print "$string\n";
-                } else {
-                    print "$SPACE\n";
+                my @spaces = ();
+                my $length = length($a_indicator);
+                for(my $i = 1; $i <= $length; $i++) {
+                    push (@spaces, "$SPACE");
                 }
+                my $string = join('', @spaces);
+                print "$string\n";
+            }
+        } elsif ($a_mode eq 'num') {
+            my $last = substr($time, -1);
+            print "$last\n";
+            exit 0;
+        } else {
+            print "invalid mode. see --help\n";
+            exit 1;
+        }
+        exit 0;
+    }
+
+    # default mode
+    if ($time % $mod == 0) {
+        if (defined $a_indicator) {
+            print "$a_indicator\n";
+        } else {
+            print ".\n";
+        }
+    } else {
+        if (defined $a_else) {
+            print "$a_else\n";
+        } else {
+            if (defined $a_indicator) {
+                my @spaces = ();
+                my $length = length($a_indicator);
+                for(my $i = 1; $i <= $length; $i++) {
+                    push (@spaces, "$SPACE");
+                }
+                my $string = join('', @spaces);
+                print "$string\n";
+            } else {
+                print "$SPACE\n";
             }
         }
     }
