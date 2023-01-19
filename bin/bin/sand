@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# sand - simulates a simple hourglass
+# sand - meant to be called over and over
 
 use strict;
 
@@ -8,6 +8,7 @@ use Getopt::Long;
 my $a_help;
 my $a_numbers;
 my $a_indicator;
+my $a_funny;
 my $a_else;
 
 sub help() {
@@ -22,6 +23,7 @@ Options:
   --numbers   (-n) Incrementing number
   --indicator (-i) Custom indicator
   --else      (-e) Default: empty space
+  --funny     (-e) Funny
   --help      (-h) See this message
 
 EXAMPLES:
@@ -55,6 +57,7 @@ MAIN: {
         'help' => \$a_help,
         'numbers' => \$a_numbers,
         'indicator:s' => \$a_indicator,
+        'funny' => \$a_funny,
         'else:s' => \$a_else,
     ) || (help() && exit 1);
 
@@ -75,6 +78,23 @@ MAIN: {
     if (defined $a_numbers) {
         my $last = substr($time, -1);
         print "$last\n";
+    } elsif (defined $a_funny) {
+        if (!defined $a_indicator) {
+            print "indicator (-i) required in funny mode\n";
+            die 1;
+        }
+        my @spaces = ();
+        my $length = length($a_indicator);
+        for(my $i = 0; $i < $length; $i++) {
+            my $indicator = substr($a_indicator, $i, 1);
+            if ($i == $time % $length) {
+                push (@spaces, uc($indicator));
+            } else {
+                push (@spaces, $indicator);
+            }
+        }
+        print join('', @spaces)."\n";
+        exit 0;
     } else {
         if ($time % $mod == 0) {
             if (defined $a_indicator) {
