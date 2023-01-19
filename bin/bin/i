@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd $DOTFILES_DIR && $DOTFILES_DIR/install
+

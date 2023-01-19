@@ -27,7 +27,6 @@ export OPENUITHEMES=$UI5/openui-framework-themes
 export DOTFILES_DIR=${HOME}/dotfiles
 export TMUX_BUFFER=/tmp/_tmux-buffer.txt
 
-alias i="cd $DOTFILES_DIR && $DOTFILES_DIR/install"
 alias c="clear"
 alias ll="ls -la"
 alias e="exit"
