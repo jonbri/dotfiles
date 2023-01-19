@@ -23,7 +23,7 @@ Options:
   --numbers   (-n) Incrementing number
   --indicator (-i) Custom indicator
   --else      (-e) Default: empty space
-  --mode      (-f) Values: slug, blink, num
+  --mode      (-f) slug, blink, num, cycle
   --help      (-h) See this message
 
 EXAMPLES:
@@ -76,6 +76,17 @@ MAIN: {
     my $time = time();
 
     if (defined $a_mode) {
+        if ($a_mode eq 'cycle') {
+            my $length = length($a_indicator);
+            my $total = $length * 4;
+            my $mod = $time % $total;
+            if ($mod > (($total / 2) - 1)) {
+                $a_mode = 'blink';
+            } else {
+                $a_mode = 'slug';
+            }
+        }
+
         if ($a_mode eq 'slug') {
             if (!defined $a_indicator) {
                 print "indicator (-i) required when using this mode\n";
