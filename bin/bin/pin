@@ -92,7 +92,7 @@ MAIN: {
       confirm("continue? ");
     }
 
-    print `git fetch`;
+    `git fetch --quiet`;
 
     if (`git status --porcelain`) {
         if ($a_verbose) {
