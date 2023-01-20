@@ -6,8 +6,7 @@ use strict;
 use Getopt::Long;
 
 my $a_help;
-my $a_mode;
-my $a_else;
+my $a_pass;
 
 sub help() {
     print STDOUT <<'HELP';
@@ -18,8 +17,8 @@ USAGE:
   >> sand [options]
 
 Options:
-  --mode      (-f) slug, blink, pass
-  --help      (-h) See this message
+  --pass  (-p) Bypass filter
+  --help  (-h) See this message
 
 EXAMPLES:
   >> sand input
@@ -47,7 +46,7 @@ sub runCommand($) {
 MAIN: {
     GetOptions(
         'help' => \$a_help,
-        'mode:s' => \$a_mode,
+        'pass' => \$a_pass,
     ) || (help() && exit 1);
 
     # show help if either arg or option is given
@@ -63,54 +62,23 @@ MAIN: {
         die 1;
     }
     my $length = length($indicator);
-
     my $time = time();
 
-    # cycle through modes
-    if (!defined $a_mode) {
-        my $total = $length * 4;
-        my $mod = $time % $total;
-        if ($mod > (($total / 2) - 1)) {
-            $a_mode = 'blink';
-        } else {
-            $a_mode = 'slug';
-        }
-    }
-
-    if ($a_mode eq 'pass') {
+    if (defined $a_pass) {
         print "$indicator\n";
         exit 0;
     }
 
-    if ($a_mode eq 'slug') {
-        my @spaces = ();
-        for(my $i = 0; $i < $length; $i++) {
-            my $indicator = substr($indicator, $i, 1);
-            if ($i == $time % $length) {
-                push (@spaces, uc($indicator));
-            } else {
-                push (@spaces, $indicator);
-            }
+    my @chars = ();
+    for(my $i = 0; $i < $length; $i++) {
+        my $char = substr($indicator, $i, 1);
+        if ($i == $time % $length) {
+            $char = uc($char);
         }
-        print join('', @spaces)."\n";
-        exit 0;
+        push (@chars, $char);
     }
+    print join('', @chars)."\n";
 
-    if ($a_mode eq 'blink') {
-        my @spaces = ();
-        for(my $i = 0; $i < $length; $i++) {
-            my $indicator = substr($indicator, $i, 1);
-            if ($i == $time % $length) {
-                push (@spaces, " ");
-            } else {
-                push (@spaces, $indicator);
-            }
-        }
-        print join('', @spaces)."\n";
-        exit 0;
-    }
-
-    print "invalid mode. see --help\n";
-    exit 1;
+    exit 0;
 }
 
