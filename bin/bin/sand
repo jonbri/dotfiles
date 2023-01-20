@@ -44,8 +44,6 @@ sub runCommand($) {
     return @output;
 }
 
-my $SPACE = " ";
-
 MAIN: {
     GetOptions(
         'help' => \$a_help,
@@ -99,16 +97,16 @@ MAIN: {
     }
 
     if ($a_mode eq 'blink') {
-        if ($time % 2 == 0) {
-            print "$indicator\n";
-        } else {
-            my @spaces = ();
-            for(my $i = 1; $i <= $length; $i++) {
-                push (@spaces, "$SPACE");
+        my @spaces = ();
+        for(my $i = 0; $i < $length; $i++) {
+            my $indicator = substr($indicator, $i, 1);
+            if ($i == $time % $length) {
+                push (@spaces, " ");
+            } else {
+                push (@spaces, $indicator);
             }
-            my $string = join('', @spaces);
-            print "$string\n";
         }
+        print join('', @spaces)."\n";
         exit 0;
     }
 
