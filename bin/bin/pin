@@ -107,7 +107,7 @@ MAIN: {
     }
 
     my $command = "git push --force $REMOTE $BRANCH";
-    if ($leftright =~ /[\d]+-0/) {
+    if (!defined $a_force && $leftright =~ /[\d]+-0/) {
       $command = "git push $REMOTE $BRANCH";
     }
 
