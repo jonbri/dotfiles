@@ -86,13 +86,7 @@ MAIN: {
     }
 
     my $mod_result = $time % ($length * 2);
-    my $reverse = 0;
     if ($i >= ($mod_result / 2)) {
-        $reverse = 1;
-    }
-
-    # reverse order
-    if ($reverse) {
         my @forward = ();
         for(my $j = 0; $j < $length; $j++) {
             push (@forward, $j);
@@ -104,7 +98,7 @@ MAIN: {
     my $before = substr($indicator, 0, $i);
     my $middle = uc(substr($indicator, $i, 1));
     my $after = substr($indicator, $i + 1, $length);
-    print "${i}_${reverse}_${before}${middle}${after}\n";
+    print "${before}${middle}${after}\n";
 
     exit 0;
 }
