@@ -67,8 +67,7 @@ MAIN: {
 
     my $indicator = $firstArg;
     if (!defined $firstArg) {
-        print "argument required\n";
-        die 1;
+        exit 1;
     }
     my $length = length($indicator);
     my $time = time();
