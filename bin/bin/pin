@@ -72,7 +72,7 @@ MAIN: {
     chomp $cleandirty;
     my $leftright = `leftright`;
     chomp $leftright;
-    if ($cleandirty eq 'clean' && $leftright eq '0-0') {
+    if ($cleandirty eq 'clean' && $leftright eq '0-0-0') {
         print "nothing to do\n";
         exit 0;
     }

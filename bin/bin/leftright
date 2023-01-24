@@ -11,5 +11,9 @@ then
     exit 0
 fi
 
-git rev-list --left-right --count HEAD...origin/$BRANCH | awk -e '{ print $1"-"$2 }'
+MAIN=`main`
+DISTANCE=$(git rev-list --count origin/$MAIN..HEAD)
+
+LEFT_RIGHT=`git rev-list --left-right --count HEAD...origin/$BRANCH | awk -e '{ print $1"-"$2 }'`
+echo ${LEFT_RIGHT}-${DISTANCE}
 
