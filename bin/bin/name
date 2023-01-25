@@ -1,24 +1,83 @@
-#!/bin/bash
-# name - Easier system identification
+#!/usr/bin/perl -w
+# name
 
-NAME_ARG=$1
-NAME_FILE=~/name
+use strict;
 
-# if the name file is empty,
-# and no argument was given,
-# prompt for it, and exit
-if [ ! -f $NAME_FILE ] && [ -z $NAME_ARG ]; then
-    echo "Error: The name file (${NAME_FILE}) is not populated"
-    echo "Provide a name with:"
-    echo ">> name foo"
-    exit 1;
-fi
+use Getopt::Long;
 
-# if a name arg was given,
-# populate file
-if [ ! -z $NAME_ARG ]; then
-    echo $NAME_ARG > $NAME_FILE
-    echo "name updated"
-fi
+my $a_report;
+my $a_delete;
+my $a_help;
 
-cat $NAME_FILE
+my $home=$ENV{HOME};
+my $NAME_FILE="$home/name";
+
+sub help() {
+    print STDOUT <<'HELP';
+
+name - name your host
+
+USAGE:
+  >> name [name] [options]
+
+Options:
+  --report (-r) Just show name
+  --delete (-d) Delete name file
+  --help   (-h) See this message
+
+EXAMPLES:
+  >> name
+  >> name wsl2
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+sub printName() {
+    if (-e $NAME_FILE) {
+        print `cat $NAME_FILE`;
+    } else {
+        print "\n";
+    }
+}
+
+MAIN: {
+    GetOptions(
+        'report' => \$a_report,
+        'delete' => \$a_delete,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if (defined $a_delete) {
+        `rm $NAME_FILE`;
+        print "done\n";
+        exit 0;
+    }
+
+    if (defined $a_report) {
+        printName();
+        exit 0;
+    }
+
+    if (defined $firstArg) {
+        `echo $firstArg > $NAME_FILE`;
+        print "name updated\n"
+    }
+
+    printName();
+    exit 0;
+}
