@@ -70,7 +70,7 @@ MAIN: {
 
     my $cleanDirty = `cleandirty`;
     chomp($cleanDirty);
-    if ($cleanDirty ne "clean") {
+    if ($cleanDirty ne "") {
         if (defined $a_force) {
             if (defined $a_verbose) {
                 print "forcing...\n";
