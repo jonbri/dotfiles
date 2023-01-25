@@ -2,9 +2,39 @@
 
 use strict;
 use Cwd 'cwd';
+use Getopt::Long;
+
+my $a_fast;
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+install
+
+USAGE:
+  >> install [options]
+
+Options:
+  --fast (-f) skip vim plugins
+  --help (-h) See this message
+
+EXAMPLES:
+  >> install
+
+HELP
+}
 
 my $home=$ENV{HOME};
 my $cwd = cwd();
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
 
 sub runCommand($) {
     my ($command) = @_;
@@ -14,27 +44,45 @@ sub runCommand($) {
     return @output;
 }
 
-print "Updating dotfiles...\n";
-# read dot files directory
-opendir(DH, "$cwd/.files");
-my @files = readdir(DH);
-closedir(DH);
-foreach (@files) {
-    # skip . and ..
-    next if($_ =~ /^\.$/);
-    next if($_ =~ /^\.\.$/);
+MAIN: {
+    GetOptions(
+        'fast' => \$a_fast,
+        'help' => \$a_help
+    ) || (help() && exit 1);
 
-    print join('', runCommand("ln -sfv $cwd/.files/$_ $home"));
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    print "Updating dotfiles...\n";
+    # read dot files directory
+    opendir(DH, "$cwd/.files");
+    my @files = readdir(DH);
+    closedir(DH);
+    foreach (@files) {
+        # skip . and ..
+        next if($_ =~ /^\.$/);
+        next if($_ =~ /^\.\.$/);
+
+        print join('', runCommand("ln -sfv $cwd/.files/$_ $home"));
+    }
+
+    print "\nUpdating tools...\n";
+    print join('', runCommand("$cwd/bin/updateTools.pl"));
+
+    if (defined $a_fast) {
+        exit 0;
+    }
+
+    print "\nUpdating vim plugins...\n";
+    print join('', runCommand("$cwd/bin/updateVimPlugins.pl"));
+    print "\nvim plugins updated\n";
+
+    print "\nDone\n";
+
+    print join('', runCommand("buffaloes 3"));
 }
-
-print "\nUpdating tools...\n";
-print join('', runCommand("$cwd/bin/updateTools.pl"));
-
-print "\nUpdating vim plugins...\n";
-print join('', runCommand("$cwd/bin/updateVimPlugins.pl"));
-print "\nvim plugins updated\n";
-
-print "\nDone\n";
-
-print join('', runCommand("buffaloes 3"));
 

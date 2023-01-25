@@ -39,7 +39,6 @@ sub getFirstNonOptionArg {
     return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
 }
 
-
 sub runCommand($) {
     my ($command) = @_;
     open CMD, "$command |" || die "Unable to run $command: $!";

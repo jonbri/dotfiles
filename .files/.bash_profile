@@ -148,6 +148,8 @@ alias third="nth 2"
 alias fourth="nth 3"
 alias fifth="nth 4"
 alias ci="commit"
+alias i="instfast"
+alias iall="inst"
 
 novafast() {
   ticker-install
