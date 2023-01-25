@@ -1,9 +1,3 @@
 #!/bin/bash
-# dot - Enter dotfiles playpen
-# This file needs to be sourced
-#
-# Environment variable needed: DOTFILES_DIR
-# Set in your .bash_profile
 
-cd $DOTFILES_DIR
-persona home
+vim $DOTFILES_DIR/.files
