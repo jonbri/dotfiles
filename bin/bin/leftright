@@ -5,15 +5,25 @@ if [[ ! `isgit` = "true" ]]; then
 fi
 
 BRANCH=`git rev-parse --abbrev-ref HEAD`;
-if ! git rev-parse origin/$BRANCH >/dev/null 2>&1
-then
-    echo "n-x"
-    exit 0
+
+git-is-ancestor() (
+  if git merge-base --is-ancestor "$1" "$2"; then
+    return 0
+  else
+    return 1
+  fi
+)
+MAIN=`main`
+DISTANCE="x"
+git-is-ancestor "origin/${MAIN}" "HEAD";
+if [[ $? == 0 ]]; then
+  DISTANCE=$(git rev-list --count origin/$MAIN..HEAD)
 fi
 
-MAIN=`main`
-DISTANCE=$(git rev-list --count origin/$MAIN..HEAD)
-
 LEFT_RIGHT=`git rev-list --left-right --count HEAD...origin/$BRANCH | awk -e '{ print $1"-"$2 }'`
+if ! git rev-parse origin/$BRANCH >/dev/null 2>&1
+then
+    LEFT_RIGHT="n"
+fi
 echo ${LEFT_RIGHT}-${DISTANCE}
 
