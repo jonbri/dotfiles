@@ -18,7 +18,7 @@ fi
 
 CACHE_SHORTHAND=""
 if ! output=$(git diff --cached --exit-code); then
-    CACHE_SHORTHAND="c"
+    CACHE_SHORTHAND="i"
 fi
 
 UNTRACKED_SHORTHAND=""
@@ -28,11 +28,11 @@ if [ ! -z "${untracked}" ]; then
     UNTRACKED__SHORTHAND="u"
 fi
 
-SEPARATOR=""
+ASTERISK=""
 if [ "$WORKING_DIR_SHORTHAND" != "" ] || [ "$CACHE_SHORTHAND" != "" ] || [ "$UNTRACKED__SHORTHAND" != "" ]; then
-    SEPARATOR="-"
+    ASTERISK="*"
 fi
 
-echo "dirty${SEPARATOR}${WORKING_DIR_SHORTHAND}${CACHE_SHORTHAND}${UNTRACKED__SHORTHAND}"
+echo "${ASTERISK}${WORKING_DIR_SHORTHAND}${CACHE_SHORTHAND}${UNTRACKED__SHORTHAND}"
 exit 0
 
