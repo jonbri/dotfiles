@@ -25,6 +25,7 @@ export OPENUISDK=$UI5/openui-sdk
 export OPENUITHEMES=$UI5/openui-framework-themes
 
 export DOTFILES_DIR=${HOME}/dotfiles
+export BINBIN=${DOTFILES_DIR}/bin/bin
 export TMUX_BUFFER=/tmp/_tmux-buffer.txt
 
 alias c="clear"
