@@ -1,6 +1,0 @@
-#!/bin/bash
-# base
-# This file needs to be sourced
-
-cd $HOME/design-system-lib-base
-persona work

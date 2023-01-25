@@ -1,6 +1,0 @@
-#!/bin/bash
-# pac
-# This file needs to be sourced
-
-cd $HOME/pacman
-persona home

@@ -1,5 +1,0 @@
-#!/bin/bash
-# This file needs to be sourced
-
-base
-y test:coverage && cd out/coverage/lcov-report && serve .

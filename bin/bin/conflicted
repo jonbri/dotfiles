@@ -4,3 +4,4 @@ CONFLICTS=$(git ls-files -u | wc -l)
 if [ "$CONFLICTS" -gt 0 ] ; then
    echo "CONFLICT"
 fi
+

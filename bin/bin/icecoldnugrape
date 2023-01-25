@@ -1,6 +1,0 @@
-#!/bin/bash
-# icecoldnugrape - Enter icecoldnugrape playpen
-# This file needs to be sourced
-
-cd $HOME/icecoldnugrape
-persona home

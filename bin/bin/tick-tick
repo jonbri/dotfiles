@@ -1,6 +1,0 @@
-#!/bin/bash
-# tick-tick - Enter tick-tick playpen
-# This file needs to be sourced
-
-cd $HOME/tick-tick
-persona home

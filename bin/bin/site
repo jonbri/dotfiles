@@ -1,6 +1,0 @@
-#!/bin/bash
-# site
-# This file needs to be sourced
-
-cd $HOME/design-system-site
-persona work

@@ -1,6 +1,0 @@
-#!/bin/bash
-# enter "bowlingball" playpen
-# This file needs to be sourced
-
-cd $HOME/bowlingball
-persona home

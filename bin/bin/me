@@ -1,6 +1,0 @@
-#!/bin/bash
-# me - Enter "me" playpen
-# This file needs to be sourced
-
-cd $HOME/me
-persona home

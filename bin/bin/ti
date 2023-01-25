@@ -1,6 +1,0 @@
-#!/bin/bash
-# ti - Enter ti playpen
-# This file needs to be sourced
-
-cd $HOME/ti
-persona home
