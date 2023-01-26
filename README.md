@@ -4,14 +4,9 @@ Run `install` to get started
 
 ## Packages
 
-### Just terminal
+### apt
 ```sh
-tree tmux vim openssh-server openssh-client g++ curl libssl-dev make
-```
-
-### Everything
-```sh
-tree gitk gitg tmux vim vim-gnome chromium-browser filezilla lftp clementine vpnc remmina* openssh-server openssh-client audacity ffmpeg g++ curl libssl-dev apache2-utils git-core rig make php libapache2-mod-php default-jdk
+tree tmux vim openssh-server openssh-client g++ curl libssl-dev make net-tools
 ```
 
 ## NodeJS

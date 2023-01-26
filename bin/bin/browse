@@ -1,0 +1,86 @@
+#!/usr/bin/perl -w
+# browse - Open up browser
+
+use strict;
+
+use Getopt::Long;
+
+my $a_list;
+my $a_first;
+my $a_grep;
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+browse - Open browser
+
+USAGE:
+  >> browse [port] [options]
+
+Options:
+  --list  (-l) See ports in use
+  --first (-f) Use first result
+  --grep  (-g) Filter results
+  --help  (-h) See this message
+
+EXAMPLES:
+  >> browse 8080     # Open localhost:8080
+  >> browse          # same as --list
+  >> browse -g 80 -f # Open first result
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+MAIN: {
+    GetOptions(
+        'list' => \$a_list,
+        'first' => \$a_first,
+        'grep:s' => \$a_grep,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if (! defined $a_grep) {
+        $a_grep = '';
+    }
+    my $ports = `netstat -tulpn 2>/dev/null | grep LISTEN | grep ":::" | awk '{ print \$4 }' | sed 's/[^0-9]//g' | grep "$a_grep"`;
+
+    if (!defined $a_first && !defined $firstArg || defined $a_list) {
+        print $ports;
+        exit 0;
+    }
+
+    my @first = split('\n', $ports);
+    if (defined $a_first) {
+        $firstArg = $first[0];
+        chomp $firstArg;
+    }
+
+    print "browser opening...\n";
+    `cmd.exe /C start http://localhost:$firstArg 2>/dev/null`;
+    print "done\n";
+    exit 0;
+}
