@@ -1,0 +1,92 @@
+#!/usr/bin/perl -w
+# purge - Clean up local stray branches
+
+use strict;
+
+use Getopt::Long;
+
+my $a_restore;
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+anon - prevent accidental pushes
+
+USAGE:
+  >> anon [pattern] [options]
+
+Options:
+  --restore (-r) Revert to previous anon
+  --help    (-h) See this message
+
+EXAMPLES:
+  >> anon
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+sub confirm($) {
+    my ($message)=@_;
+    print $message;
+    my $ok=<>;
+    chomp $ok;
+    return $ok;
+}
+
+MAIN: {
+    GetOptions(
+        'restore' => \$a_restore,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if (defined $a_restore) {
+        my $restoreSHA = `crumb -l | grep anonStart | first | awk '{ print \$1 }'`;
+        chomp $restoreSHA;
+        my $restoreBranch = `crumb -l | grep anonStart | first | awk '{ print \$4 }' | awk -F 'anonStart=' '{ print \$2 }'`;
+        chomp $restoreBranch;
+        `gwip`;
+        `git checkout $restoreBranch`;
+        `git reset --hard $restoreSHA`;
+        exit 0;
+    }
+
+    my $branch = `git rev-parse --abbrev-ref HEAD`;
+    chomp $branch;
+
+    `crumb "anonStart=$branch"`;
+    my $random = int(rand(9999));
+    my $anonBranch="anon-$random";
+    `git checkout -b $anonBranch`;
+    `git add .`;
+    `git commit -m "anon" --amend`;
+
+    `git commit --amend --reuse-message=HEAD --author="Anon <anon\@anon.no>"`;
+    `crumb "anonEnd=$branch"`;
+
+    print "done\n";
+    exit 0;
+}
