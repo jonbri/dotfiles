@@ -72,7 +72,7 @@ MAIN: {
     }
 
     if (!defined $firstArg || defined $a_list) {
-        my @output = runCommand("git reflog | grep \"CRUMB: \" | head");
+        my @output = runCommand("git reflog --pretty='%h %cd %gs' | grep \"CRUMB: \" | head");
         foreach (@output) {
             print $_;
         }
