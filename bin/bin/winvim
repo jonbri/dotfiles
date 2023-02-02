@@ -1,0 +1,6 @@
+#!/bin/bash
+
+WIN=/mnt/c/Users/jonbri
+WIN_BUNDLE=$WIN/vimfiles/bundle
+
+rm -Rf $WIN_BUNDLE/*
