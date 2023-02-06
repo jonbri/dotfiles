@@ -1,0 +1,18 @@
+#!/bin/bash
+
+MAIN=`main`
+git-is-ancestor() (
+  if git merge-base --is-ancestor "$1" "$2"; then
+    return 0
+  else
+    return 1
+  fi
+)
+DISTANCE="x"
+git-is-ancestor "origin/${MAIN}" "HEAD";
+if [[ $? == 0 ]]; then
+  DISTANCE=$(git rev-list --count origin/$MAIN..HEAD)
+fi
+
+echo $DISTANCE
+

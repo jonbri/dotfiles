@@ -1,0 +1,15 @@
+#!/bin/bash
+
+DISTANCE=`distance`
+if [ "$DISTANCE" = "x" ]; then
+    echo "`main` is not reachable"
+    exit 0;
+fi
+
+gwip
+crumb "rollup"
+HEAD=`git rev-parse HEAD`
+git reset HEAD~$DISTANCE
+git add .
+git commit --reuse-message=$HEAD
+
