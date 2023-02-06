@@ -7,6 +7,7 @@ use Getopt::Long;
 
 my $a_dryRun;
 my $a_force;
+my $a_remote;
 my $a_help;
 
 sub help() {
@@ -19,6 +20,7 @@ USAGE:
 
 Options:
   --dry-run (-d) Just show branch matches
+  --remote  (-r) Specify a remote
   --force   (-f) Skip confirmation
   --help    (-h) See this message
 
@@ -84,9 +86,14 @@ sub deleteRemoteBranch($$) {
 MAIN: {
     GetOptions(
         'dry-run' => \$a_dryRun,
+        'remote:s' => \$a_remote,
         'force' => \$a_force,
         'help' => \$a_help
     ) || (help() && exit 1);
+
+    if (!defined $a_remote) {
+        $a_remote = "origin";
+    }
 
     # show help if either arg or option is given
     my $firstArg=getFirstNonOptionArg();
@@ -105,9 +112,9 @@ MAIN: {
     @localBranches = grep(!/^$currentBranch$/, @localBranches);
 
     my @remoteBranches = runCommand("git branch -r | sed 's/^  //'");
-    @remoteBranches = grep(!/^origin\/master$/, @remoteBranches);
-    @remoteBranches = grep(!/^origin\/main$/, @remoteBranches);
-    @remoteBranches = grep(!/^origin\/$currentBranch$/, @remoteBranches);
+    @remoteBranches = grep(!/^$a_remote\/master$/, @remoteBranches);
+    @remoteBranches = grep(!/^$a_remote\/main$/, @remoteBranches);
+    @remoteBranches = grep(!/^$a_remote\/$currentBranch$/, @remoteBranches);
 
     if (defined $firstArg) {
         @localBranches = grep (/.*$firstArg/, @localBranches);
@@ -130,7 +137,7 @@ MAIN: {
         sleep 1;
     }
 
-    `git remote prune origin`;
+    `git remote prune $a_remote`;
 
     my $count = 1;
     foreach (@localBranches) {
@@ -138,16 +145,16 @@ MAIN: {
         my $branch = $_;
         my $prefix = "($count/".(scalar @localBranches)."/".(scalar @remoteBranches).")";
         deleteLocalBranch("$branch", $prefix);
-        if (! defined $a_force && grep(/^origin\/$branch/, @remoteBranches)) {
+        if (! defined $a_force && grep(/^$a_remote\/$branch/, @remoteBranches)) {
             deleteRemoteBranch("$branch", $prefix);
         }
         $count = $count + 1;
     }
 
     @remoteBranches = runCommand("git branch -r | sed 's/^  //'");
-    @remoteBranches = grep(!/^origin\/master$/, @remoteBranches);
-    @remoteBranches = grep(!/^origin\/main$/, @remoteBranches);
-    @remoteBranches = grep(!/^origin\/$currentBranch$/, @remoteBranches);
+    @remoteBranches = grep(!/^$a_remote\/master$/, @remoteBranches);
+    @remoteBranches = grep(!/^$a_remote\/main$/, @remoteBranches);
+    @remoteBranches = grep(!/^$a_remote\/$currentBranch$/, @remoteBranches);
     if (defined $firstArg) {
         @remoteBranches = grep (/.*$firstArg/, @remoteBranches);
     }
