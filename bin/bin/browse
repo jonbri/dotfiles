@@ -7,6 +7,7 @@ use Getopt::Long;
 
 my $a_list;
 my $a_first;
+my $a_dryRun;
 my $a_grep;
 my $a_help;
 
@@ -19,15 +20,17 @@ USAGE:
   >> browse [port] [options]
 
 Options:
-  --list  (-l) See ports in use
-  --first (-f) Use first result
-  --grep  (-g) Filter results
-  --help  (-h) See this message
+  --list    (-l) See ports in use
+  --first   (-f) Use first result
+  --dry-run (-d) Don't open browser
+  --grep    (-g) Filter results
+  --help    (-h) See this message
 
 EXAMPLES:
-  >> browse 8080     # Open localhost:8080
-  >> browse          # same as --list
-  >> browse -g 80 -f # Open first result
+  >> browse 8080        # Open localhost:8080
+  >> browse "3000 3001" # Open multiple
+  >> browse             # same as --list
+  >> browse -g 80 -f    # Open first result
 
 HELP
 }
@@ -40,18 +43,19 @@ sub getFirstNonOptionArg {
     return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
 }
 
-sub runCommand($) {
-    my ($command) = @_;
-    open CMD, "$command |" || die "Unable to run $command: $!";
-    my @output = <CMD>;
-    close CMD;
-    return @output;
+sub openBrowser($) {
+    my ($port) = @_;
+    if (!defined $a_dryRun) {
+        `cmd.exe /C start http://localhost:$port 2>/dev/null`;
+    }
 }
+
 
 MAIN: {
     GetOptions(
         'list' => \$a_list,
         'first' => \$a_first,
+        'dry-run' => \$a_dryRun,
         'grep:s' => \$a_grep,
         'help' => \$a_help
     ) || (help() && exit 1);
@@ -75,12 +79,27 @@ MAIN: {
 
     my @first = split('\n', $ports);
     if (defined $a_first) {
-        $firstArg = $first[0];
-        chomp $firstArg;
+        my $f = $first[0];
+        if (defined $f) {
+            chomp $f;
+            openBrowser($f);
+        } else {
+            print "nothing to do\n";
+        }
+        exit 0;
     }
 
-    print "browser opening...\n";
-    `cmd.exe /C start http://localhost:$firstArg 2>/dev/null`;
+    if (defined $firstArg) {
+        my @args = split(' ', $firstArg);
+        for my $port (@args) {
+            print "browser opening at port $port...\n";
+            openBrowser($port);
+        }
+    } else {
+        print "nothing to do\n";
+    }
+
     print "done\n";
     exit 0;
 }
+
