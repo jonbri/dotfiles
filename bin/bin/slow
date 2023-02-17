@@ -1,0 +1,70 @@
+#!/usr/bin/perl -w
+# slow - print text with delay
+
+use strict;
+use Time::HiRes;
+
+use Getopt::Long;
+
+my $a_help;
+my $a_delay;
+my $a_pass;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+slow - print text with delay
+
+USAGE:
+  >> slow
+
+Options:
+  --delay (-d) Default is 0.1sec
+
+EXAMPLES:
+  >> slow foobar
+  >> slow foobar -d 0.5
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help,
+        'delay:f' => \$a_delay
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if (!defined $a_delay) {
+        $a_delay = 0.1;
+    }
+
+    if (!defined $firstArg) {
+        print "No argument passed in\n";
+        exit 1;
+    }
+
+    $| = 1;
+    for (split('', $firstArg)) {
+        print "$_";
+        Time::HiRes::sleep($a_delay);
+    }
+    print "\n";
+
+    exit 0;
+}
+
