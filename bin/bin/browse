@@ -7,6 +7,7 @@ use Getopt::Long;
 
 my $a_list;
 my $a_first;
+my $a_all;
 my $a_dryRun;
 my $a_grep;
 my $a_help;
@@ -22,6 +23,7 @@ USAGE:
 Options:
   --list    (-l) See ports in use
   --first   (-f) Use first result
+  --all     (-a) Open browser for all ports
   --dry-run (-d) Don't open browser
   --grep    (-g) Filter results
   --help    (-h) See this message
@@ -55,6 +57,7 @@ MAIN: {
     GetOptions(
         'list' => \$a_list,
         'first' => \$a_first,
+        'all' => \$a_all,
         'dry-run' => \$a_dryRun,
         'grep:s' => \$a_grep,
         'help' => \$a_help
@@ -72,7 +75,7 @@ MAIN: {
     }
     my $ports = `netstat -tulpn 2>/dev/null | grep LISTEN | grep ":::" | awk '{ print \$4 }' | sed 's/[^0-9]//g' | grep "$a_grep"`;
 
-    if (!defined $a_first && !defined $firstArg || defined $a_list) {
+    if (!defined $a_all && !defined $a_first && !defined $firstArg || defined $a_list) {
         print $ports;
         exit 0;
     }
@@ -85,6 +88,19 @@ MAIN: {
             openBrowser($f);
         } else {
             print "nothing to do\n";
+        }
+        exit 0;
+    }
+
+    if (defined $a_all) {
+        my $f = $first[0];
+        if (!defined $f) {
+            print "nothing to do\n";
+            exit 0;
+        }
+        foreach(@first) {
+            chomp;
+            openBrowser($_);
         }
         exit 0;
     }
