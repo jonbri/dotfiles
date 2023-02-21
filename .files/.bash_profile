@@ -151,6 +151,7 @@ alias dot="vim $DOTFILES_DIR/.files"
 alias droplet="ssh root@192.81.214.19"
 alias f="cd $HOME/f && persona work"
 alias l="cd $HOME/lanes && persona home"
+alias nex="cd $HOME/nex && persona work"
 
 novafast() {
   ticker-install
