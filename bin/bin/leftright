@@ -16,6 +16,5 @@ else
     LEFT_RIGHT="n"
 fi
 
-
-echo ${LEFT_RIGHT}-${DISTANCE}
+echo "${LEFT_RIGHT} (${DISTANCE})"
 
