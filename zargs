@@ -13,9 +13,12 @@ find $HOME/ds/next/next-august/content -type f -iname "*.md*" -not -path "*/node
 # object manager
 find $NC/src/nova-commons/src/components/ObjectManager -type f > $ZARGS_LOC/objectmgr
 
-# package.json
-find $NC -type f -iname "*package.json*" -not -path "*/node_modules/*" > $ZARGS_LOC/packagejson
-cat << EOF >> $ZARGS_LOC/packagejson
+# nexpackage.json
+find ~/nex -type f -name "package.json" -not -path "*/node_modules/*" -not -path "*/.next/*" -not -path "*/.contentlayer/*" > $ZARGS_LOC/nexpackagejson
+
+# novapackage.json
+find $NC -type f -iname "*package.json*" -not -path "*/node_modules/*" > $ZARGS_LOC/novapackagejson
+cat << EOF >> $ZARGS_LOC/novapackagejson
 ${NC}/tools/create-nova-app/createNovaApp.js
 EOF
 
