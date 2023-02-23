@@ -152,6 +152,7 @@ alias droplet="ssh root@192.81.214.19"
 alias f="cd $HOME/f && persona work"
 alias l="cd $HOME/lanes && persona home"
 alias nex="cd $HOME/nex && persona work"
+alias verse="cd $HOME/verse && persona home"
 
 novafast() {
   ticker-install
