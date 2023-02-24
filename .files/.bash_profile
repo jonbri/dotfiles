@@ -136,7 +136,6 @@ alias capture++="tmux capture-pane && sb++"
 alias capturevim="tmux capture-pane && sbvim"
 alias capturev="capturevim"
 alias capturevi="capturevim"
-alias push="echo pin"
 alias crumbs="crumb --list"
 alias first="nth 0"
 alias second="nth 1"
@@ -154,6 +153,8 @@ alias l="cd $HOME/lanes && persona home"
 alias nex="cd $HOME/nex && persona work"
 alias verse="cd $HOME/verse && persona home"
 alias life="cd $HOME/life && persona home"
+alias pinf="pin -f"
+
 
 novafast() {
   ticker-install
