@@ -156,6 +156,7 @@ alias nex="cd $HOME/nex && persona work"
 alias verse="cd $HOME/verse && persona home"
 alias life="cd $HOME/life && persona home"
 alias pinf="pin -f"
+alias pullf="pull -f"
 alias fam="cd $HOME/fam && persona home"
 
 novafast() {
