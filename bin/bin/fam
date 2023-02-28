@@ -1,0 +1,26 @@
+#!/bin/bash
+
+clear
+cd $HOME/fam && persona home
+
+echo
+slow FAM
+cat << EOF
+
+Sites:
+https://jonbri.github.io/appy
+https://jonbri.github.io/flappy
+
+Storybook:
+https://jonbri.github.io/libby-ui
+https://jonbri.github.io/fibby-ui
+
+GitHub:
+https://github.com/jonbri/libby-ui
+https://github.com/jonbri/fibby-ui
+https://github.com/jonbri/token
+https://github.com/jonbri/appy
+https://github.com/jonbri/flappy
+EOF
+echo
+
