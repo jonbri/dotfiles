@@ -12,6 +12,7 @@ my $a_poll;
 
 my $DELIMITER = "%";
 my $longest = 0;
+my $count = 0;
 
 sub help() {
     print STDOUT <<'HELP';
@@ -44,16 +45,17 @@ sub clearScreen {
     print "\033[0;0H";
 }
 
-sub go {
+sub printResults {
     my $arg = shift @_;
     my @result = split($DELIMITER, $arg);
     my $package = $result[0];
     my $version = $result[1];
     if (! defined $version) {
-        print "$package not found\n";
-        return;
+        $version = "not found";
+    } else {
+        $version = "v${version}";
     }
-    printf "%-${longest}s: v%s", $package, $version;
+    printf "%-${longest}s: %s", $package, $version;
     print "\n";
 }
 
@@ -98,15 +100,18 @@ MAIN: {
 
         if (! defined $a_poll) {
             foreach(@results) {
-                go($_);
+                printResults($_);
             }
             exit 0;
         }
 
         clearScreen();
-        print `shortdate`;
+        my $sd = `shortdate`;
+        chomp $sd;
+        print "$sd ($count)\n\n";
+        $count = $count + 1;
         foreach(@results) {
-            go($_);
+            printResults($_);
         }
 
         print "\npolling...";
