@@ -49,6 +49,10 @@ sub go {
     my @result = split($DELIMITER, $arg);
     my $package = $result[0];
     my $version = $result[1];
+    if (! defined $version) {
+        print "$package not found\n";
+        return;
+    }
     printf "%-${longest}s: v%s", $package, $version;
     print "\n";
 }
@@ -85,7 +89,7 @@ MAIN: {
             if ($packageNameLength > $longest) {
                 $longest = $packageNameLength;
             }
-            my $output = `npm view $package versions --json | tac | nth 1`;
+            my $output = `npm view $package versions --json 2> /dev/null | tac | nth 1`;
             $output =~ s/^\s+|\s+$//g;
             $output = substr $output, 1, -1;
             chomp $output;
