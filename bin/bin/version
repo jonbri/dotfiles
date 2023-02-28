@@ -1,0 +1,113 @@
+#!/usr/bin/perl -w
+# version - see NPM package versions
+
+use strict;
+
+use Getopt::Long;
+
+STDOUT->autoflush(1);
+
+my $a_help;
+my $a_poll;
+
+my $DELIMITER = "%";
+my $longest = 0;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+version - see NPM package versions
+
+USAGE:
+  >> version
+
+Options:
+  --poll (-p) Keep polling
+
+EXAMPLES:
+  >> version react
+  >> version "react lodash serve"
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+sub clearScreen {
+    print "\033[2J";
+    print "\033[0;0H";
+}
+
+sub go {
+    my $arg = shift @_;
+    my @result = split($DELIMITER, $arg);
+    my $package = $result[0];
+    my $version = $result[1];
+    printf "%-${longest}s: v%s", $package, $version;
+    print "\n";
+}
+
+MAIN: {
+    GetOptions(
+        'poll' => \$a_poll,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if (!defined $firstArg) {
+        print "Error: Argument required\n";
+        help();
+        exit 1;
+    }
+
+    if (defined $a_poll) {
+        print "starting...\n";
+    }
+
+    do {
+        my @packages = split(" ", $firstArg);
+        my @results = ();
+        foreach(@packages) {
+            my $package = $_;
+            my $packageNameLength = length $package;
+            if ($packageNameLength > $longest) {
+                $longest = $packageNameLength;
+            }
+            my $output = `npm view $package versions --json | tac | nth 1`;
+            $output =~ s/^\s+|\s+$//g;
+            $output = substr $output, 1, -1;
+            chomp $output;
+            push(@results, "${package}${DELIMITER}${output}");
+        }
+
+        if (! defined $a_poll) {
+            foreach(@results) {
+                go($_);
+            }
+            exit 0;
+        }
+
+        clearScreen();
+        print `shortdate`;
+        foreach(@results) {
+            go($_);
+        }
+
+        print "\npolling...";
+        sleep 1;
+    } while (1);
+
+    exit 0;
+}
