@@ -158,6 +158,7 @@ alias life="cd $HOME/life && persona home"
 alias pinf="pin -f"
 alias pullf="pull -f"
 alias fam="cd $HOME/fam && persona home"
+alias ver="version \"@jonbri/libby-ui @jonbri/fibby-ui @jonbri/token\" --poll"
 
 novafast() {
   ticker-install
