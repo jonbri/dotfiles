@@ -94,8 +94,8 @@ MAIN: {
 
     my $KNOWN_RESULTS=`persona --known-from HEAD~`;
     chomp $KNOWN_RESULTS;
-    if ( $KNOWN_RESULTS =~ "not found" ) {
-      print "WARNING: ${GIT_NAME}(${GIT_EMAIL}) NOT FOUND in this repo's history\n";
+    if ($KNOWN_RESULTS =~ /[@]+.*[\s]+not found$/) {
+      print "WARNING: ${GIT_NAME} (${GIT_EMAIL}) NOT FOUND in this repo's history\n";
       confirm("continue? ");
     }
 
