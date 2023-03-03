@@ -26,5 +26,4 @@ function! PrintCommitHeaderPrefix(prefix)
   normal gg0
 endfunction
 
-nnoremap <leader>nc :call PrintCommitHeaderPrefix('NOVACOMMONS')<CR>
-nnoremap <leader>hc :call PrintCommitHeaderPrefix('HTMLCOMMONS')<CR>
+nnoremap <leader>c :call PrintCommitHeaderPrefix('JIRA')<CR>
