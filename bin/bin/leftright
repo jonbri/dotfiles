@@ -4,6 +4,12 @@ if [[ ! `isgit` = "true" ]]; then
     exit 1
 fi
 
+git rev-parse HEAD &> /dev/null
+retVal=$?
+if [ $retVal -ne 0 ]; then
+    exit 0;
+fi
+
 BRANCH=`git rev-parse --abbrev-ref HEAD`;
 DISTANCE=`distance`
 
