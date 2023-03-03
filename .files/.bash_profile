@@ -158,7 +158,7 @@ alias life="cd $HOME/life && persona home"
 alias pinf="pin -f"
 alias pullf="pull -f"
 alias fam="source fam"
-alias ver="version \"@jonbri/libby-ui @jonbri/fibby-ui @jonbri/token\" --poll"
+alias ver="version \"@polyrepo-fam/libby-ui @polyrepo-fam/fibby-ui @polyrepo-fam/token\" --poll"
 alias sl="echo 'assuming you mean ls...' && ls"
 
 novafast() {
