@@ -8,19 +8,19 @@ slow FAM
 cat << EOF
 
 Sites:
-https://jonbri.github.io/appy
-https://jonbri.github.io/flappy
+https://polyrepo-fam.github.io/appy
+https://polyrepo-fam.github.io/flappy
 
 Storybook:
-https://jonbri.github.io/libby-ui
-https://jonbri.github.io/fibby-ui
+https://polyrepo-fam.github.io/libby-ui
+https://polyrepo-fam.github.io/fibby-ui
 
 GitHub:
-https://github.com/jonbri/libby-ui
-https://github.com/jonbri/fibby-ui
-https://github.com/jonbri/token
-https://github.com/jonbri/appy
-https://github.com/jonbri/flappy
+https://github.com/polyrepo-fam/libby-ui
+https://github.com/polyrepo-fam/fibby-ui
+https://github.com/polyrepo-fam/token
+https://github.com/polyrepo-fam/appy
+https://github.com/polyrepo-fam/flappy
 EOF
 echo
 
