@@ -161,6 +161,12 @@ alias fam="source fam"
 alias ver="version \"@polyrepo-fam/libby-ui @polyrepo-fam/fibby-ui @polyrepo-fam/token\" --poll"
 alias sl="echo 'assuming you mean ls...' && ls"
 
+alias appy="cd $HOME/fam/appy && persona home"
+alias flappy="cd $HOME/fam/flappy && persona home"
+alias libby="cd $HOME/fam/libby-ui && persona home"
+alias fibby="cd $HOME/fam/fibby-ui && persona home"
+alias token="cd $HOME/fam/token && persona home"
+
 novafast() {
   ticker-install
 
