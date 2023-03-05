@@ -167,6 +167,10 @@ alias libby="cd $HOME/fam/libby-ui && persona home"
 alias fibby="cd $HOME/fam/fibby-ui && persona home"
 alias token="cd $HOME/fam/token && persona home"
 
+alias silly="source silly"
+alias sillylib="cd $HOME/silly/sillylib && persona home"
+alias sillysite="cd $HOME/silly/site && persona home"
+
 novafast() {
   ticker-install
 

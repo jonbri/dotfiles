@@ -1,0 +1,21 @@
+#!/bin/bash
+
+clear
+cd $HOME/silly && persona home
+
+echo
+slow "s i l l y l i b" --delay 0.05
+cat << EOF
+
+Sites:
+https://sillylib.github.io/site
+
+Storybook:
+https://sillylib.github.io/sillylib
+
+GitHub:
+https://github.com/sillylib/site
+https://github.com/sillylib/sillylib
+EOF
+echo
+
