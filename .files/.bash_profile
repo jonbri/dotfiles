@@ -161,6 +161,7 @@ alias pullf="pull -f"
 alias fam="source fam"
 alias ver="version \"@polyrepo-fam/libby-ui @polyrepo-fam/fibby-ui @polyrepo-fam/token\" --poll"
 alias sl="echo 'assuming you mean ls...' && ls"
+alias surf="cd $HOME/surfermoon && persona home"
 
 alias appy="cd $HOME/fam/appy && persona home"
 alias flappy="cd $HOME/fam/flappy && persona home"
