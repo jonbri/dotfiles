@@ -1,0 +1,13 @@
+#!/bin/bash
+
+clear
+cd $HOME/nex && persona home
+
+echo
+slow NEX
+cat << EOF
+
+https://github.com/nex-fam
+EOF
+echo
+
