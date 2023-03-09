@@ -199,5 +199,3 @@ export LIBGL_ALWAYS_INDIRECT=1
 # sudo /etc/init.d/dbus start &> /dev/null
 
 echo "done with .bash_profile"
-export VOLTA_HOME="$HOME/.volta"
-export PATH="$VOLTA_HOME/bin:$PATH"
