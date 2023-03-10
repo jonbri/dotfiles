@@ -16,5 +16,5 @@ sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo bash - && sudo apt-ge
 
 ## Global Node Tools
 ```sh
-sudo npm install --global yarn conny serve degit buffaloes seolaffub
+sudo npm install --global yarn conny serve degit buffaloes seolaffub n
 ```
