@@ -28,6 +28,10 @@ export DOTFILES_DIR=${HOME}/dotfiles
 export BINBIN=${DOTFILES_DIR}/bin/bin
 export TMUX_BUFFER=/tmp/_tmux-buffer.txt
 
+export N_PREFIX=$HOME/.n
+mkdir -p $N_PREFIX
+export PATH=$N_PREFIX/bin:$PATH
+
 alias c="clear"
 alias ll="ls -la"
 alias e="exit"
