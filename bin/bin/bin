@@ -1,8 +1,0 @@
-#!/bin/bash
-
-if [ -z $1 ]; then
-    vim $DOTFILES_DIR/bin/bin
-    exit 0;
-fi
-vim $DOTFILES_DIR/bin/bin/$1
-

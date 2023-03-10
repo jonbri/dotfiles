@@ -1,0 +1,20 @@
+#!/bin/bash
+
+clear
+cd $DOTFILES_DIR
+slow "D O T F I L E S" --delay 0.03
+echo
+persona home
+ARG=$1
+if [ -z $ARG ]; then
+    echo
+    ge | nth 0-10
+    echo
+else
+    if [[ "$ARG" = "bash" ]]; then
+        vim $DOTFILES_DIR/.files/.bash_profile
+    else
+        vim $DOTFILES_DIR/bin/bin/$1
+    fi
+fi
+
