@@ -5,10 +5,17 @@ cd $DOTFILES_DIR
 slow "D O T F I L E S" --delay 0.03
 echo
 persona home
+echo
+cat << EOF
+d bash
+d pin
+dot
+bin
+EOF
 ARG=$1
 if [ -z $ARG ]; then
     echo
-    ge | nth 0-10
+    git email | nth 0-10
     echo
 else
     if [[ "$ARG" = "bash" ]]; then
