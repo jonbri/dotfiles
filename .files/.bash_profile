@@ -178,6 +178,11 @@ alias b8="browse 8000"
 alias b88="browse 8080"
 alias b9="browse 9000"
 
+GOTAGGER_EXE_PATH="$HOME/march/gotagger/build/linux/gotagger"
+alias gotagger="$GOTAGGER_EXE_PATH"
+alias march="cd $HOME/march && persona home"
+alias gooey="cd $HOME/march/gooey && persona home"
+
 alias appy="cd $HOME/fam/appy && persona home"
 alias flappy="cd $HOME/fam/flappy && persona home"
 alias libby="cd $HOME/fam/libby-ui && persona home"
