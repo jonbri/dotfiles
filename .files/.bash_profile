@@ -31,6 +31,7 @@ export TMUX_BUFFER=/tmp/_tmux-buffer.txt
 export N_PREFIX=$HOME/.n
 mkdir -p $N_PREFIX
 export PATH=$N_PREFIX/bin:$PATH
+export PATH=/usr/local/go/bin:$PATH
 
 alias c="clear"
 alias ll="ls -la"
