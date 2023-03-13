@@ -7,7 +7,7 @@ echo
 persona home
 echo
 cat << EOF
-d bash
+D (dbash)
 d pin
 dot
 bin
