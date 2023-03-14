@@ -10,14 +10,6 @@ else
     echo $NC > $NC_CACHE_FILE
 fi
 
-export BASE_CACHE_FILE="${HOME}/.base"
-if [ -f $BASE_CACHE_FILE ]; then
-    export BASE=`cat $BASE_CACHE_FILE`
-else
-    export BASE=~/design-system-lib-base
-    echo $BASE > $BASE_CACHE_FILE
-fi
-
 export UI5=${HOME}/dev
 export OPENUIFRAMEWORK=$UI5/openui-framework
 export OPENUIHONEYCOMB=$UI5/openui-honeycomb
@@ -120,9 +112,6 @@ alias theme="cd $OPENUITHEMES"
 alias nova0="source nc-set nova0"
 alias nova1="source nc-set nova1"
 alias nova2="source nc-set nova2"
-alias base0="source base-set base0"
-alias base1="source base-set base1"
-alias base2="source base-set base2"
 alias pet="cd $HOME/pet-app && persona work"
 alias me="cd $HOME/me && persona home"
 alias keep="cd $HOME/keep && persona home"
@@ -130,7 +119,7 @@ alias ticker="cd $HOME/ticker-log && persona home"
 alias tick-tick="cd $HOME/tick-tick && persona home"
 alias pac="cd $HOME/pacman && persona home"
 alias bowlingball="cd $HOME/bowlingball && persona home"
-alias site="cd $HOME/design-system-site && persona work"
+alias site="cd $HOME/d*-s*-s*e && persona work"
 alias grape="cd $HOME/icecoldnugrape && persona home"
 alias ui5="cd $HOME/ui5 && persona work"
 alias apps="cd $NC"/../apps
@@ -159,7 +148,7 @@ alias D="d bash"
 alias dbash="D"
 alias db="D"
 alias droplet="ssh root@192.81.214.19"
-alias f="cd $HOME/d-s-f-ui && persona work"
+alias f="cd $HOME/d*-s*-f*-u* && persona work"
 alias lanes="cd $HOME/lanes && persona home"
 alias nex="source nex"
 alias nexmono="cd $HOME/nex/nex && persona home"
