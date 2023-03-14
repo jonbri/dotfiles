@@ -166,6 +166,9 @@ alias b8="browse 8000"
 alias b88="browse 8080"
 alias b9="browse 9000"
 
+alias prod-media="cd /root/media && ws --port 3001"
+alias prod-app="cd /root/icecoldnugrape && pull -f && yarn && yarn build && serve out -l 3000"
+
 GOTAGGER_EXE_PATH="$HOME/march/gotagger/build/linux/gotagger"
 alias gotagger="$GOTAGGER_EXE_PATH"
 alias march="cd $HOME/march && persona home"
