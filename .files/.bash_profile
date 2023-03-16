@@ -181,6 +181,7 @@ alias flappy="cd $HOME/fam/flappy && persona home"
 alias libby="cd $HOME/fam/libby-ui && persona home"
 alias fibby="cd $HOME/fam/fibby-ui && persona home"
 alias zibby="cd $HOME/fam/zibby-ui && persona home"
+alias gibby="cd $HOME/fam/gibby-ui && persona home"
 alias token="cd $HOME/fam/token && persona home"
 
 alias silly="source silly"
