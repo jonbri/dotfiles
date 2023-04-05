@@ -15,7 +15,10 @@
     lo9 = "!git log --oneline -9"
     lg = log --graph --pretty=format:'%Cred%h%Creset %an -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
     springcleaning = for-each-ref --sort=-committerdate --format='%(refname:short) %(committerdate:short)'
-    email = log --pretty="format:'%C(green)(%h) %s\n%C(yellow)author:    %C(white)%an (%ae)\n%C(yellow)committer: %C(white)%cn (%ce)\n'"
+  email = log --date=human --pretty="format:'\
+%C(cyan)(%h)%C(yellow) %s\n\
+%C(cyan)  Author: %C(white)%an (%ae)\n          %ad\n\
+%C(cyan)  Commit: %C(white)%cn (%ce)\n          %cd\n'"
     co = checkout
     br = branch
     ci = commit
