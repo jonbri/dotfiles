@@ -160,6 +160,7 @@ alias fam="source fam"
 alias ver="version \"@polyrepo-fam/libby-ui @polyrepo-fam/fibby-ui @polyrepo-fam/token\" --poll"
 alias sl="echo 'assuming you mean ls...' && ls"
 alias surf="cd $HOME/surfermoon && persona home"
+alias static="cd $HOME/design-system-static && persona work"
 
 alias b="browse"
 alias b3="b 3000"
