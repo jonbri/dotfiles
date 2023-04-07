@@ -58,7 +58,7 @@ MAIN: {
         } elsif ($argLength < 15) {
           $a_delay = 0.08;
         } else {
-          $a_delay = 0.05;
+          $a_delay = 0.04;
         }
     }
 
