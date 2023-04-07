@@ -189,6 +189,8 @@ alias silly="source silly"
 alias sillylib="cd $HOME/silly/sillylib && persona home"
 alias sillysite="cd $HOME/silly/site && persona home"
 
+alias htdocs="cd /mnt/c/Apache*/htdocs && persona work"
+
 novafast() {
   ticker-install
 
