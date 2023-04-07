@@ -50,7 +50,16 @@ MAIN: {
     }
 
     if (!defined $a_delay) {
-        $a_delay = 0.1;
+        my $argLength = length $firstArg;
+        if ($argLength < 5) {
+          $a_delay = 0.3;
+        } elsif ($argLength < 10) {
+          $a_delay = 0.1;
+        } elsif ($argLength < 15) {
+          $a_delay = 0.08;
+        } else {
+          $a_delay = 0.05;
+        }
     }
 
     if (!defined $firstArg) {
