@@ -2,7 +2,7 @@
 
 clear
 cd $DOTFILES_DIR
-slow "D O T F I L E S" --delay 0.03
+slow "D O T F I L E S"
 echo
 persona home
 echo

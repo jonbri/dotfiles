@@ -4,7 +4,7 @@ clear
 cd $HOME/silly && persona home
 
 echo
-slow "s i l l y l i b" --delay 0.05
+slow "s i l l y l i b"
 cat << EOF
 
 Sites:
