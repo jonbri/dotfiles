@@ -17,8 +17,8 @@
     springcleaning = for-each-ref --sort=-committerdate --format='%(refname:short) %(committerdate:short)'
     email = log --date=human --pretty="format:'\
 %C(cyan)%h%C(yellow) %s\n\
-%C(white) A: %<(16)%ad %C(white)%<(14,trunc)%an (%C(green)%ae%C(white))\n\
-%C(white) C: %<(16)%cd %C(white)%<(14,trunc)%cn (%C(green)%ce%C(white))\n'"
+%C(cyan) A: %<(16)%ad %C(cyan)%<(14,trunc)%an (%C(green)%ae%C(cyan))\n\
+%C(cyan) C: %<(16)%cd %C(cyan)%<(14,trunc)%cn (%C(green)%ce%C(cyan))\n'"
     co = checkout
     br = branch
     ci = commit
