@@ -1,0 +1,3 @@
+#!/bin/bash
+
+vim $DOTFILES_DIR/bin/bin/$1
