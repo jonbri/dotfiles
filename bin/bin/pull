@@ -94,7 +94,7 @@ MAIN: {
 
     my $FILTER=$firstArg;
 
-    if ($FILTER =~ '^#') {
+    if (defined $FILTER && $FILTER =~ '^#') {
         my $pr_number = substr($FILTER, 1);
         my $targetBranch = "pr-$pr_number";
 
