@@ -1,0 +1,49 @@
+#!/usr/bin/perl -w
+# apache - Start apache
+
+use strict;
+
+use Getopt::Long;
+
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+apache - Start apache
+
+USAGE:
+  >> apache
+
+Options:
+  --help    (-h) See this message
+
+EXAMPLES:
+  >> apache
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    print "running...";
+    `/mnt/c/Apache24/bin/httpd.exe`;
+}
