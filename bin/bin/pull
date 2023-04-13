@@ -106,7 +106,7 @@ MAIN: {
         runCommand("crumb pullf $targetSha $targetBranch");
         runCommand("git checkout $MAIN --quiet");
 
-        `git branch -D $targetBranch`;
+        `git branch -D $targetBranch 2>/dev/null`;
         `git checkout -b $targetBranch`;
         `git reset --hard $targetSha`;
 
