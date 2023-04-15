@@ -1,3 +1,11 @@
 #!/bin/bash
 
+if test -f "$FILE"; then
+    vim $DOTFILES_DIR/bin/bin/$1
+    exit 0
+fi
+
+touch $DOTFILES_DIR/bin/bin/$1
+chmod 777 $DOTFILES_DIR/bin/bin/$1
 vim $DOTFILES_DIR/bin/bin/$1
+
