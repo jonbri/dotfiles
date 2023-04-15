@@ -19,7 +19,7 @@ USAGE:
   >> slow
 
 Options:
-  --delay (-d) Default is 0.1sec
+  --delay (-d)
 
 EXAMPLES:
   >> slow foobar
@@ -58,7 +58,7 @@ MAIN: {
         } elsif ($argLength < 15) {
           $a_delay = 0.08;
         } else {
-          $a_delay = 0.04;
+          $a_delay = 0.025;
         }
     }
 
