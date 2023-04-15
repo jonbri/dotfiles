@@ -1,0 +1,5 @@
+#!/bin/bash
+
+buffaloes 3 | green
+buffaloes 3 | yellow
+buffaloes 3 | red

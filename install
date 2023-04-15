@@ -81,8 +81,7 @@ MAIN: {
     print join('', runCommand("$cwd/bin/updateVimPlugins.pl"));
     print "\nvim plugins updated\n";
 
-    print "\nDone\n";
-
-    print join('', runCommand("buffaloes 3"));
+    print "\nDone\n\n";
+    print join('', runCommand("welcome"));
 }
 
