@@ -1,0 +1,9 @@
+#!/bin/bash
+
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
+while read line
+do
+  echo -e "${GREEN}${line}${NC}"
+done < "${1:-/dev/stdin}"
