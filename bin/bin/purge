@@ -64,10 +64,17 @@ sub reportDone() {
 sub deleteLocalBranch($$) {
     my ($branch, $prefix) = @_;
     my $command = "git branch -D $branch";
-    if (defined $a_force || confirm("${prefix} ${command} (y/n) ") =~ /^y/i) {
+    my $answer = '';
+    if (!defined $a_force) {
+        $answer = confirm("${prefix} ${command} (y/n/?) ");
+    }
+    if ($answer =~ /^y/i) {
         runCommand("crumb purge_$branch");
         runCommand($command);
         reportDone();
+    } elsif ($answer =~ /^\?/i) {
+        print "\n";
+        print `git email | nth 0-11`;
     }
 }
 
