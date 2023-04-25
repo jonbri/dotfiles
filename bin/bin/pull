@@ -98,14 +98,35 @@ MAIN: {
         my $pr_number = substr($FILTER, 2);
         my $targetBranch = "pr-$pr_number";
 
+        my @remoteBranches = runCommand("git branch --remote | sed 's/^  //'");
+        @remoteBranches = grep(!/^$REMOTE\/HEAD /, @remoteBranches);
+        @remoteBranches = grep(!/^$REMOTE\/master$/, @remoteBranches);
+        @remoteBranches = grep(!/^$REMOTE\/main$/, @remoteBranches);
+
         `git fetch origin pull/$pr_number/head --quiet`;
         my $FH = $ENV{FETCH_HEAD};
         my $targetSha = `git rev-parse FETCH_HEAD`;
         chomp ($targetSha);
 
         runCommand("crumb pullf $targetSha $targetBranch");
-        runCommand("git checkout $MAIN --quiet");
 
+        foreach (@remoteBranches) {
+            chomp;
+            my $branch = $_;
+            my $branchSha = `git rev-parse $branch`;
+            chomp $branchSha;
+            # print "checking $branch: $branchSha $targetSha\n";
+            if ($branchSha eq $targetSha) {
+                # print "match: $branch\n";
+                my $foundBranch = $branch;
+                $foundBranch =~ s/$REMOTE\///;
+                `git branch -D $foundBranch 2>/dev/null`;
+                `git checkout $foundBranch`;
+                exit 0;
+            }
+        }
+
+        runCommand("git checkout $MAIN --quiet");
         `git branch -D $targetBranch 2>/dev/null`;
         `git checkout -b $targetBranch`;
         `git reset --hard $targetSha`;

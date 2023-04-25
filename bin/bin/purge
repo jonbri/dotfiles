@@ -180,7 +180,7 @@ MAIN: {
         $count = $count + 1;
     }
 
-    @remoteBranches = runCommand("git branch -r | sed 's/^  //'");
+    @remoteBranches = runCommand("git branch --remote | sed 's/^  //'");
     @remoteBranches = grep(!/^$a_remote\/HEAD /, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/master$/, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/main$/, @remoteBranches);
