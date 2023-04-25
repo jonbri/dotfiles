@@ -7,6 +7,7 @@ use Getopt::Long;
 
 my $a_list;
 my $a_first;
+my $a_hostname;
 my $a_all;
 my $a_dryRun;
 my $a_grep;
@@ -21,18 +22,20 @@ USAGE:
   >> browse [port] [options]
 
 Options:
-  --list    (-l) See ports in use
-  --first   (-f) Use first result
-  --all     (-a) Open browser for all ports
-  --dry-run (-d) Don't open browser
-  --grep    (-g) Filter results
-  --help    (-h) See this message
+  --list     (-l) See ports in use
+  --first    (-f) Use first result
+  --all      (-a) Open browser for all ports
+  --dry-run  (-d) Don't open browser
+  --grep     (-g) Filter results
+  --hostname (-n) localhost is default
+  --help     (-h) See this message
 
 EXAMPLES:
   >> browse 8080        # Open localhost:8080
   >> browse "3000 3001" # Open multiple
   >> browse             # same as --list
   >> browse -g 80 -f    # Open first result
+  >> browse -n example.org
 
 HELP
 }
@@ -48,7 +51,11 @@ sub getFirstNonOptionArg {
 sub openBrowser($) {
     my ($port) = @_;
     if (!defined $a_dryRun) {
-        `cmd.exe /C start http://localhost:$port 2>/dev/null`;
+        my $targetLocalhost = "localhost";
+        if (defined $a_hostname) {
+            $targetLocalhost = $a_hostname;
+        }
+        `cmd.exe /C start http://$targetLocalhost:$port 2>/dev/null`;
     }
 }
 
@@ -60,6 +67,7 @@ MAIN: {
         'all' => \$a_all,
         'dry-run' => \$a_dryRun,
         'grep:s' => \$a_grep,
+        'name=s' => \$a_hostname,
         'help' => \$a_help
     ) || (help() && exit 1);
 
