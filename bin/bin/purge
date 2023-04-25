@@ -58,10 +58,14 @@ sub confirm($) {
 }
 
 sub reportDone() {
-    print "done\n";
+    print "done\n\n";
 }
 
-sub deleteLocalBranch($$) {
+sub prefixHelp() {
+    print "(count/local/remote)\n";
+}
+
+sub deleteLocalBranch {
     my ($branch, $prefix) = @_;
     my $command = "git branch -D $branch";
     my $answer = '';
@@ -74,11 +78,12 @@ sub deleteLocalBranch($$) {
         reportDone();
     } elsif ($answer =~ /^\?/i) {
         print "\n";
-        print `git email | nth 0-11`;
+        print `git email $branch | nth 0-11`;
+        deleteLocalBranch(@_);
     }
 }
 
-sub deleteRemoteBranch($$) {
+sub deleteRemoteBranch {
     if (defined $a_force) {
         return;
     }
@@ -87,10 +92,15 @@ sub deleteRemoteBranch($$) {
     my $remoteBranch = $branch;
     $remoteBranch =~ tr/\// /;
     my $command = "git push --delete $a_remote $remoteBranch";
-    if (confirm("${prefix} ${command} (y/n) ") =~ /^y/i) {
+    my $answer = confirm("${prefix} ${command} (y/n/?) ");
+    if ($answer =~ /^y/i) {
         runCommand("crumb purge_$branch");
         runCommand($command);
         reportDone();
+    } elsif ($answer =~ /^\?/i) {
+        print "\n";
+        print `git email $a_remote/$remoteBranch | nth 0-11`;
+        deleteRemoteBranch(@_);
     }
 }
 
@@ -160,6 +170,9 @@ MAIN: {
         chomp;
         my $branch = $_;
         my $prefix = "($count/".(scalar @localBranches)."/".(scalar @remoteBranches).")";
+        if ($count == 1) {
+            prefixHelp();
+        }
         deleteLocalBranch("$branch", $prefix);
         if (! defined $a_force && grep(/^$a_remote\/$branch$/, @remoteBranches)) {
             deleteRemoteBranch("$branch", $prefix);
@@ -168,6 +181,7 @@ MAIN: {
     }
 
     @remoteBranches = runCommand("git branch -r | sed 's/^  //'");
+    @remoteBranches = grep(!/^$a_remote\/HEAD /, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/master$/, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/main$/, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/$currentBranch$/, @remoteBranches);
@@ -177,7 +191,11 @@ MAIN: {
     foreach (@remoteBranches) {
         chomp;
         my $branch = $_;
+        $branch =~ s/$a_remote\///;
         my $prefix = "($count/".(scalar @localBranches)."/".(scalar @remoteBranches).")";
+        if ($count == 1) {
+            prefixHelp();
+        }
         deleteRemoteBranch("$branch", $prefix);
         $count = $count + 1;
     }
