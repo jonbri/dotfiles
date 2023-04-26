@@ -1,7 +1,7 @@
 #!/bin/bash
 # ticker-install - Install ticker-log in a Nova playpen
 
-PREVIEW_HEAD_INPUT_FILE="$DOTFILES_DIR/preview-head.html"
+PREVIEW_HEAD_INPUT_FILE="$DOTFILES_DIR/content/preview-head.html"
 PREVIEW_HEAD_OUTPUT_FILE="$NC/src/nova-commons/.storybook/preview-head.html"
 STORYBOOK_MAIN_FILE="$NC/tools/nova-scripts/scripts/storybook/main.js"
 
