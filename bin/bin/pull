@@ -94,6 +94,14 @@ MAIN: {
 
     my $FILTER=$firstArg;
 
+    if (defined $a_local) {
+        if (defined $a_verbose) {
+            print "skipping fetch\n";
+        }
+    } else {
+        `git fetch --all --quiet`;
+    }
+
     if (defined $FILTER && $FILTER =~ '^pr[\d]+$') {
         my $pr_number = substr($FILTER, 2);
         my $targetBranch = "pr-$pr_number";
@@ -132,14 +140,6 @@ MAIN: {
         `git reset --hard $targetSha`;
 
         exit 0;
-    }
-
-    if (defined $a_local) {
-        if (defined $a_verbose) {
-            print "skipping fetch\n";
-        }
-    } else {
-        `git fetch --all --quiet`;
     }
 
     my $TARGET_BRANCH=$MAIN;
