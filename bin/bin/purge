@@ -9,6 +9,10 @@ my $a_dryRun;
 my $a_force;
 my $a_remote;
 my $a_help;
+my @localBranches;
+my @remoteBranches;
+my $count = 1;
+my $totalCount = 0;
 
 sub help() {
     print STDOUT <<'HELP';
@@ -27,7 +31,7 @@ Options:
 EXAMPLES:
   >> purge        # interactive mode with all branches
   >> purge -d     # see local branches
-  >> purge abc -l # see matches
+  >> purge abc -d # see "abc" matches
   >> purge abc -f # force delete via pattern
 
 HELP
@@ -61,21 +65,37 @@ sub reportDone() {
     print "done\n\n";
 }
 
-sub prefixHelp() {
-    print "(count/local/remote)\n";
+sub incrementCount() {
+    $count = $count + 1;
+}
+
+sub generatePrefix {
+    return "($count/".($totalCount).")";
+}
+
+sub fetchAndPrune() {
+    print "fetching and pruning...";
+    `git fetch $a_remote --quiet`;
+    `git remote prune $a_remote`;
+    sleep 1;
+    print "done\n";
 }
 
 sub deleteLocalBranch {
-    my ($branch, $prefix) = @_;
+    my ($branch) = @_;
     my $command = "git branch -D $branch";
     my $answer = '';
     if (!defined $a_force) {
-        $answer = confirm("${prefix} ${command} (y/n/?) ");
+        $answer = confirm(generatePrefix." ${command} (y/n/?) ");
+    } else {
+        $answer = 'y';
     }
     if ($answer =~ /^y/i) {
         runCommand("crumb purge_$branch");
         runCommand($command);
-        reportDone();
+        if (!defined $a_force) {
+            reportDone();
+        }
     } elsif ($answer =~ /^\?/i) {
         print "\n";
         print `git email $branch | nth 0-11`;
@@ -88,11 +108,11 @@ sub deleteRemoteBranch {
         return;
     }
 
-    my ($branch, $prefix) = @_;
+    my ($branch) = @_;
     my $remoteBranch = $branch;
     $remoteBranch =~ tr/\// /;
     my $command = "git push --delete $a_remote $remoteBranch";
-    my $answer = confirm("${prefix} ${command} (y/n/?) ");
+    my $answer = confirm(generatePrefix()." ${command} (y/n/?) ");
     if ($answer =~ /^y/i) {
         runCommand("crumb purge_$branch");
         runCommand($command);
@@ -124,7 +144,7 @@ MAIN: {
         exit 1;
     }
 
-    my @localBranches = runCommand("git for-each-ref --format='%(refname:short)' refs/heads/");
+    @localBranches = runCommand("git for-each-ref --format='%(refname:short)' refs/heads/");
     my $currentBranch = join('', runCommand("git rev-parse --abbrev-ref HEAD"));
     chomp($currentBranch);
 
@@ -133,7 +153,7 @@ MAIN: {
     @localBranches = grep(!/^main$/, @localBranches);
     @localBranches = grep(!/^$currentBranch$/, @localBranches);
 
-    my @remoteBranches = runCommand("git branch -r | sed 's/^  //'");
+    @remoteBranches = runCommand("git branch -r | sed 's/^  //'");
     @remoteBranches = grep(!/^$a_remote\/master$/, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/main$/, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/$currentBranch$/, @remoteBranches);
@@ -147,6 +167,8 @@ MAIN: {
         exit 0;
     }
 
+    $totalCount = scalar @localBranches + scalar @remoteBranches;
+
     if (defined $a_dryRun) {
         foreach (@localBranches) {
             print $_;
@@ -158,26 +180,18 @@ MAIN: {
         print "When --force is used only local branches are deleted\n";
         sleep 1;
     } else {
-        print "fetching and pruning...";
-        `git fetch $a_remote --quiet`;
-        `git remote prune $a_remote`;
-        sleep 1;
-        print "done\n";
+        fetchAndPrune();
     }
 
-    my $count = 1;
     foreach (@localBranches) {
         chomp;
         my $branch = $_;
-        my $prefix = "($count/".(scalar @localBranches)."/".(scalar @remoteBranches).")";
-        if ($count == 1) {
-            prefixHelp();
-        }
-        deleteLocalBranch("$branch", $prefix);
+        deleteLocalBranch("$branch", generatePrefix());
+        incrementCount();
         if (! defined $a_force && grep(/^$a_remote\/$branch$/, @remoteBranches)) {
-            deleteRemoteBranch("$branch", $prefix);
+            deleteRemoteBranch("$branch", generatePrefix());
+            incrementCount();
         }
-        $count = $count + 1;
     }
 
     @remoteBranches = runCommand("git branch --remote | sed 's/^  //'");
@@ -192,12 +206,8 @@ MAIN: {
         chomp;
         my $branch = $_;
         $branch =~ s/$a_remote\///;
-        my $prefix = "($count/".(scalar @localBranches)."/".(scalar @remoteBranches).")";
-        if ($count == 1) {
-            prefixHelp();
-        }
-        deleteRemoteBranch("$branch", $prefix);
-        $count = $count + 1;
+        deleteRemoteBranch("$branch", generatePrefix());
+        incrementCount();
     }
 
     print "done\n";
