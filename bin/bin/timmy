@@ -1,6 +1,0 @@
-#!/bin/bash
-
-cmnd="$1"
-shift
-
-eval "time($cmnd" "${@@Q})" 2>&1 >/dev/null | grep real | awk '{ print $2 }'
