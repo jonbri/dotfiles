@@ -1,0 +1,11 @@
+#!/bin/bash
+
+git add .
+
+MESSAGE=$1
+if [ ! -z "$MESSAGE" ]; then
+    git commit -m "$MESSAGE"
+    exit 0;
+fi
+
+git commit
