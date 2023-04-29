@@ -17,7 +17,9 @@ sudo apt install neovim=0.7.2-3~bpo20.04.1~ppa1
 ```
 
 ## NodeJS
-**Update**: Use [n](https://www.npmjs.com/package/n)
+[n](https://www.npmjs.com/package/n).
+
+Manual:
 ```sh
 sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo bash - && sudo apt-get install -y nodejs
 ```
