@@ -1,4 +1,4 @@
 #!/bin/bash
 
-vim $DOTFILES_DIR/.files/$1
+nvim $DOTFILES_DIR/.files/$1
 

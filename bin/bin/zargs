@@ -70,7 +70,7 @@ MAIN: {
     }
 
     if (defined $a_edit) {
-        system("vim", "$dotfiles_dir/zargs");
+        system("nvim", "$dotfiles_dir/zargs");
         exit 0;
     }
 
@@ -81,6 +81,6 @@ MAIN: {
     }
 
     my $files = `cat $home/.vim/bundle/jonbri-zargs/zargs/$firstArg | xargs`;
-    system("vim $files");
+    system("nvim $files");
 }
 
