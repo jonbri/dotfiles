@@ -1,5 +1,5 @@
 #!/bin/bash
-# nacho - Repeat blank lines
+# oreo - Repeat blank lines
 
 ARG=$1
 if [ -z $ARG ]; then
