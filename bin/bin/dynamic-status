@@ -1,0 +1,18 @@
+#!/bin/bash
+
+OUT=""
+SPACE="  "
+
+if [ -f ./package.json ]; then
+  NODE_VERSION=`node --version | nth -c 1-50`
+  OUT="${OUT}node${NODE_VERSION}${SPACE}"
+fi
+
+NVIM_VERSION=`nvim --version | nth -c 6-50 0`
+OUT="${OUT}nvim${NVIM_VERSION}${SPACE}"
+
+GIT_VERSION=`git --version | nth -c 12-50`
+OUT="${OUT}git${GIT_VERSION}"
+
+echo $OUT
+
