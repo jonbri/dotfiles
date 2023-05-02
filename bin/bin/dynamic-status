@@ -9,9 +9,8 @@ my $a_help;
 
 my $SPACE="  ";
 
-my $dotfiles_dir = $ENV{"DOTFILES_DIR"};
 my $DYNAMIC_STATUS_CONTROL_VALUE="0";
-my $DYNAMIC_STATUS_CONTROL_FILE="$dotfiles_dir/tmp/DYNAMIC_STATUS_CONTROL";
+my $KEY = "DYNAMIC_STATUS_CONTROL";
 
 sub help() {
     print STDOUT <<'HELP';
@@ -45,11 +44,8 @@ MAIN: {
         exit 1;
     }
 
-    # if file exists
-    if (-e "$DYNAMIC_STATUS_CONTROL_FILE") {
-      $DYNAMIC_STATUS_CONTROL_VALUE=`cat ${DYNAMIC_STATUS_CONTROL_FILE}`;
-      chomp $DYNAMIC_STATUS_CONTROL_VALUE;
-    }
+    $DYNAMIC_STATUS_CONTROL_VALUE=`increment $KEY --show`;
+    chomp $DYNAMIC_STATUS_CONTROL_VALUE;
 
     my @output = (
       "node".`node --version | nth -c 1-50`,

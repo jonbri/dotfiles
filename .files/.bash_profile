@@ -165,7 +165,6 @@ alias ver="version \"@polyrepo-fam/libby-ui @polyrepo-fam/fibby-ui @polyrepo-fam
 alias sl="echo 'assuming you mean ls...' && ls"
 alias surf="cd $HOME/surfermoon && persona home"
 alias static="cd $HOME/design-system-static && persona work"
-alias inc="increment-dynamic-status-control"
 
 alias b="browse 80 -n example.org"
 alias b3="browse 3000"

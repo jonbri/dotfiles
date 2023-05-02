@@ -1,13 +1,94 @@
-#!/bin/bash
+#!/usr/bin/perl -w
+# increment
 
-FILE=$1
+use strict;
 
-if [ ! -f "$FILE" ]; then
-  echo "file not found: $1"
-  exit 1
-fi
+use Getopt::Long;
 
-VALUE=`cat $FILE`
-INC=`expr $VALUE + 1`
-echo $INC > $FILE
+my $a_help;
+my $a_show;
+
+my $KEY = "";
+my $FILE = "";
+my $dotfiles_dir = $ENV{"DOTFILES_DIR"};
+my $tmp_dir = "$dotfiles_dir/tmp";
+
+sub help() {
+    print STDOUT <<'HELP';
+
+increment
+
+USAGE:
+  >> increment [key] [options]
+
+Options:
+  --show (-s) just print value
+
+EXAMPLES:
+  >> increment my-key    # increments the "my-key" value
+  >> increment my-key -s # print value
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+sub render($) {
+    my ($num)=@_;
+    open(my $fh, '>', $FILE) or die "Could not open file '$FILE' $!";
+    print $fh $num;
+    close $fh;
+}
+
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help,
+        'show' => \$a_show
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    $KEY = $firstArg;
+    if (! defined $KEY) {
+      print "Needs key, passed in as an arg\n";
+      exit 1;
+    }
+    $KEY = uc($KEY);
+
+    $FILE = "$tmp_dir/$KEY";
+    if (!defined $a_show && ! -e $FILE) {
+      render(0);
+      exit 1;
+    }
+
+    if (defined $a_show && ! -e $FILE) {
+      print "key $KEY not found\n";
+      exit 1;
+    }
+
+    my $VALUE = `cat $FILE`;
+
+    if (defined $a_show) {
+      print "$VALUE\n";
+      exit 0;
+    }
+
+    my $INC = $VALUE + 1;
+
+    render($INC);
+
+    exit 0;
+}
 
