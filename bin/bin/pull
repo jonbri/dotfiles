@@ -29,8 +29,8 @@ Options:
   --help    (-h) See this message
 
 EXAMPLES:
-  >> pull branch-name
-  >> pull pr10
+  >> pull branch-name # filter by *branch-name*
+  >> pull 10          # checkout matching PR branch
 
 HELP
 }
@@ -102,9 +102,9 @@ MAIN: {
         `git fetch --all --quiet`;
     }
 
-    if (defined $FILTER && $FILTER =~ '^pr[\d]+$') {
-        my $pr_number = substr($FILTER, 2);
-        my $targetBranch = "pr-$pr_number";
+    if (defined $FILTER && $FILTER =~ '^[\d]+$') {
+        my $pr_number = $FILTER;
+        my $targetBranch = "pr#$pr_number";
 
         my @remoteBranches = runCommand("git branch --remote | sed 's/^  //'");
         @remoteBranches = grep(!/^$REMOTE\/HEAD /, @remoteBranches);
