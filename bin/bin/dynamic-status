@@ -7,7 +7,6 @@ use Getopt::Long;
 
 my $a_help;
 
-my $OUT="";
 my $SPACE="  ";
 
 my $dotfiles_dir = $ENV{"DOTFILES_DIR"};
@@ -20,8 +19,7 @@ sub help() {
 dynamic-status
 
 EXAMPLES:
-  >> pin    # push up to remote
-  >> pin -f # push w/o confirm
+  >> dynamic-status
 
 HELP
 }
@@ -34,14 +32,6 @@ sub getFirstNonOptionArg {
     return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
 }
 
-
-sub runCommand($) {
-    my ($command) = @_;
-    open CMD, "$command |" || die "Unable to run $command: $!";
-    my @output = <CMD>;
-    close CMD;
-    return @output;
-}
 
 MAIN: {
     GetOptions(
@@ -61,27 +51,22 @@ MAIN: {
       chomp $DYNAMIC_STATUS_CONTROL_VALUE;
     }
 
-    # TODO: 4 is hardcoded
-    $DYNAMIC_STATUS_CONTROL_VALUE = $DYNAMIC_STATUS_CONTROL_VALUE % 4;
+    my @output = (
+      "node".`node --version | nth -c 1-50`,
+      "nvim".`nvim --version | nth -c 6-50 0`,
+      "git".`git --version | nth -c 12-50`
+    );
 
-    my $NODE_VERSION=`node --version | nth -c 1-50`;
-    my $NVIM_VERSION=`nvim --version | nth -c 6-50 0`;
-    my $GIT_VERSION=`git --version | nth -c 12-50`;
+    my $mod = scalar (@output) + 1;
+    $DYNAMIC_STATUS_CONTROL_VALUE = $DYNAMIC_STATUS_CONTROL_VALUE % $mod;
 
-    my $NODE_OUTPUT="node${NODE_VERSION}";
-    my $NVIM_OUTPUT="nvim${NVIM_VERSION}";
-    my $GIT_OUTPUT="git${GIT_VERSION}";
-
+    my $OUT="";
     if ($DYNAMIC_STATUS_CONTROL_VALUE eq "0" ) {
-      $OUT="${OUT}${NODE_OUTPUT}${SPACE}";
-      $OUT="${OUT}${NVIM_OUTPUT}${SPACE}";
-      $OUT="${OUT}${GIT_OUTPUT}${SPACE}";
-    } elsif ("$DYNAMIC_STATUS_CONTROL_VALUE" eq 1) {
-      $OUT=$NODE_OUTPUT;
-    } elsif ("$DYNAMIC_STATUS_CONTROL_VALUE" eq 2) {
-      $OUT=$NVIM_OUTPUT;
-    } elsif ("$DYNAMIC_STATUS_CONTROL_VALUE" eq 3) {
-      $OUT=$GIT_OUTPUT;
+      foreach(@output) {
+          $OUT="${OUT}$_${SPACE}";
+      }
+    } else {
+        $OUT=$output[$DYNAMIC_STATUS_CONTROL_VALUE - 1];
     }
 
     print $OUT;
