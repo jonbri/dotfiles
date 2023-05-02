@@ -5,9 +5,13 @@ if [[ ! `isgit` = "true" ]]; then
 fi
 
 IS_MAIN=`git br | grep -e " main$" | tr -d " *"`
+IS_MASTER=`git br | grep -e " master$" | tr -d " *"`
 if [ "$IS_MAIN" = "main" ]; then
   MAIN=main
-else
+elif [ "$IS_MASTER" = "master" ]; then
   MAIN=master
+else
+  MAIN=release
 fi
+
 echo $MAIN
