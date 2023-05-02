@@ -215,3 +215,4 @@ export LIBGL_ALWAYS_INDIRECT=1
 # sudo /etc/init.d/dbus start &> /dev/null
 
 echo "done with .bash_profile"
+welcome
