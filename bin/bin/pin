@@ -64,14 +64,21 @@ MAIN: {
         'help' => \$a_help
     ) || (help() && exit 1);
 
-    if (!defined $a_remote) {
-        $a_remote = "origin";
-    }
-
     # show help if either arg or option is given
     my $firstArg=getFirstNonOptionArg();
     if (($firstArg && $firstArg eq "help") || defined $a_help) {
         help();
+        exit 1;
+    }
+
+    if (!defined $a_remote) {
+        $a_remote = "origin";
+    }
+
+    my $isGit = `isgit`;
+    chomp $isGit;
+    if ($isGit ne 'true') {
+        print "not a git repo\n";
         exit 1;
     }
 
