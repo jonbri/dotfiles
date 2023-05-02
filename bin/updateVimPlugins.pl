@@ -33,6 +33,7 @@ my @repos=qw(
     https://github.com/jonbri/vim-zargs.git|jonbri-zargs
     https://github.com/jonbri/vim-dictionary.git|jonbri-dictionary
     https://github.com/AndrewRadev/discotheque.vim.git|vim-discotheque
+    https://github.com/github/copilot.vim.git|github-copilot
 );
 
 sub doHelp(;$) {
@@ -84,9 +85,9 @@ MAIN: {
         ($repo,$folderName)=split("\Q|",$_,2);
 
         my $fullPath="$dotVimDir/bundle/$folderName";
-        my $main = `cd $fullPath && main`;
         if (-d "$fullPath") {
             runCommand("git -C $fullPath stash -u");
+            my $main = `cd $fullPath && main`;
             runCommand("git -C $fullPath pull origin $main");
         } else {
             runCommand("git clone $repo $fullPath --depth 1");
