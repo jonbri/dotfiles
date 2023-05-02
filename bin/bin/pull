@@ -69,6 +69,13 @@ MAIN: {
         exit 1;
     }
 
+    my $isGit = `isgit`;
+    chomp $isGit;
+    if ($isGit ne 'true') {
+        print "not a git repo\n";
+        exit 1;
+    }
+
     my $cleanDirty = `cleandirty`;
     chomp($cleanDirty);
     if ($cleanDirty ne "") {

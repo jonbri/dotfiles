@@ -82,6 +82,13 @@ MAIN: {
         exit 1;
     }
 
+    my $hasCommits = `hasCommits`;
+    chomp $hasCommits;
+    if ($hasCommits ne 'true') {
+        print "no commits\n";
+        exit 1;
+    }
+
     my $cleandirty = `cleandirty`;
     chomp $cleandirty;
     my $leftright = `leftright`;
