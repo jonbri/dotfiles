@@ -12,7 +12,7 @@ my $SPACE="  ";
 
 my $dotfiles_dir = $ENV{"DOTFILES_DIR"};
 my $DYNAMIC_STATUS_CONTROL_VALUE="0";
-my $DYNAMIC_STATUS_CONTROL_FILE="$dotfiles_dir/content/DYNAMIC_STATUS_CONTROL";
+my $DYNAMIC_STATUS_CONTROL_FILE="$dotfiles_dir/tmp/DYNAMIC_STATUS_CONTROL";
 
 sub help() {
     print STDOUT <<'HELP';
