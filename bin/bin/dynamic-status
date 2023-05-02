@@ -1,37 +1,91 @@
-#!/bin/bash
+#!/usr/bin/perl -w
+# dynamic-status
 
-OUT=""
-SPACE="  "
+use strict;
+
+use Getopt::Long;
+
+my $a_help;
+
+my $OUT="";
+my $SPACE="  ";
+
+my $dotfiles_dir = $ENV{"DOTFILES_DIR"};
+my $DYNAMIC_STATUS_CONTROL_VALUE="0";
+my $DYNAMIC_STATUS_CONTROL_FILE="$dotfiles_dir/content/DYNAMIC_STATUS_CONTROL";
+
+sub help() {
+    print STDOUT <<'HELP';
+
+dynamic-status
+
+EXAMPLES:
+  >> pin    # push up to remote
+  >> pin -f # push w/o confirm
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
 
 
-DYNAMIC_STATUS_CONTROL_VALUE="0"
-DYNAMIC_STATUS_CONTROL_FILE="${DOTFILES_DIR}/content/DYNAMIC_STATUS_CONTROL"
-if [ -f "$DYNAMIC_STATUS_CONTROL_FILE" ]; then
-  DYNAMIC_STATUS_CONTROL_VALUE=`cat ${DYNAMIC_STATUS_CONTROL_FILE}`;
-fi
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
 
-# TODO: 4 is hardcoded
-DYNAMIC_STATUS_CONTROL_VALUE=$((${DYNAMIC_STATUS_CONTROL_VALUE} % 4));
+MAIN: {
+    GetOptions(
+        'help' => \$a_help
+    ) || (help() && exit 1);
 
-NODE_VERSION=`node --version | nth -c 1-50`
-NVIM_VERSION=`nvim --version | nth -c 6-50 0`
-GIT_VERSION=`git --version | nth -c 12-50`
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
 
-NODE_OUTPUT=node${NODE_VERSION}
-NVIM_OUTPUT=nvim${NVIM_VERSION}
-GIT_OUTPUT=git${GIT_VERSION}
+    # if file exists
+    if (-e "$DYNAMIC_STATUS_CONTROL_FILE") {
+      $DYNAMIC_STATUS_CONTROL_VALUE=`cat ${DYNAMIC_STATUS_CONTROL_FILE}`;
+      chomp $DYNAMIC_STATUS_CONTROL_VALUE;
+    }
 
-if [ "$DYNAMIC_STATUS_CONTROL_VALUE" -eq 0 ]; then
-  OUT="${OUT}${NODE_OUTPUT}${SPACE}"
-  OUT="${OUT}${NVIM_OUTPUT}${SPACE}"
-  OUT="${OUT}${GIT_OUTPUT}${SPACE}"
-elif [ "$DYNAMIC_STATUS_CONTROL_VALUE" -eq 1 ]; then
-  OUT=$NODE_OUTPUT
-elif [ "$DYNAMIC_STATUS_CONTROL_VALUE" -eq 2 ]; then
-  OUT=$NVIM_OUTPUT
-elif [ "$DYNAMIC_STATUS_CONTROL_VALUE" -eq 3 ]; then
-  OUT=$GIT_OUTPUT
-fi
+    # TODO: 4 is hardcoded
+    $DYNAMIC_STATUS_CONTROL_VALUE = $DYNAMIC_STATUS_CONTROL_VALUE % 4;
 
-echo $OUT
+    my $NODE_VERSION=`node --version | nth -c 1-50`;
+    my $NVIM_VERSION=`nvim --version | nth -c 6-50 0`;
+    my $GIT_VERSION=`git --version | nth -c 12-50`;
+
+    my $NODE_OUTPUT="node${NODE_VERSION}";
+    my $NVIM_OUTPUT="nvim${NVIM_VERSION}";
+    my $GIT_OUTPUT="git${GIT_VERSION}";
+
+    if ($DYNAMIC_STATUS_CONTROL_VALUE eq "0" ) {
+      $OUT="${OUT}${NODE_OUTPUT}${SPACE}";
+      $OUT="${OUT}${NVIM_OUTPUT}${SPACE}";
+      $OUT="${OUT}${GIT_OUTPUT}${SPACE}";
+    } elsif ("$DYNAMIC_STATUS_CONTROL_VALUE" eq 1) {
+      $OUT=$NODE_OUTPUT;
+    } elsif ("$DYNAMIC_STATUS_CONTROL_VALUE" eq 2) {
+      $OUT=$NVIM_OUTPUT;
+    } elsif ("$DYNAMIC_STATUS_CONTROL_VALUE" eq 3) {
+      $OUT=$GIT_OUTPUT;
+    }
+
+    print $OUT;
+
+    exit 0;
+}
 
