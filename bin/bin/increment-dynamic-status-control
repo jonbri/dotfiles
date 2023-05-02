@@ -1,0 +1,4 @@
+#!/bin/bash
+
+increment $DOTFILES_DIR/content/DYNAMIC_STATUS_CONTROL
+
