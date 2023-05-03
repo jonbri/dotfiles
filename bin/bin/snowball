@@ -9,7 +9,11 @@ my $a_working;
 my $a_index;
 my $a_untracked;
 my $a_conflict;
+my $a_empty;
 my $a_help;
+
+my $MAIN=`main`;
+chomp $MAIN;
 
 sub help() {
     print STDERR <<'HELP';
@@ -23,6 +27,7 @@ Options:
   --working   (-w) working directory dirty
   --index     (-i) cache (stage) dirty
   --untracked (-u) create untracked file
+  --empty     (-e) create empty commit
   --conflict  (-c) create merge conflict
 
 EXAMPLES:
@@ -57,6 +62,7 @@ MAIN: {
         'index' => \$a_index,
         'untracked' => \$a_untracked,
         'conflict' => \$a_conflict,
+        'empty' => \$a_empty,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -67,7 +73,7 @@ MAIN: {
         exit 1;
     }
 
-    my @trackedFiles = runCommand("git ls-tree -r master --name-only");
+    my @trackedFiles = runCommand("git ls-tree -r $MAIN --name-only");
     my $EXISTING_FILE0 = $trackedFiles[0];
     chomp $EXISTING_FILE0;
     my $EXISTING_FILE1 = $trackedFiles[1];
@@ -116,6 +122,11 @@ MAIN: {
         print `git commit -m 'snowball cause conflict'`;
         print `git checkout -`;
         print `git merge -`;
+        exit 0;
+    }
+
+    if (defined $a_empty) {
+        print `git commit -m 'empty' --allow-empty`;
         exit 0;
     }
 

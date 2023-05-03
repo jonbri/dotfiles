@@ -137,13 +137,15 @@ MAIN: {
             my $branch = $_;
             my $branchSha = `git rev-parse $branch`;
             chomp $branchSha;
-            # print "checking $branch: $branchSha $targetSha\n";
             if ($branchSha eq $targetSha) {
-                # print "match: $branch\n";
                 my $foundBranch = $branch;
                 $foundBranch =~ s/$REMOTE\///;
-                `git branch -D $foundBranch 2>/dev/null`;
-                `git checkout $foundBranch`;
+                `snowball --empty > /dev/null 2>&1`;
+                `git checkout HEAD~ --quiet`;
+                `git branch -D $foundBranch > /dev/null 2>&1`;
+                `git checkout -b $foundBranch --quiet`;
+                `git reset --hard $targetSha`;
+                print "$foundBranch\n";
                 exit 0;
             }
         }
