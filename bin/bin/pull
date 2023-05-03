@@ -76,6 +76,13 @@ MAIN: {
         exit 1;
     }
 
+    my $hasRemote = `hasremote`;
+    chomp $hasRemote;
+    if ($hasRemote ne 'true') {
+        print "no remotes defined\n";
+        exit 1;
+    }
+
     my $cleanDirty = `cleandirty`;
     chomp($cleanDirty);
     if ($cleanDirty ne "") {
