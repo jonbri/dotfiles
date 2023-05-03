@@ -82,7 +82,7 @@ MAIN: {
         exit 1;
     }
 
-    my $hasCommits = `hasCommits`;
+    my $hasCommits = `hascommits`;
     chomp $hasCommits;
     if ($hasCommits ne 'true') {
         print "no commits\n";
