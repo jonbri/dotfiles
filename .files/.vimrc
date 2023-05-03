@@ -16,13 +16,40 @@ autocmd VimEnter * set expandtab
 
 
 """"""""""""""""""""""""""""""""""""""""""
-" pathogen
-if !empty(findfile('autoload/pathogen.vim', &rtp))
-  execute pathogen#infect()
-  syntax on
-  filetype plugin indent on
-  :Helptags
-endif
+" vim-plug
+call plug#begin(has('nvim') ? stdpath('data') . '/plugged' : '~/.vim/plugged')
+
+Plug 'junegunn/seoul256.vim'
+Plug 'junegunn/vader.vim'
+Plug 'junegunn/goyo.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-flagship'
+Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-scriptease'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-vinegar'
+Plug 'tpope/vim-speeddating'
+Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-abolish'
+Plug 'duff/vim-bufonly'
+Plug 'jonbri/vim-configure'
+Plug 'jonbri/vim-flash'
+Plug 'jonbri/vim-lorum'
+Plug 'jonbri/vim-sensible'
+Plug 'jonbri/vim-amperage'
+Plug 'jonbri/vim-copybuddy'
+Plug 'jonbri/vim-win'
+Plug 'jonbri/vim-spaced'
+Plug 'jonbri/vim-yankee'
+Plug 'jonbri/vim-zargs'
+Plug 'jonbri/vim-dictionary'
+Plug 'AndrewRadev/discotheque.vim'
+Plug 'github/copilot.vim'
+
+call plug#end()
 """"""""""""""""""""""""""""""""""""""""""
 
 

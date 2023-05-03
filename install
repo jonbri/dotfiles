@@ -16,7 +16,7 @@ USAGE:
   >> install [options]
 
 Options:
-  --fast (-f) skip vim plugins
+  --fast (-f) skip vim
   --help (-h) See this message
 
 EXAMPLES:
@@ -82,11 +82,11 @@ MAIN: {
         exit 0;
     }
 
-    print "\nUpdating vim plugins...\n";
-    print join('', runCommand("$cwd/bin/updateVimPlugins.pl"));
-    print "\nvim plugins updated\n";
+    print "\nUpdating vim...\n";
+    print join('', runCommand("$cwd/bin/updateVim.pl"));
+    print "vim updated\n";
 
-    print "\nDone\n\n";
+    print "\nDone\n";
     welcome();
 }
 
