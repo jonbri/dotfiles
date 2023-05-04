@@ -4,7 +4,6 @@ use strict;
 use Cwd 'cwd';
 use Getopt::Long;
 
-my $a_fast;
 my $a_help;
 
 sub help() {
@@ -16,7 +15,6 @@ USAGE:
   >> install [options]
 
 Options:
-  --fast (-f) skip vim
   --help (-h) See this message
 
 EXAMPLES:
@@ -50,7 +48,6 @@ sub welcome() {
 
 MAIN: {
     GetOptions(
-        'fast' => \$a_fast,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -76,11 +73,6 @@ MAIN: {
 
     print "\nUpdating tools...\n";
     print join('', runCommand("$cwd/bin/updateTools.pl"));
-
-    if (defined $a_fast) {
-        welcome();
-        exit 0;
-    }
 
     print "\nUpdating vim...\n";
     print join('', runCommand("$cwd/bin/updateVim.pl"));
