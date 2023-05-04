@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ZARGS_LOC=$HOME/.vim/bundle/jonbri-zargs/zargs
+ZARGS_LOC=$HOME/.config/jonbri-zargs/zargs
 
 mkdir -p $ZARGS_LOC
 

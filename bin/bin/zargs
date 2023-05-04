@@ -41,7 +41,7 @@ sub getFirstNonOptionArg {
 }
 
 sub printZargs {
-    print `ls -l $home/.vim/bundle/jonbri-zargs/zargs | tail -n +2 | awk -e '{ print \$NF }'`;
+    print `ls -l $home/.config/jonbri-zargs/zargs | tail -n +2 | awk -e '{ print \$NF }'`;
 }
 
 MAIN: {
@@ -80,7 +80,7 @@ MAIN: {
         exit 0;
     }
 
-    my $files = `cat $home/.vim/bundle/jonbri-zargs/zargs/$firstArg | xargs`;
+    my $files = `cat $home/.config/jonbri-zargs/zargs/$firstArg | xargs`;
     system("nvim $files");
 }
 

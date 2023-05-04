@@ -1,12 +1,5 @@
 let mapleader = " "
 
-""""""""""""""""""""""""""""""""""""""""""
-" fix mingw32 runtimepath issue
-if filereadable($HOME."/_vimrc")
-  let &runtimepath.=','.$HOME."/vimfiles"
-endif
-""""""""""""""""""""""""""""""""""""""""""
-
 
 """"""""""""""""""""""""""""""""""""""""""
 " allows gf to open up amd modules
@@ -18,7 +11,7 @@ autocmd VimEnter * set expandtab
 """"""""""""""""""""""""""""""""""""""""""
 " vim-plug
 call plug#begin(has('nvim') ? stdpath('data') . '/plugged' : '~/.vim/plugged')
-
+" Plug 'justinmk/vim-sneak'
 Plug 'junegunn/seoul256.vim'
 Plug 'junegunn/vader.vim'
 Plug 'junegunn/goyo.vim'
@@ -34,6 +27,7 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-abolish'
+" Plug 'tpope/vim-capslock'
 Plug 'duff/vim-bufonly'
 Plug 'jonbri/vim-configure'
 Plug 'jonbri/vim-flash'
@@ -48,7 +42,6 @@ Plug 'jonbri/vim-zargs'
 Plug 'jonbri/vim-dictionary'
 Plug 'AndrewRadev/discotheque.vim'
 Plug 'github/copilot.vim'
-
 call plug#end()
 """"""""""""""""""""""""""""""""""""""""""
 

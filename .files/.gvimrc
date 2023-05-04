@@ -1,2 +1,0 @@
-colorscheme industry
-cd ~/Desktop

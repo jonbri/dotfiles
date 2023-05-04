@@ -59,7 +59,6 @@ MAIN: {
     }
 
     print "Updating dotfiles...\n";
-    # read dot files directory
     opendir(DH, "$cwd/.files");
     my @files = readdir(DH);
     closedir(DH);
@@ -70,13 +69,10 @@ MAIN: {
 
         print join('', runCommand("ln -sfv $cwd/.files/$_ $home"));
     }
+    print join('', runCommand("ln -sfv $cwd/.config/nvim $home/.config"));
 
     print "\nUpdating tools...\n";
     print join('', runCommand("$cwd/bin/updateTools.pl"));
-
-    print "\nUpdating vim...\n";
-    print join('', runCommand("$cwd/bin/updateVim.pl"));
-    print "vim updated\n";
 
     print "\nDone\n";
     welcome();
