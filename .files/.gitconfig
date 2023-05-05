@@ -16,7 +16,7 @@
     lg = log --graph --pretty=format:'%Cred%h%Creset %an -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
     springcleaning = for-each-ref --sort=-committerdate --format='%(refname:short) %(committerdate:short)'
     email = log --date=human --pretty="format:'\
-%C(cyan)%h%C(yellow) %s%C(white)%d\n\
+%C(cyan)%h%C(yellow) %s%C(red)%d\n\
 %C(green)A%C(cyan)%<(16)|%ad %C(cyan)%<(14,trunc)%an %C(green)%ae%C(cyan)\n\
 %C(green)C%C(cyan)%<(16)|%cd %C(cyan)%<(14,trunc)%cn %C(green)%ce%C(cyan)\n'"
     co = checkout
