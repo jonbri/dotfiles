@@ -13,7 +13,7 @@ autocmd VimEnter * set expandtab
 call plug#begin(has('nvim') ? stdpath('data') . '/plugged' : '~/.vim/plugged')
 " Plug 'justinmk/vim-sneak'
 Plug 'junegunn/seoul256.vim'
-Plug 'junegunn/vader.vim'
+Plug 'junegunn/vader.vim',  { 'on': 'Vader', 'for': 'vader' }
 Plug 'junegunn/goyo.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-flagship'
