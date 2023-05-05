@@ -2,37 +2,14 @@
 
 use strict;
 use Cwd 'cwd';
-use Getopt::Long;
-
-my $a_help;
-
-sub help() {
-    print STDOUT <<'HELP';
-
-install
-
-USAGE:
-  >> install [options]
-
-Options:
-  --help (-h) See this message
-
-EXAMPLES:
-  >> install
-
-HELP
-}
 
 my $home=$ENV{HOME};
 my $cwd = cwd();
 
-sub getFirstNonOptionArg {
-    my $arg = shift @ARGV;
-    if (!defined $arg) {
-        return;
-    }
-    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
-}
+my @repos=qw(
+    https://github.com/jonbri/killer|killer
+    https://github.com/jonbri/persona|persona
+);
 
 sub runCommand($) {
     my ($command) = @_;
@@ -47,17 +24,6 @@ sub welcome() {
 }
 
 MAIN: {
-    GetOptions(
-        'help' => \$a_help
-    ) || (help() && exit 1);
-
-    # show help if either arg or option is given
-    my $firstArg=getFirstNonOptionArg();
-    if (($firstArg && $firstArg eq "help") || defined $a_help) {
-        help();
-        exit 1;
-    }
-
     print "Updating dotfiles...\n";
     opendir(DH, "$cwd/.files");
     my @files = readdir(DH);
@@ -72,7 +38,35 @@ MAIN: {
     print join('', runCommand("ln -sfv $cwd/.config/nvim $home/.config"));
 
     print "\nUpdating tools...\n";
-    print join('', runCommand("$cwd/bin/updateTools.pl"));
+
+    my $toolsDir="$home/tools";
+    my $homeBinDir="$home/bin";
+
+    `mkdir -p $toolsDir`;
+    `mkdir -p $homeBinDir`;
+    `curl --silent https://raw.githubusercontent.com/jonbri/copybuddy/master/copybuddy > $homeBinDir/copybuddy`;
+    `cp bin/bin/* $homeBinDir`;
+    `chmod +x $homeBinDir/copybuddy`;
+
+    my ($repo,$folderName);
+    foreach(@repos) {
+        ($repo,$folderName)=split("\Q|",$_,2);
+
+        my $fullPath="$toolsDir/$folderName";
+        my $main = `cd $fullPath && main`;
+        if (-d "$fullPath") {
+            `git -C $fullPath stash -u`;
+            `git -C $fullPath fetch`;
+            `git -C $fullPath checkout $main`;
+            `git -C $fullPath reset --hard origin/$main`;
+        } else {
+            `git clone $repo $fullPath --depth 1`;
+        }
+
+        if (-e "$fullPath/.cb") {
+            `$homeBinDir/copybuddy $fullPath/.cb`;
+        }
+    }
 
     print "\nDone\n";
     welcome();
