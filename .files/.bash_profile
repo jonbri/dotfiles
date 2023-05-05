@@ -1,5 +1,6 @@
 set -o vi
-export EDITOR=vim
+export EDITOR=nvim
+export GIT_EDITOR=nvim
 export PATH=~/bin:$PATH
 
 export NC_CACHE_FILE="${HOME}/.nc"
