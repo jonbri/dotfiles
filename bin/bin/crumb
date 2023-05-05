@@ -4,7 +4,6 @@ use strict;
 
 use Getopt::Long;
 
-my $a_list;
 my $a_first;
 my $a_help;
 
@@ -20,13 +19,11 @@ USAGE:
   >> crumb [arg] # create crumb
 
 Options:
-  --list (-l) List entries
   --first (-f) Print most recent matching SHA
-  --help (-h) See this message
+  --help  (-h) See this message
 
 EXAMPLES:
-  >> crumb        # same as -l
-  >> crumb -l     # see local entries
+  >> crumb        # list local entries
   >> crumb my-bug # add "my-bug" entry
 
 HELP
@@ -51,7 +48,6 @@ sub runCommand($) {
 
 MAIN: {
     GetOptions(
-        'list' => \$a_list,
         'first' => \$a_first,
         'help' => \$a_help
     ) || (help() && exit 1);
@@ -71,7 +67,7 @@ MAIN: {
         exit 0;
     }
 
-    if (!defined $firstArg || defined $a_list) {
+    if (!defined $firstArg) {
         my @output = runCommand("git reflog --pretty='%h %cd %gs' --date=format:'%a %b%d %H:%M:%S' | grep \"CRUMB: \" | head");
         foreach (@output) {
             print $_;
