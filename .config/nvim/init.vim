@@ -257,6 +257,8 @@ augroup filetype_html
   autocmd WinLeave *.vim :call SourceCurrentBuffer()
 augroup END
 
+let g:flash_winswitch=1
+
 
 """"""""""""""""""""""""""""""""""""""""""
 " scratch
