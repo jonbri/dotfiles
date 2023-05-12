@@ -86,7 +86,7 @@ sub deleteLocalBranch {
     my $command = "git branch -D $branch";
     my $answer = '';
     if (!defined $a_force) {
-        $answer = confirm("LOCAL".generatePrefix." ${command} (y/n/?) ");
+        $answer = confirm("LOCAL".generatePrefix." ${command} (y/n/i) ");
     } else {
         $answer = 'y';
     }
@@ -96,7 +96,7 @@ sub deleteLocalBranch {
         if (!defined $a_force) {
             reportDone();
         }
-    } elsif ($answer =~ /^\?/i) {
+    } elsif ($answer =~ /^i/i) {
         print "\n";
         print `git email $branch | nth 0-11`;
         deleteLocalBranch(@_);
@@ -112,12 +112,12 @@ sub deleteRemoteBranch {
     my $remoteBranch = $branch;
     $remoteBranch =~ tr/\// /;
     my $command = "git push --delete $a_remote $remoteBranch";
-    my $answer = confirm("REMOTE".generatePrefix()." ${command} (y/n/?) ");
+    my $answer = confirm("REMOTE".generatePrefix()." ${command} (y/n/i) ");
     if ($answer =~ /^y/i) {
         runCommand("crumb purge_$branch");
         runCommand($command);
         reportDone();
-    } elsif ($answer =~ /^\?/i) {
+    } elsif ($answer =~ /^i/i) {
         print "\n";
         print `git email $a_remote/$remoteBranch | nth 0-11`;
         deleteRemoteBranch(@_);
