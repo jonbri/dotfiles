@@ -5,7 +5,7 @@ if [ -z $DIR ]; then
     DIR=`pwd`
 fi
 
-RESULT=`git -C "$DIR" remote --verbose | grep '\.git'`
+RESULT=`git -C "$DIR" remote --verbose | grep ' (fetch)'`
 
 if [ ! -z "$RESULT" ]; then
   echo "true";
