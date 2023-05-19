@@ -144,6 +144,15 @@ MAIN: {
         exit 1;
     }
 
+    if (!defined $a_dryRun) {
+        if (defined $a_force) {
+            print "When --force is used only local branches are deleted\n";
+            sleep 1;
+        } else {
+            fetchAndPrune();
+        }
+    }
+
     @localBranches = runCommand("git for-each-ref --format='%(refname:short)' refs/heads/");
     my $currentBranch = join('', runCommand("git rev-parse --abbrev-ref HEAD"));
     chomp($currentBranch);
@@ -174,13 +183,6 @@ MAIN: {
             print $_;
         }
         exit 0;
-    }
-
-    if (defined $a_force) {
-        print "When --force is used only local branches are deleted\n";
-        sleep 1;
-    } else {
-        fetchAndPrune();
     }
 
     foreach (@localBranches) {
