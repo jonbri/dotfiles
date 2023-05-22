@@ -1,19 +1,7 @@
-let mapleader = " "
-
-
-""""""""""""""""""""""""""""""""""""""""""
-" allows gf to open up amd modules
-set suffixesadd=.js
-autocmd VimEnter * set expandtab
-""""""""""""""""""""""""""""""""""""""""""
-
-
-""""""""""""""""""""""""""""""""""""""""""
-" vim-plug
-call plug#begin(has('nvim') ? stdpath('data') . '/plugged' : '~/.vim/plugged')
-" Plug 'justinmk/vim-sneak'
+local Plug = vim.fn['plug#'];
+vim.call('plug#begin', '~/.config/nvim/plugged')
 Plug 'junegunn/seoul256.vim'
-Plug 'junegunn/vader.vim',  { 'on': 'Vader', 'for': 'vader' }
+-- Plug 'junegunn/vader.vim',  { 'on': 'Vader', 'for': 'vader' }
 Plug 'junegunn/goyo.vim'
 Plug 'stevearc/oil.nvim'
 Plug 'tpope/vim-fugitive'
@@ -27,7 +15,7 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-abolish'
-" Plug 'tpope/vim-capslock'
+-- Plug 'tpope/vim-capslock'
 Plug 'duff/vim-bufonly'
 Plug 'jonbri/vim-configure'
 Plug 'jonbri/vim-flash'
@@ -42,11 +30,20 @@ Plug 'jonbri/vim-zargs'
 Plug 'jonbri/vim-dictionary'
 Plug 'AndrewRadev/discotheque.vim'
 Plug 'github/copilot.vim'
-call plug#end()
-""""""""""""""""""""""""""""""""""""""""""
+vim.call('plug#end');
 
+require("oil").setup();
+vim.keymap.set("n", "-", require("oil").open, { desc = "Open parent directory" })
+
+vim.g.mapleader = " "
+
+vim.g.flash_winswitch=1
+
+--[[
 """"""""""""""""""""""""""""""""""""""""""
-" oil
+" allows gf to open up amd modules
+set suffixesadd=.js
+autocmd VimEnter * set expandtab
 """"""""""""""""""""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""""""""""""""""
@@ -58,12 +55,6 @@ set pastetoggle=<F3>
 
 " switch windows without using ctrl-w
 nnoremap gw <C-w>
-""""""""""""""""""""""""""""""""""""""""""
-
-
-""""""""""""""""""""""""""""""""""""""""""
-" put semi-colon at end of line
-nnoremap <leader>pe; mp:normal A;<esc>`p
 """"""""""""""""""""""""""""""""""""""""""
 
 
@@ -105,16 +96,6 @@ function! GotoFirstMatch()
   execute "keepjumps normal! gg/".userInput."/\<CR>"
 endfunction
 nnoremap <leader>/f :call GotoFirstMatch()<CR>
-""""""""""""""""""""""""""""""""""""""""""
-
-
-""""""""""""""""""""""""""""""""""""""""""
-" delete everything but current line
-function! DeleteOthers()
-  :0,.-1g/.*/d
-  :.+1,$g/.*/d
-endfunction
-nnoremap <leader>do :call DeleteOthers()<cr><cr>
 """"""""""""""""""""""""""""""""""""""""""
 
 
@@ -170,12 +151,6 @@ vnoremap <leader>grep :call VisualStartVimGrep()<cr>
 
 
 """"""""""""""""""""""""""""""""""""""""""
-" vim-prettier
-" see end of ~/.vim/vim-prettier/plugin/prettier.vim
-""""""""""""""""""""""""""""""""""""""""""
-
-
-""""""""""""""""""""""""""""""""""""""""""
 " misc
 set showtabline=2
 set guioptions-=e
@@ -184,37 +159,14 @@ set guioptions-=e
 set laststatus=2
 silent! colorscheme ron
 
-" commonly used deployment script
-nnoremap <leader>dep :!./deploy<cr>
-
 " go to last buffer
 nnoremap <leader>bb :b#<cr>
-
-" open up split below
-command! -complete=file -nargs=* Bsp rightbelow split +edit <args>
 
 " quick-fix window always spans windows at bottom
 " https://stackoverflow.com/a/47077341/2295034
 au FileType qf wincmd J
 
 nnoremap <leader>g :Goyo<cr>
-""""""""""""""""""""""""""""""""""""""""""
-
-
-""""""""""""""""""""""""""""""""""""""""""
-" OpenUI5 stuff
-function! AssociationMapping()
-  normal Isap.ui.getCore().byId(get
-  normal l~A());
-  normal 2F(l
-  startinsert
-endfunction
-nnoremap cass :call AssociationMapping()<cr>
-
-function! OpenUI5Search()
-  normal /\vprototype\.(init|On(Before|After)Rendering|exit)+\c
-endfunction
-nnoremap g] :silent! call OpenUI5Search()<cr>
 """"""""""""""""""""""""""""""""""""""""""
 
 
@@ -252,23 +204,5 @@ endfunction
 
 nmap <silent> <leader>br :call Br()<cr>
 """"""""""""""""""""""""""""""""""""""""""
+--]]
 
-
-" auto-source .vim files when leaving buffer window
-augroup filetype_html
-  autocmd!
-  autocmd WinLeave *.vim :call SourceCurrentBuffer()
-augroup END
-
-let g:flash_winswitch=1
-
-
-""""""""""""""""""""""""""""""""""""""""""
-" scratch
-"
-" run command after saving
-" augroup scratch
-"     autocmd!
-"     autocmd BufWritePost * echo "hi"
-" augroup END
-"
