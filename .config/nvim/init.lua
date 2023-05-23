@@ -32,7 +32,18 @@ Plug 'AndrewRadev/discotheque.vim'
 Plug 'github/copilot.vim'
 vim.call('plug#end');
 
-require("oil").setup();
+require("oil").setup({
+    columns = {},
+    win_options = {
+        number = false
+    },
+    view_options = {
+        show_hidden = true
+    },
+    keymaps = {
+        ["ge"] = "actions.open_cmdline"
+    }
+});
 vim.keymap.set("n", "-", require("oil").open, { desc = "Open parent directory" })
 
 vim.g.mapleader = " "
