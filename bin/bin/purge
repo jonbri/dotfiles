@@ -70,7 +70,7 @@ sub incrementCount() {
 }
 
 sub generatePrefix {
-    return "($count/".($totalCount).")";
+    return "$count/".$totalCount;
 }
 
 sub fetchAndPrune() {
@@ -84,9 +84,13 @@ sub fetchAndPrune() {
 sub deleteLocalBranch {
     my ($branch) = @_;
     my $command = "git branch -D $branch";
+    my $sha = `git rev-parse --short $branch`;
+    chomp $sha;
+    my $message = `git log -1 --pretty=%B $branch`;
+    chomp $message;
     my $answer = '';
     if (!defined $a_force) {
-        $answer = confirm("LOCAL".generatePrefix." ${command} (y/n/i) ");
+        $answer = confirm("\n".generatePrefix."\n  LOCAL\n  ${sha} ${message}  ${command} (y/n/i) ");
     } else {
         $answer = 'y';
     }
@@ -112,7 +116,11 @@ sub deleteRemoteBranch {
     my $remoteBranch = $branch;
     $remoteBranch =~ tr/\// /;
     my $command = "git push --delete $a_remote $remoteBranch";
-    my $answer = confirm("REMOTE".generatePrefix()." ${command} (y/n/i) ");
+    my $sha = `git rev-parse --short $a_remote/$remoteBranch`;
+    my $message = `git log -1 --pretty=%B $a_remote/$remoteBranch`;
+    chomp $sha;
+    chomp $message;
+    my $answer = confirm("\n".generatePrefix."\n  REMOTE\n  ${sha} ${message}  ${command} (y/n/i) ");
     if ($answer =~ /^y/i) {
         runCommand("crumb purge_$branch");
         runCommand($command);
