@@ -50,24 +50,31 @@ vim.g.mapleader = " "
 
 vim.g.flash_winswitch=1
 
+vim.api.nvim_set_keymap(
+  "n",
+  "<leader>bo",
+  ":BufOnly<CR>",
+  { noremap = true }
+)
+
+vim.api.nvim_set_keymap(
+  "n",
+  "<leader>e",
+  ":windo edit<CR>",
+  { noremap = true }
+)
+
+vim.api.nvim_set_keymap(
+  "n",
+  "gb",
+  ":ls<CR>:b<Space>",
+  { noremap = true }
+)
+
+-- TODO: test this
+vim.opt.pastetoggle = "<F3>"
+
 --[[
-""""""""""""""""""""""""""""""""""""""""""
-" allows gf to open up amd modules
-set suffixesadd=.js
-autocmd VimEnter * set expandtab
-""""""""""""""""""""""""""""""""""""""""""
-
-""""""""""""""""""""""""""""""""""""""""""
-" venerable shortcuts
-nnoremap gb :ls<CR>:b<Space>
-nnoremap <leader>bo :BufOnly<CR>
-nnoremap <leader>e :windo edit<CR>
-set pastetoggle=<F3>
-
-" switch windows without using ctrl-w
-nnoremap gw <C-w>
-""""""""""""""""""""""""""""""""""""""""""
-
 
 """"""""""""""""""""""""""""""""""""""""""
 " toggle colorcolumn
