@@ -4,7 +4,7 @@ local Plug = vim.fn['plug#'];
 vim.call('plug#begin', '~/.config/nvim/plugged')
 Plug 'junegunn/seoul256.vim'
 -- Plug 'junegunn/vader.vim',  { 'on': 'Vader', 'for': 'vader' }
-Plug 'junegunn/goyo.vim'
+Plug 'folke/zen-mode.nvim'
 Plug 'stevearc/oil.nvim'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-flagship'
@@ -75,13 +75,12 @@ vim.api.nvim_set_keymap(
   { noremap = true }
 )
 
--- TODO: use folke/zen-mode.nvim and replace Goyo
--- vim.api.nvim_set_keymap(
---   "n",
---   "<leader>g",
---   ":Goyo",
---   { noremap = true }
--- )
+vim.api.nvim_set_keymap(
+  "n",
+  "<leader>z",
+  ":ZenMode<CR>",
+  { noremap = true }
+)
 
 -- TODO
 -- " quick-fix window always spans windows at bottom
