@@ -74,22 +74,21 @@ vim.api.nvim_set_keymap(
 -- TODO: test this
 vim.opt.pastetoggle = "<F3>"
 
---[[
-
-""""""""""""""""""""""""""""""""""""""""""
-" toggle colorcolumn
-function! GetCC()
-  let b:defaultCC = 80
-  if &colorcolumn
-    set colorcolumn=0
+function GetCC()
+  local defaultCC = "80"
+  if vim.o.colorcolumn == defaultCC then
+    vim.opt.colorcolumn = "0"
   else
-    execute "set colorcolumn=".b:defaultCC
-  endif
-endfunction
+    vim.opt.colorcolumn = defaultCC
+  end
+end
+vim.keymap.set(
+  "n",
+  "<leader>cc",
+  GetCC, { noremap = true }
+)
 
-nnoremap <leader>cc :call GetCC()<CR>
-""""""""""""""""""""""""""""""""""""""""""
-
+--[[
 
 """"""""""""""""""""""""""""""""""""""""""
 " brace-jump
