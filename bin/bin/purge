@@ -86,11 +86,11 @@ sub deleteLocalBranch {
     my $command = "git branch -D $branch";
     my $sha = `git rev-parse --short $branch`;
     chomp $sha;
-    my $message = `git log -1 --pretty=%B $branch`;
+    my $message = `git log -1 --pretty=%B $branch | first`;
     chomp $message;
     my $answer = '';
     if (!defined $a_force) {
-        $answer = confirm("\n".generatePrefix."\n  LOCAL\n  ${sha} ${message}  ${command} (y/n/i) ");
+        $answer = confirm("\n".generatePrefix." LOCAL\n${sha} ${message}\n${command} (y/n/i) ");
     } else {
         $answer = 'y';
     }
@@ -117,10 +117,10 @@ sub deleteRemoteBranch {
     $remoteBranch =~ tr/\// /;
     my $command = "git push --delete $a_remote $remoteBranch";
     my $sha = `git rev-parse --short $a_remote/$remoteBranch`;
-    my $message = `git log -1 --pretty=%B $a_remote/$remoteBranch`;
+    my $message = `git log -1 --pretty=%B $a_remote/$remoteBranch | first`;
     chomp $sha;
     chomp $message;
-    my $answer = confirm("\n".generatePrefix."\n  REMOTE\n  ${sha} ${message}  ${command} (y/n/i) ");
+    my $answer = confirm("\n".generatePrefix." REMOTE\n${sha} ${message}\n${command} (y/n/i) ");
     if ($answer =~ /^y/i) {
         runCommand("crumb purge_$branch");
         runCommand($command);
