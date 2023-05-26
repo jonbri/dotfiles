@@ -5,7 +5,11 @@ use strict;
 use Getopt::Long;
 
 my $home=$ENV{HOME};
+my $dotConfig="$home/.config";
+my $zargsConfig="$dotConfig/zargs";
 my $dotfiles_dir = $ENV{"DOTFILES_DIR"};
+my $binbin = "$dotfiles_dir/bin/bin";
+my $zargsPopulate="$binbin/zargs-populate";
 my $a_install;
 my $a_list;
 my $a_edit;
@@ -41,7 +45,7 @@ sub getFirstNonOptionArg {
 }
 
 sub printZargs {
-    print `ls -l $home/.config/jonbri-zargs/zargs | tail -n +2 | awk -e '{ print \$NF }'`;
+    print `ls -l $zargsConfig | tail -n +2 | awk -e '{ print \$NF }'`;
 }
 
 MAIN: {
@@ -60,27 +64,25 @@ MAIN: {
     }
 
     if (defined $a_install) {
-        print `$dotfiles_dir/zargs\n`;
-        exit 0;
-    }
-
-    if (defined $a_list) {
-        printZargs();
+        print "installing...\n";
+        `mkdir -p $zargsConfig`;
+        `rm -Rf $zargsConfig`;
+        print `$zargsPopulate\n`;
         exit 0;
     }
 
     if (defined $a_edit) {
-        system("nvim", "$dotfiles_dir/zargs");
+        system("nvim", "$zargsPopulate");
         exit 0;
     }
 
     # no args, just show list
-    if (!defined $firstArg) {
+    if (defined $a_list || !defined $firstArg) {
         printZargs();
         exit 0;
     }
 
-    my $files = `cat $home/.config/jonbri-zargs/zargs/$firstArg | xargs`;
+    my $files = `cat $zargsConfig/$firstArg | xargs`;
     system("nvim $files");
 }
 
