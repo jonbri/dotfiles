@@ -1,3 +1,5 @@
+require('togglecc');
+
 local Plug = vim.fn['plug#'];
 vim.call('plug#begin', '~/.config/nvim/plugged')
 Plug 'junegunn/seoul256.vim'
@@ -80,20 +82,6 @@ vim.api.nvim_set_keymap(
 --   ":Goyo",
 --   { noremap = true }
 -- )
-
-function GetCC()
-  local defaultCC = "80"
-  if vim.o.colorcolumn == defaultCC then
-    vim.opt.colorcolumn = "0"
-  else
-    vim.opt.colorcolumn = defaultCC
-  end
-end
-vim.keymap.set(
-  "n",
-  "<leader>cc",
-  GetCC, { noremap = true }
-)
 
 -- TODO
 -- " quick-fix window always spans windows at bottom
