@@ -3,7 +3,7 @@ require('togglecc');
 local Plug = vim.fn['plug#'];
 vim.call('plug#begin', '~/.config/nvim/plugged')
 Plug 'junegunn/seoul256.vim'
--- Plug 'junegunn/vader.vim',  { 'on': 'Vader', 'for': 'vader' }
+Plug 'junegunn/vader.vim'
 Plug 'folke/zen-mode.nvim'
 Plug 'stevearc/oil.nvim'
 Plug 'tpope/vim-fugitive'
@@ -49,31 +49,13 @@ require("oil").setup({
 vim.keymap.set("n", "-", require("oil").open, { desc = "Open parent directory" })
 
 vim.g.mapleader = " "
--- TODO: test these
-vim.opt.pastetoggle = "<F3>"
 vim.opt.showtabline = 2
 vim.g.flash_winswitch=1
+vim.opt.mouse = "";
 
-vim.api.nvim_set_keymap(
-  "n",
-  "<leader>bo",
-  ":BufOnly<CR>",
-  { noremap = true }
-)
-
-vim.api.nvim_set_keymap(
-  "n",
-  "<leader>e",
-  ":windo edit<CR>",
-  { noremap = true }
-)
-
-vim.api.nvim_set_keymap(
-  "n",
-  "gb",
-  ":ls<CR>:b<Space>",
-  { noremap = true }
-)
+vim.keymap.set("n", "<leader>bo", ":BufOnly<CR>", {})
+vim.keymap.set("n", "e", ":windo edit<CR>", {})
+vim.keymap.set("n", "gb", ":ls<CR>:b<Space>", {})
 
 vim.api.nvim_set_keymap(
   "n",
@@ -81,10 +63,4 @@ vim.api.nvim_set_keymap(
   ":ZenMode<CR>",
   { noremap = true }
 )
-
--- TODO
--- " quick-fix window always spans windows at bottom
--- " https://stackoverflow.com/a/47077341/2295034
--- au FileType qf wincmd J
-
 
