@@ -2,7 +2,7 @@ local Plug = vim.fn['plug#'];
 vim.call('plug#begin', '~/.config/nvim/plugged')
 Plug 'junegunn/seoul256.vim'
 Plug 'junegunn/vader.vim'
-Plug 'folke/zen-mode.nvim'
+Plug 'pocco81/true-zen.nvim'
 Plug 'stevearc/oil.nvim'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-flagship'
@@ -54,7 +54,7 @@ vim.keymap.set(
 vim.keymap.set(
   "n",
   "<leader>z",
-  ":ZenMode<CR>",
+  ":TZAtaraxis<CR>",
   {}
 )
 
