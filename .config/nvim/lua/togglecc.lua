@@ -1,5 +1,4 @@
-function GetCC()
-    print "in function";
+local function GetCC()
   local defaultCC = "80"
   if vim.o.colorcolumn == defaultCC then
     vim.opt.colorcolumn = "0"
@@ -8,9 +7,4 @@ function GetCC()
   end
 end
 
-vim.keymap.set(
-  "n",
-  "<leader>cc",
-  GetCC, { noremap = true }
-)
-
+vim.keymap.set( "n", "<leader>cc", GetCC, {})

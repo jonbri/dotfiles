@@ -1,5 +1,3 @@
-require('togglecc');
-
 local Plug = vim.fn['plug#'];
 vim.call('plug#begin', '~/.config/nvim/plugged')
 Plug 'junegunn/seoul256.vim'
@@ -64,3 +62,4 @@ vim.api.nvim_set_keymap(
   { noremap = true }
 )
 
+require('togglecc');
