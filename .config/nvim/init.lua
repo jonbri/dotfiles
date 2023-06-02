@@ -1,13 +1,20 @@
 vim.g.mapleader = " "
 vim.g.flash_winswitch = 1
 vim.opt.showtabline = 2
-vim.opt.mouse = "";
+
+if not vim.g.vscode then
+    vim.opt.mouse = "";
+end
 
 require('plugins');
 
-vim.keymap.set("n", "<leader>bo", ":BufOnly<CR>", {})
-vim.keymap.set("n", "<leader>e", ":windo edit<CR>", {})
-vim.keymap.set("n", "gb", ":ls<CR>:b<Space>", {})
+if not vim.g.vscode then
+    vim.keymap.set("n", "<leader>bo", ":BufOnly<CR>", {})
+    vim.keymap.set("n", "<leader>e", ":windo edit<CR>", {})
+    vim.keymap.set("n", "gb", ":ls<CR>:b<Space>", {})
+end
 
-require('togglecc');
+if not vim.g.vscode then
+    require('togglecc');
+end
 
