@@ -17,17 +17,19 @@ sub help() {
 
 name - name your host
 
+config file: $HOME/name
+
 USAGE:
   >> name [name] [options]
 
 Options:
-  --report (-r) Just show name
+  --report (-r) Print name (default)
   --delete (-d) Delete name file
   --help   (-h) See this message
 
 EXAMPLES:
-  >> name
-  >> name wsl2
+  >> name      # show name
+  >> name wsl2 # set name
 
 HELP
 }
