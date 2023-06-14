@@ -36,3 +36,6 @@
 
 [gitreview]
     remote = origin
+
+[diff]
+    renameLimit = 800
