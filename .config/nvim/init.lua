@@ -19,3 +19,5 @@ if not vim.g.vscode then
     require('togglecc');
 end
 
+vim.cmd [[ source /home/jonbri/dotfiles/.config/nvim/vimrc.vim ]]
+
