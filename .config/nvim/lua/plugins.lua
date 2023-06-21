@@ -5,6 +5,7 @@ if not vim.g.vscode then
     Plug 'junegunn/vader.vim'
     Plug 'pocco81/true-zen.nvim'
     Plug 'stevearc/oil.nvim'
+    Plug 'tpope/vim-projectionist'
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-flagship'
     Plug 'tpope/vim-unimpaired'
