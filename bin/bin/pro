@@ -1,0 +1,75 @@
+#!/usr/bin/perl -w
+# pro - projections management
+
+use strict;
+
+use Getopt::Long;
+
+my $a_delete;
+my $a_help;
+my $DOTFILES_DIR = $ENV{"DOTFILES_DIR"};
+my $PROJECTIONS_DIR = "$DOTFILES_DIR/projections";
+my $HOME = $ENV{"HOME"};
+
+sub help() {
+    print STDOUT <<'HELP';
+
+pro - projections management
+
+USAGE:
+  >> pro [pattern] [options]
+
+Options:
+  --delete (-d) Remove projections
+  --help   (-h) See this message
+
+EXAMPLES:
+  >> pro    # install projections
+  >> pro -d # delete projections
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'delete' => \$a_delete,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    # TODO: `projections` dir can match file-system to remove some hard-coding
+    # TODO: array driven
+    # TODO: glob support
+
+    if (defined $a_delete) {
+        print "deleting projections...\n";
+        `rm -f ${HOME}/design-system-filament-ui/.projections.json`;
+        `rm -f ${HOME}/design-system-site/.projections.json`;
+        `rm -f ${HOME}/b/design-system-filament-ui/.projections.json`;
+        `rm -f ${HOME}/b/design-system-site/.projections.json`;
+        print "done\n";
+        exit 0;
+    }
+
+    print "installing projections...\n";
+    `ln -sf ${PROJECTIONS_DIR}/fui/.projections.json ${HOME}/design-system-filament-ui/.projections.json`;
+    `ln -sf ${PROJECTIONS_DIR}/fui/.projections.json ${HOME}/b/design-system-filament-ui/.projections.json`;
+    `ln -sf ${PROJECTIONS_DIR}/site/.projections.json ${HOME}/design-system-site/.projections.json`;
+    `ln -sf ${PROJECTIONS_DIR}/site/.projections.json ${HOME}/b/design-system-site/.projections.json`;
+    print "done\n";
+    exit 0;
+}

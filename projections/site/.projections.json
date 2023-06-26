@@ -1,0 +1,17 @@
+{
+  "components/*.tsx": {
+    "type": "components"
+  },
+  "content/*.mdx": {
+    "type": "content"
+  },
+  "pages/*.tsx": {
+    "type": "pages"
+  },
+  "util/*.ts": {
+    "type": "util"
+  },
+  "lib/*.ts": {
+    "type": "lib"
+  }
+}

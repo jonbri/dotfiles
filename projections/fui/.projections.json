@@ -1,0 +1,6 @@
+{
+  "src/components/*.tsx": {
+    "type": "components",
+    "alternate": "src/components/{dirname}/__tests__/{basename}.spec.tsx"
+  }
+}
