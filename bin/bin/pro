@@ -5,6 +5,7 @@ use strict;
 
 use Getopt::Long;
 
+my $a_status;
 my $a_delete;
 my $a_help;
 my $DOTFILES_DIR = $ENV{"DOTFILES_DIR"};
@@ -21,10 +22,12 @@ USAGE:
 
 Options:
   --delete (-d) Remove projections
+  --status (-s) Are projections present?
   --help   (-h) See this message
 
 EXAMPLES:
   >> pro    # install projections
+  >> pro -s # display status
   >> pro -d # delete projections
 
 HELP
@@ -41,6 +44,7 @@ sub getFirstNonOptionArg {
 MAIN: {
     GetOptions(
         'delete' => \$a_delete,
+        'status' => \$a_status,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -61,6 +65,16 @@ MAIN: {
         `rm -f ${HOME}/design-system-site/.projections.json`;
         `rm -f ${HOME}/b/design-system-filament-ui/.projections.json`;
         `rm -f ${HOME}/b/design-system-site/.projections.json`;
+        print "done\n";
+        exit 0;
+    }
+
+    if (defined $a_status) {
+        print "projections:\n";
+        print "  ".`ls ${HOME}/design-system-filament-ui/.projections.json`;
+        print "  ".`ls ${HOME}/design-system-site/.projections.json`;
+        print "  ".`ls ${HOME}/b/design-system-filament-ui/.projections.json`;
+        print "  ".`ls ${HOME}/b/design-system-site/.projections.json`;
         print "done\n";
         exit 0;
     }
