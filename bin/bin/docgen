@@ -1,0 +1,41 @@
+#!/bin/bash
+
+SITE="$HOME/design-system-site";
+FUI="$HOME/design-system-filament-ui";
+SITE_DOCGEN="$SITE/node_modules/@sas/filament-ui/docgen"
+FUI_DOCGEN="$FUI/build/docgen"
+FUI_COMPONENTS="${FUI_DOCGEN}/components";
+SITE_COMPONENTS="${SITE_DOCGEN}/components";
+
+cd $FUI
+yarn build
+yarn docgen
+
+# copy FUI docgen to site
+rm -Rf $SITE_DOCGEN
+cp -R $FUI_DOCGEN $SITE_DOCGEN
+rm -Rf $SITE/.next
+
+# format FUI docgen
+for path in $FUI_COMPONENTS/*; do
+  filename=$(basename $path)
+  echo "formatting $filename..."
+  FILE="${FUI_COMPONENTS}/${filename}";
+  FILE_FORMATTED="${FUI_COMPONENTS}/${filename}.formatted";
+  python -m json.tool "$FILE" > "$FILE_FORMATTED"
+  cat "$FILE_FORMATTED" > "$FILE"
+  rm "$FILE_FORMATTED"
+done
+
+# format site docgen
+for path in $SITE_COMPONENTS/*; do
+  filename=$(basename $path)
+  echo "formatting $filename..."
+  FILE="${SITE_COMPONENTS}/${filename}";
+  FILE_FORMATTED="${SITE_COMPONENTS}/${filename}.formatted";
+  python -m json.tool "$FILE" > "$FILE_FORMATTED"
+  cat "$FILE_FORMATTED" > "$FILE"
+  rm "$FILE_FORMATTED"
+done
+
+echo 'done'
