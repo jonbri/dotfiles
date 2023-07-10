@@ -21,3 +21,11 @@ end
 
 vim.cmd [[ source /home/jonbri/dotfiles/.config/nvim/vimrc.vim ]]
 
+vim.g.projectionist_heuristics = {
+    ["*"] = {
+    -- ["/home/jonbri/icecoldnugrape/*"] = {
+        ["components/*"] = {
+            type = "component"
+        }
+    }
+}
