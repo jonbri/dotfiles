@@ -15,7 +15,7 @@ const { exec } = require('child_process');
 // used to determine which Gerrit project to use for the lookup
 //
 // Output format is space-delimited: {server} {port} {project} {ref}
-// Example: gerrit-html5.mycompany.com 29418 htmlcommons-samples/openui-honeycomb refs/changes/25/31725/4
+// Example: gerrit-html5.mycompany.com 29418 html/myproject refs/changes/2/1000/4
 
 // global vars
 let sServer;

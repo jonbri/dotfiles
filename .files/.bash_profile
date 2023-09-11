@@ -11,12 +11,6 @@ else
     echo $NC > $NC_CACHE_FILE
 fi
 
-export UI5=${HOME}/dev
-export OPENUIFRAMEWORK=$UI5/openui-framework
-export OPENUIHONEYCOMB=$UI5/openui-honeycomb
-export OPENUISDK=$UI5/openui-sdk
-export OPENUITHEMES=$UI5/openui-framework-themes
-
 export DOTFILES_DIR=${HOME}/dotfiles
 export BINBIN=${DOTFILES_DIR}/bin/bin
 export TMUX_BUFFER=/tmp/_tmux-buffer.txt
@@ -108,10 +102,6 @@ alias kj="k java"
 alias kja="k java --yes_all"
 alias kd="k doom"
 alias kda="k doom --yes_all"
-alias hon="p --quiet work && cd $OPENUIHONEYCOMB"
-alias frame="p --quiet work && cd $OPENUIFRAMEWORK"
-alias sdk="p --quiet work && cd $OPENUISDK"
-alias theme="cd $OPENUITHEMES"
 alias nova0="source nc-set nova0"
 alias nova1="source nc-set nova1"
 alias nova2="source nc-set nova2"
@@ -125,7 +115,6 @@ alias bowlingball="cd $HOME/bowlingball && persona home"
 alias site="cd $HOME/d*-s*-s*e && persona work"
 alias siteb="cd $HOME/b/d*-s*-s*e && persona work"
 alias grape="cd $HOME/icecoldnugrape && persona home"
-alias ui5="cd $HOME/ui5 && persona work"
 alias apps="cd $NC"/../apps
 alias snip="cd $NC"/../nova-snippets
 alias showcase="cd $NC"/apps/showcase/ui
