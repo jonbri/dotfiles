@@ -12,7 +12,6 @@ if not vim.g.vscode then
     Plug 'tpope/vim-scriptease'
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-surround'
-    Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-speeddating'
     Plug 'tpope/vim-eunuch'
     Plug 'tpope/vim-dispatch'
@@ -32,6 +31,7 @@ if not vim.g.vscode then
     Plug 'jonbri/vim-dictionary'
     Plug 'AndrewRadev/discotheque.vim'
     Plug 'github/copilot.vim'
+    Plug 'numToStr/Comment.nvim'
     vim.call('plug#end');
 
     require("oil").setup({
@@ -90,7 +90,6 @@ else
     Plug 'tpope/vim-unimpaired'
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-surround'
-    Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-abolish'
     -- Plug 'tpope/vim-capslock'
     -- Plug 'duff/vim-bufonly'
@@ -103,6 +102,9 @@ else
     Plug 'jonbri/vim-zargs'
     -- Plug 'jonbri/vim-dictionary'
     Plug 'AndrewRadev/discotheque.vim'
+    Plug 'numToStr/Comment.nvim'
     vim.call('plug#end');
 end
+
+require("Comment").setup();
 
