@@ -1,4 +1,76 @@
-#!/bin/bash
+#!/usr/bin/perl -w
 
-yarn test --clearCache
-yarn test "_/$1.spec" --watch
+use strict;
+
+use Getopt::Long;
+
+my $a_once;
+my $a_dryRun;
+my $a_help;
+
+my $home=$ENV{HOME};
+my $NAME_FILE="$home/name";
+
+sub help() {
+    print STDOUT <<'HELP';
+
+just - jest runner
+
+USAGE:
+  >> name [name] [options]
+
+Options:
+  --once    (-o) Just show command
+  --dry-run (-d) Run test just once
+  --help    (-h) See this message
+
+EXAMPLES:
+  >> just Button        # watch test file
+  >> just Button --once # don't watch
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'once' => \$a_once,
+        'dry-run' => \$a_dryRun,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+
+    my $clearCacheCommand = "yarn test --clearCache";
+    print "$clearCacheCommand\n";
+    `$clearCacheCommand`;
+
+    my $watchCommand = "";
+    if (!defined $a_once) {
+        $watchCommand = "--watch";
+    }
+
+    my $command = "yarn test \"_/${firstArg}.spec\" ${watchCommand}";
+    print "$command\n";
+
+    if (defined $a_dryRun) {
+        exit 0;
+    }
+
+    `$command`;
+
+    exit 0;
+}
