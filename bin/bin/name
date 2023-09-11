@@ -10,7 +10,8 @@ my $a_delete;
 my $a_help;
 
 my $home=$ENV{HOME};
-my $NAME_FILE="$home/name";
+my $config="${home}/.config";
+my $NAME_FILE="${config}/name";
 
 sub help() {
     print STDOUT <<'HELP';
@@ -83,3 +84,4 @@ MAIN: {
     printName();
     exit 0;
 }
+
