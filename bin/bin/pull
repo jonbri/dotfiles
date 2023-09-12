@@ -192,7 +192,7 @@ MAIN: {
     chomp($CURRENT_BRANCH);
 
     if ($CURRENT_BRANCH eq $TARGET_BRANCH) {
-        print "already on $TARGET_BRANCH\n";
+        print "on $TARGET_BRANCH\n";
     } else {
         print "switching to $TARGET_BRANCH\n";
     }
