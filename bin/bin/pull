@@ -191,11 +191,7 @@ MAIN: {
     my $CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`;
     chomp($CURRENT_BRANCH);
 
-    if ($CURRENT_BRANCH eq $TARGET_BRANCH) {
-        print "on $TARGET_BRANCH\n";
-    } else {
-        print "switching to $TARGET_BRANCH\n";
-    }
+    print "$TARGET_BRANCH\n";
     runCommand("crumb \"switch: ${CURRENT_BRANCH} -> ${TARGET_BRANCH}\"");
 
     `git checkout $TARGET_BRANCH --quiet`;
