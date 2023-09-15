@@ -1,0 +1,49 @@
+{
+  "workbench.editor.showTabs": false,
+  "editor.minimap.enabled": false,
+  "typescript.updateImportsOnFileMove.enabled": "never",
+  "javascript.updateImportsOnFileMove.enabled": "never",
+  "editor.accessibilitySupport": "off",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.prettierPath": "./node_modules/prettier",
+  "editor.formatOnSave": true,
+  "workbench.startupEditor": "newUntitledFile",
+  "explorer.confirmDragAndDrop": false,
+  "editor.tabSize": 8,
+  "editor.cursorStyle": "line",
+  "editor.insertSpaces": false,
+
+  "editor.lineNumbers": "on",
+  "editor.glyphMargin": false,
+  "git.decorations.enabled": false,
+  "editor.folding": false,
+
+  "editor.wordSeparators": "/\\()\"':,.;<>~!@#$%^&*|+=[]{}`?-",
+  "editor.wordWrap": "off",
+  "files.associations": {
+    "*.json": "jsonc"
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/config": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/*/**": true,
+    "**/mongodb/mongo-volume/**": true,
+    "**/rabbitmq/data/**": true,
+    "**/rabbitmq/logs/**": true
+  },
+  "vscode-neovim.neovimExecutablePaths.linux": "/usr/bin/nvim",
+  "vscode-neovim.neovimInitVimPaths.linux": "/home/jonbri/.config/nvim/init.lua",
+  "vscode-neovim.useWSL": true,
+  "npm.fetchOnlinePackageInfo": false,
+  "github.copilot.advanced": {},
+  "editor.inlineSuggest.enabled": true,
+  // "vscode-neovim.neovimExecutablePaths.win32": "C:\\Program Files (x86)\\nvim-win64\\bin\\nvim.exe",
+  // "vscode-neovim.neovimInitVimPaths.win32": "C:\\Users\\jonbri\\AppData\\Local\\nvim\\init.vim",
+  "security.workspace.trust.untrustedFiles": "open",
+  "vim.vimrc.enable": true,
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  },
+  "window.zoomLevel": 1
+}

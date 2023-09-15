@@ -1,0 +1,14 @@
+[
+  {
+    "key": "alt+.",
+    "command": "notifications.clearAll"
+  },
+  {
+    "key": "ctrl+b",
+    "command": "workbench.action.toggleSidebarVisibility"
+  },
+  {
+    "key": "ctrl+j",
+    "command": "workbench.action.togglePanel"
+  }
+]
