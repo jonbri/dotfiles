@@ -1,3 +1,22 @@
 #!/bin/sh
 
-echo "good"
+NODE_VERSION=`node --version`
+GIT_VERSION=`git --version`
+
+echo "Checking node..."
+if [ -z "${NODE_VERSION}" ]; then
+  echo "node not found"
+  exit 1
+fi
+echo $NODE_VERSION
+
+echo
+echo "Checking git..."
+if [ -z "${GIT_VERSION}" ]; then
+  echo "git not found"
+  exit 1
+fi
+echo $GIT_VERSION
+
+echo
+echo "all good"
