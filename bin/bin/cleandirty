@@ -11,27 +11,28 @@ fi
 
 WORKING_DIR_SHORTHAND=""
 if ! output=$(git diff --exit-code); then
-    WORKING_DIR_SHORTHAND="w"
+    WORKING_DIR_NUM=$(git diff --name-only | wc -l)
+    WORKING_DIR_SHORTHAND="w${WORKING_DIR_NUM}"
 fi
-
 
 CACHE_SHORTHAND=""
 if ! output=$(git diff --cached --exit-code); then
-    CACHE_SHORTHAND="i"
+    CACHE_NUM=$(git diff --cached --name-only | wc -l)
+    CACHE_SHORTHAND="i${CACHE_NUM}"
 fi
 
 UNTRACKED_SHORTHAND=""
 untracked=`git ls-files -z -o --exclude-standard | sed q1 | tr -d '\0'`;
-
 if [ ! -z "${untracked}" ]; then
-    UNTRACKED__SHORTHAND="u"
+    UNTRACKED_NUM=$(git ls-files . --exclude-standard --others | wc -l)
+    UNTRACKED_SHORTHAND="u${UNTRACKED_NUM}"
 fi
 
 ASTERISK=""
-if [ "$WORKING_DIR_SHORTHAND" != "" ] || [ "$CACHE_SHORTHAND" != "" ] || [ "$UNTRACKED__SHORTHAND" != "" ]; then
+if [ "$WORKING_DIR_SHORTHAND" != "" ] || [ "$CACHE_SHORTHAND" != "" ] || [ "$UNTRACKED_SHORTHAND" != "" ]; then
     ASTERISK="*"
 fi
 
-echo "${ASTERISK}${WORKING_DIR_SHORTHAND}${CACHE_SHORTHAND}${UNTRACKED__SHORTHAND}"
+echo "${ASTERISK}${WORKING_DIR_SHORTHAND}${CACHE_SHORTHAND}${UNTRACKED_SHORTHAND}"
 exit 0
 
