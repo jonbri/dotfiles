@@ -70,7 +70,7 @@ MAIN: {
         exit 0;
     }
 
-    `$command`;
+    print "disabled\n";
 
     exit 0;
 }
