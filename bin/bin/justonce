@@ -1,4 +1,4 @@
 #!/bin/bash
 
 yarn test --clearCache
-yarn test "_/$1.spec" --watch
+yarn test "_/$1.spec"
