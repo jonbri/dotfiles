@@ -1,0 +1,4 @@
+#!/bin/bash
+
+WIN_HOME="/mnt/c/Users/jonbri"
+nvim "${WIN_HOME}/Desktop/notes.txt"
