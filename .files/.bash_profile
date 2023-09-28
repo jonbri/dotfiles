@@ -148,6 +148,7 @@ alias pullf="pull -f"
 alias sl="echo 'assuming you mean ls...' && ls"
 alias surf="cd $HOME/surfermoon && persona home"
 alias no="notes"
+alias snow="snowball"
 
 alias b="browse 80 -n example.org"
 alias b3="browse 3000"
