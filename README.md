@@ -25,11 +25,15 @@ sudo apt-get install neovim
 ```
 
 ## NodeJS
-[n](https://www.npmjs.com/package/n): `sudo npm install --global n`
+
+[n](https://www.npmjs.com/package/n) (preferred):
+```sh
+sudo npm install --global n
+```
 
 Manual:
 ```sh
-sudo curl -sL https://deb.nodesource.com/setup_16.x | sudo bash - && sudo apt-get install -y nodejs
+sudo curl -sL https://deb.nodesource.com/setup_18.x | sudo bash - && sudo apt-get install -y nodejs
 ```
 
 ## Global Node Tools
