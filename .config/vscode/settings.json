@@ -13,7 +13,7 @@
   "editor.cursorStyle": "line",
   "editor.insertSpaces": false,
 
-  "editor.lineNumbers": "on",
+  "editor.lineNumbers": "relative",
   "editor.glyphMargin": false,
   "git.decorations.enabled": false,
   "editor.folding": false,
