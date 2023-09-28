@@ -11,17 +11,21 @@ if [ $retVal -ne 0 ]; then
 fi
 
 BRANCH=`git rev-parse --abbrev-ref HEAD`;
-DISTANCE=`distance`
 
 if [ `git rev-parse --verify origin/$BRANCH 2>/dev/null` ]; then
     LEFT_RIGHT=`git rev-list --left-right --count HEAD...origin/$BRANCH | awk -e '{ print $1"-"$2 }'`
     if ! git rev-parse origin/$BRANCH >/dev/null 2>&1; then
-        LEFT_RIGHT="n"
+        echo "?";
+        exit 0;
     fi
 else
-    LEFT_RIGHT="n"
+    echo "?";
+    exit 0;
 fi
 
-# echo "${LEFT_RIGHT} (${DISTANCE})"
+if [ "$LEFT_RIGHT" = "0-0" ]; then
+    exit 0;
+fi
+
 echo $LEFT_RIGHT
 
