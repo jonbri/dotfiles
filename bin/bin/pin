@@ -6,6 +6,7 @@ use strict;
 use Getopt::Long;
 
 my $a_force;
+my $a_dryRun;
 my $a_remote;
 my $a_verbose;
 my $a_help;
@@ -20,6 +21,7 @@ USAGE:
 
 Options:
   --force   (-f) Skip confirmations
+  --dry-run (-d) Just print command
   --remote  (-r) Specify remote
   --verbose (-v) extra logging
   --help    (-h) See this message
@@ -59,6 +61,7 @@ sub confirm($) {
 MAIN: {
     GetOptions(
         'force' => \$a_force,
+        'dry-run' => \$a_dryRun,
         'remote:s' => \$a_remote,
         'verbose' => \$a_verbose,
         'help' => \$a_help
@@ -143,12 +146,18 @@ MAIN: {
             print "$leftright\n";
         }
 
-        confirm("$command (press enter) ");
+        if (! defined $a_dryRun) {
+            confirm("$command (press enter) ");
+        }
     }
 
-    print `crumb pin_$BRANCH`;
-    print `$command`;
-    print "done\n";
+    if (defined $a_dryRun) {
+        print "$command\n";
+    } else {
+        print `crumb pin_$BRANCH`;
+        print `$command`;
+        print "done\n";
+    }
 
     exit 0;
 }
