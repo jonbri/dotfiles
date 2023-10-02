@@ -93,7 +93,7 @@ MAIN: {
     chomp $cleandirty;
     my $leftright = `leftright`;
     chomp $leftright;
-    if ($cleandirty eq 'clean' && $leftright eq '0-0-0') {
+    if ($cleandirty eq '' && $leftright eq '') {
         print "nothing to do\n";
         exit 0;
     }
@@ -128,7 +128,7 @@ MAIN: {
     }
 
     my $command = "git push --force $REMOTE $BRANCH";
-    if (!defined $a_force && $leftright =~ /[\d]+-0/) {
+    if (!defined $a_force && $leftright =~ /^[\d]+-0$/) {
       $command = "git push $REMOTE $BRANCH";
     }
 
@@ -137,7 +137,7 @@ MAIN: {
             print "skipping confirmation\n";
         }
     } else {
-        if ( ! `git rev-parse --verify $REMOTE/$BRANCH 2>/dev/null` ) {
+        if (! `git rev-parse --verify $REMOTE/$BRANCH 2>/dev/null`) {
             print "$REMOTE/$BRANCH does not exist\n";
         } else {
             print "$leftright\n";
