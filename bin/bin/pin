@@ -7,8 +7,9 @@ use Getopt::Long;
 
 my $a_force;
 my $a_dryRun;
-my $a_remote;
+my $a_local;
 my $a_verbose;
+my $a_remote;
 my $a_help;
 
 sub help() {
@@ -22,6 +23,7 @@ USAGE:
 Options:
   --force   (-f) Skip confirmations
   --dry-run (-d) Just print command
+  --local   (-l) Just stage and amend
   --remote  (-r) Specify remote
   --verbose (-v) extra logging
   --help    (-h) See this message
@@ -60,11 +62,12 @@ sub confirm($) {
 
 MAIN: {
     GetOptions(
-        'force' => \$a_force,
+        'help' => \$a_help,
         'dry-run' => \$a_dryRun,
+        'force' => \$a_force,
         'remote:s' => \$a_remote,
+        'local' => \$a_local,
         'verbose' => \$a_verbose,
-        'help' => \$a_help
     ) || (help() && exit 1);
 
     # show help if either arg or option is given
@@ -116,7 +119,13 @@ MAIN: {
       confirm("continue? ");
     }
 
-    `git fetch --quiet`;
+    if (defined $a_local) {
+        if (defined $a_verbose) {
+            print "skipping fetch\n";
+        }
+    } else {
+        `git fetch --quiet`;
+    }
 
     if (`git status --porcelain`) {
         if ($a_verbose) {
@@ -128,6 +137,14 @@ MAIN: {
             confirm("amend and continue? ");
         }
         print `git add . && git commit --quiet --amend --reuse-message=HEAD`;
+    }
+
+    if (defined $a_local) {
+        if (defined $a_verbose) {
+            print "skipping push\n";
+        }
+        print "done\n";
+        exit 0;
     }
 
     my $command = "git push --force $REMOTE $BRANCH";

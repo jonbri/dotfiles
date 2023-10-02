@@ -29,8 +29,8 @@ Options:
   --help    (-h) See this message
 
 EXAMPLES:
-  >> pull branch-name # filter by *branch-name*
-  >> pull 10          # checkout matching PR branch
+  >> pull branch # filter by *branch*
+  >> pull 10     # checkout matching PR branch
 
 HELP
 }
