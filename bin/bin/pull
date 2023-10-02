@@ -15,10 +15,10 @@ my $a_help;
 sub help() {
     print STDOUT <<'HELP';
 
-pull - git pull wrapper
+pull - "git pull" wrapper
 
 USAGE:
-  >> pull [pattern] [options]
+  >> pull (pattern) [options]
 
 Options:
   --force   (-f) Discard outstanding changes
@@ -30,7 +30,7 @@ Options:
 
 EXAMPLES:
   >> pull branch # filter by *branch*
-  >> pull 10     # checkout matching PR branch
+  >> pull 10     # checkout PR branch
 
 HELP
 }
@@ -69,6 +69,7 @@ MAIN: {
         exit 1;
     }
 
+    # exit if not in a git repo
     my $isGit = `isgit`;
     chomp $isGit;
     if ($isGit ne 'true') {
@@ -76,6 +77,7 @@ MAIN: {
         exit 1;
     }
 
+    # exit if repo has no remotes
     my $hasRemote = `hasremote`;
     chomp $hasRemote;
     if ($hasRemote ne 'true') {
@@ -83,6 +85,7 @@ MAIN: {
         exit 1;
     }
 
+    # take care of outstanding changes
     my $cleanDirty = `cleandirty`;
     chomp($cleanDirty);
     if ($cleanDirty ne "") {
@@ -106,8 +109,7 @@ MAIN: {
         print "remote: $REMOTE\n";
     }
 
-    my $FILTER=$firstArg;
-
+    # optionally fetch
     if (defined $a_local) {
         if (defined $a_verbose) {
             print "skipping fetch\n";
@@ -116,6 +118,7 @@ MAIN: {
         `git fetch --all --quiet`;
     }
 
+    my $FILTER=$firstArg;
     if (defined $FILTER && $FILTER =~ '^[\d]+$') {
         my $pr_number = $FILTER;
         my $targetBranch = "pr#$pr_number";

@@ -15,7 +15,7 @@ my $a_help;
 sub help() {
     print STDOUT <<'HELP';
 
-pin - wrapper for "git push"
+pin - "git push" wrapper
 
 USAGE:
   >> pin [options]
@@ -77,10 +77,7 @@ MAIN: {
         exit 1;
     }
 
-    if (!defined $a_remote) {
-        $a_remote = "origin";
-    }
-
+    # exit if not in a git repo
     my $isGit = `isgit`;
     chomp $isGit;
     if ($isGit ne 'true') {
@@ -88,6 +85,7 @@ MAIN: {
         exit 1;
     }
 
+    # exit if no outstanding commits
     my $hasCommits = `hascommits`;
     chomp $hasCommits;
     if ($hasCommits ne 'true') {
@@ -95,6 +93,7 @@ MAIN: {
         exit 1;
     }
 
+    # exit if no outstanding changes
     my $cleandirty = `cleandirty`;
     chomp $cleandirty;
     my $leftright = `leftright`;
@@ -102,6 +101,10 @@ MAIN: {
     if ($cleandirty eq '' && $leftright eq '') {
         print "nothing to do\n";
         exit 0;
+    }
+
+    if (!defined $a_remote) {
+        $a_remote = "origin";
     }
 
     my $BRANCH=`git rev-parse --abbrev-ref HEAD`;
@@ -112,6 +115,7 @@ MAIN: {
     chomp $GIT_EMAIL;
     my $REMOTE=$a_remote;
 
+    # warn if user not found in history
     my $KNOWN_RESULTS=`persona --known-from HEAD~`;
     chomp $KNOWN_RESULTS;
     if ($KNOWN_RESULTS =~ /[@]+.*[\s]+not found$/) {
@@ -119,6 +123,7 @@ MAIN: {
       confirm("continue? ");
     }
 
+    # optionally fetch
     if (defined $a_local) {
         if (defined $a_verbose) {
             print "skipping fetch\n";
@@ -127,6 +132,7 @@ MAIN: {
         `git fetch --quiet`;
     }
 
+    # handle outstanding non-committed changes
     if (`git status --porcelain`) {
         if ($a_verbose) {
             print "outstanding changes\n";
@@ -139,6 +145,7 @@ MAIN: {
         print `git add . && git commit --quiet --amend --reuse-message=HEAD`;
     }
 
+    # exit early if local option is given
     if (defined $a_local) {
         if (defined $a_verbose) {
             print "skipping push\n";
@@ -147,11 +154,13 @@ MAIN: {
         exit 0;
     }
 
+    # generate push command
     my $command = "git push --force $REMOTE $BRANCH";
     if (!defined $a_force && $leftright =~ /^[\d]+-0$/) {
       $command = "git push $REMOTE $BRANCH";
     }
 
+    # confirm before push
     if (defined $a_force) {
         if ($a_verbose) {
             print "skipping confirmation\n";
@@ -162,12 +171,12 @@ MAIN: {
         } else {
             print "$leftright\n";
         }
-
         if (! defined $a_dryRun) {
             confirm("$command (press enter) ");
         }
     }
 
+    # optionally execute push command
     if (defined $a_dryRun) {
         print "$command\n";
     } else {
