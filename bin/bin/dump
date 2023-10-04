@@ -1,0 +1,85 @@
+#!/usr/bin/perl -w
+# dump - show tmux copy buffer
+
+use strict;
+use POSIX;
+
+use Getopt::Long;
+
+my $a_verbose;
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+dump - show tmux copy buffer
+
+USAGE:
+  >> dump [options]
+
+Options:
+  --verbose (-v) See more logging
+  --help    (-h) See this message
+
+EXAMPLES:
+  >> dump # open up notepad
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+MAIN: {
+    GetOptions(
+        'verbose' => \$a_verbose,
+        'help' => \$a_help,
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my $home=$ENV{HOME};
+    my $DUMP_DIR="$home/dump";
+    my $datestring = strftime "%Y-%m-%d-%H-%M-%S", localtime;
+    my $DUMP_FILE_PATH="${DUMP_DIR}/${datestring}.txt";
+
+    if (defined $a_verbose) {
+        print "dump dir: $DUMP_DIR\n";
+        print "writing to $DUMP_FILE_PATH\n";
+    }
+
+    runCommand("mkdir -p $DUMP_DIR");
+
+    my $TMUX_BUFFER=`tmux save-buffer -`;
+    if (defined $a_verbose) {
+        print "$TMUX_BUFFER\n";
+    }
+
+    open(my $fh, '>', $DUMP_FILE_PATH) or die "Could not open file '$DUMP_FILE_PATH' $!";
+    print $fh $TMUX_BUFFER;
+    close $fh;
+
+    `notepad.exe $DUMP_FILE_PATH`;
+
+    exit 0;
+}
+
