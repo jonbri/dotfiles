@@ -5,10 +5,10 @@ export PATH=~/bin:$PATH
 
 export NC_CACHE_FILE="${HOME}/.nc"
 if [ -f $NC_CACHE_FILE ]; then
-    export NC=`cat $NC_CACHE_FILE`
+  export NC=`cat $NC_CACHE_FILE`
 else
-    export NC=~/nova-commons
-    echo $NC > $NC_CACHE_FILE
+  export NC=~/nova-commons
+  echo $NC > $NC_CACHE_FILE
 fi
 
 export DOTFILES_DIR=${HOME}/dotfiles
@@ -186,3 +186,4 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH=$BUN_INSTALL/bin:$PATH
 
 welcome
+
