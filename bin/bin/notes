@@ -1,5 +1,5 @@
 #!/bin/bash
 
 WIN_HOME="/mnt/c/Users/jonbri"
-nvim "${WIN_HOME}/Desktop/save/_notes.txt"
+nvim -c "colorscheme blue | normal Gzz" "${WIN_HOME}/Desktop/save/_notes.txt"
 
