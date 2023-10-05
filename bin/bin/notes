@@ -20,6 +20,7 @@ Options:
 
 EXAMPLES:
   >> notes     # start taking notes
+  >> notes foo # edit foo notes file
 
 HELP
 }
@@ -46,6 +47,12 @@ MAIN: {
 
     my $WIN_HOME="/mnt/c/Users/jonbri";
     my $colorscheme = "blue";
+
+    if (defined $firstArg) {
+        system("nvim -c \"colorscheme $colorscheme | normal Gzz\" \"${WIN_HOME}/Desktop/save/_notes_$firstArg.txt\"");
+        exit 0;
+    }
+
     system("nvim -c \"colorscheme $colorscheme | normal Gzz\" \"${WIN_HOME}/Desktop/save/_notes.txt\"");
 
     exit 0;
