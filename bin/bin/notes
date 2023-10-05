@@ -1,5 +1,53 @@
-#!/bin/bash
+#!/usr/bin/perl -w
+# notes - take quick notes
 
-WIN_HOME="/mnt/c/Users/jonbri"
-nvim -c "colorscheme blue | normal Gzz" "${WIN_HOME}/Desktop/save/_notes.txt"
+use strict;
+
+use Getopt::Long;
+
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+notes - take quick notes
+
+USAGE:
+  >> notes [options]
+
+Options:
+  --help    (-h) See this message
+
+EXAMPLES:
+  >> notes     # start taking notes
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help,
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my $WIN_HOME="/mnt/c/Users/jonbri";
+    my $colorscheme = "blue";
+    system("nvim -c \"colorscheme $colorscheme | normal Gzz\" \"${WIN_HOME}/Desktop/save/_notes.txt\"");
+
+    exit 0;
+}
 
