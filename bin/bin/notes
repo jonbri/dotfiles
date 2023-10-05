@@ -5,6 +5,7 @@ use strict;
 
 use Getopt::Long;
 
+my $a_list;
 my $a_help;
 
 sub help() {
@@ -16,7 +17,8 @@ USAGE:
   >> notes [options]
 
 Options:
-  --help    (-h) See this message
+  --list (-l) List notes files
+  --help (-h) See this message
 
 EXAMPLES:
   >> notes     # start taking notes
@@ -33,8 +35,17 @@ sub getFirstNonOptionArg {
     return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
 }
 
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
 MAIN: {
     GetOptions(
+        'list' => \$a_list,
         'help' => \$a_help,
     ) || (help() && exit 1);
 
@@ -45,15 +56,28 @@ MAIN: {
         exit 1;
     }
 
-    my $WIN_HOME="/mnt/c/Users/jonbri";
     my $colorscheme = "blue";
+    my $WIN_HOME="/mnt/c/Users/jonbri";
+    my $SAVE_DIR="${WIN_HOME}/Desktop/save";
 
-    if (defined $firstArg) {
-        system("nvim -c \"colorscheme $colorscheme | normal Gzz\" \"${WIN_HOME}/Desktop/save/_notes_$firstArg.txt\"");
+    if (defined $a_list) {
+        my $lsCommand = "ls ${SAVE_DIR} | grep _notes";
+        if (defined $firstArg) {
+            $lsCommand .= " | grep $firstArg";
+        }
+        $lsCommand .= " | sed -e 's/_notes_//g'"; # remove _notes_
+        $lsCommand .= " | sed -e 's/^[_]*//g'"; # remove leading _
+        $lsCommand .= " | sed -e 's/.txt\$//g'"; # remove .txt
+        print runCommand($lsCommand);
         exit 0;
     }
 
-    system("nvim -c \"colorscheme $colorscheme | normal Gzz\" \"${WIN_HOME}/Desktop/save/_notes.txt\"");
+    if (defined $firstArg) {
+        system("nvim -c \"colorscheme $colorscheme | normal Gzz\" \"${SAVE_DIR}/_notes_$firstArg.txt\"");
+        exit 0;
+    }
+
+    system("nvim -c \"colorscheme $colorscheme | normal Gzz\" \"${SAVE_DIR}/_notes.txt\"");
 
     exit 0;
 }
