@@ -7,8 +7,10 @@ use Getopt::Long;
 
 STDOUT->autoflush(1);
 
-my $a_help;
+my $a_latest;
 my $a_poll;
+my $a_json;
+my $a_help;
 
 my $DELIMITER = "%";
 my $longest = 0;
@@ -20,24 +22,19 @@ sub help() {
 version - see NPM package versions
 
 USAGE:
-  >> version
+  >> version [args]
 
 Options:
-  --poll (-p) Keep polling
+  --latest (-l) See latest versions
+  --poll   (-p) Only works with --latest
+  --json   (-j) Pass --json to yarn command
 
 EXAMPLES:
-  >> version react
-  >> version "react lodash serve"
+  >> version react # see all versions
+  >> version react -l # just the latest
+  >> version react lodash serve
 
 HELP
-}
-
-sub getFirstNonOptionArg {
-    my $arg = shift @ARGV;
-    if (!defined $arg) {
-        return;
-    }
-    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
 }
 
 sub clearScreen {
@@ -61,18 +58,21 @@ sub printResults {
 
 MAIN: {
     GetOptions(
+        'latest' => \$a_latest,
         'poll' => \$a_poll,
+        'json' => \$a_json,
         'help' => \$a_help
     ) || (help() && exit 1);
 
     # show help if either arg or option is given
-    my $firstArg=getFirstNonOptionArg();
-    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+    if (defined $a_help) {
         help();
         exit 1;
     }
 
-    if (!defined $firstArg) {
+    my @args = @ARGV;
+
+    if (! @args) {
         print "Error: Argument required\n";
         help();
         exit 1;
@@ -82,26 +82,58 @@ MAIN: {
         print "starting...\n";
     }
 
+    my $json = "";
+    if (defined $a_json) {
+        $json = "--json";
+    }
+
+    if (!defined $a_poll && !defined $a_latest) {
+        foreach my $arg (@args) {
+            my $package = $arg;
+            chomp $package;
+            my $versionCommand = "npm view $package versions $json 2> /dev/null";
+            my $output = `$versionCommand`;
+            chomp $output;
+            # if @args has length of 1, don't print the package name
+            if (@args > 1) {
+                print "${package}\n${output}\n";
+            } else {
+                print "${output}\n";
+            }
+            if ($arg ne $args[-1]) {
+                print "\n";
+            }
+        }
+        exit 0;
+    }
+
     do {
-        my @packages = split(" ", $firstArg);
         my @results = ();
-        foreach(@packages) {
-            my $package = $_;
+        foreach my $arg (@args) {
+            my $package = $arg;
             my $packageNameLength = length $package;
             if ($packageNameLength > $longest) {
                 $longest = $packageNameLength;
             }
             my $output = `npm view $package versions --json 2> /dev/null | tac | nth 1`;
-            $output =~ s/^\s+|\s+$//g;
-            $output = substr $output, 1, -1;
-            chomp $output;
-            push(@results, "${package}${DELIMITER}${output}");
+            if ($output ne "") {
+                $output =~ s/^\s+|\s+$//g;
+                $output = substr $output, 1, -1;
+                chomp $output;
+                push(@results, "${package}${DELIMITER}${output}");
+            } else {
+                my $output = `npm view $package versions --json 2> /dev/null`;
+                chomp $output;
+                $output =~ s/\"//g;
+                push(@results, "${package}${DELIMITER}${output}");
+            }
+        }
+
+        foreach(@results) {
+            printResults($_);
         }
 
         if (! defined $a_poll) {
-            foreach(@results) {
-                printResults($_);
-            }
             exit 0;
         }
 
