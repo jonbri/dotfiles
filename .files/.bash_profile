@@ -150,6 +150,11 @@ alias surf="cd $HOME/surfermoon && persona home"
 alias no="notes"
 alias snow="snowball"
 
+alias fuit="fui && t"
+alias fuibt="fuib && t"
+alias sitet="site && t"
+alias sitebt="siteb && t"
+
 alias b="browse 80 -n example.org"
 alias b3="browse 3000"
 alias b31="browse 3001"
