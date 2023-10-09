@@ -1,0 +1,99 @@
+#!/usr/bin/perl -w
+# why - "yarn why" wrapper
+
+use strict;
+use Time::HiRes;
+
+use Getopt::Long;
+
+my $delay = 0.2;
+
+my $a_full;
+my $a_short;
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+why - `yarn why` wrapper
+
+USAGE:
+  >> why [args]
+
+Options:
+  --full  (-f) show full "yarn why" output
+  --short (-s) only show version number
+  --help  (-h)
+
+EXAMPLES:
+  >> why react
+  >> why react react-dom
+  >> why react -s # -> 18.2.0
+
+HELP
+}
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help,
+        'full' => \$a_full,
+        'short' => \$a_short,
+    ) || (help() && exit 1);
+
+    if (defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my @args = @ARGV;
+
+    if (defined $a_full) {
+        foreach my $arg (@args) {
+            if (scalar @args > 1) {
+                print "$arg\n";
+            }
+            my @whyResults = runCommand("yarn why $arg");
+            print(@whyResults);
+            if (scalar @args > 1 && $arg ne $args[-1]) {
+                print "\n";
+            }
+        }
+        exit 0;
+    }
+
+    $| = 1;
+    foreach my $arg (@args) {
+        if (!defined $a_short) {
+            print "$arg";
+            Time::HiRes::sleep($delay);
+            print "@";
+        }
+
+        my @whyResults = runCommand("yarn why $arg");
+        my $version = join("", grep(/Found/, @whyResults));
+        $version =~ s/.*Found //;
+        $version =~ s/\"//g;
+        $version =~ s/$arg//;
+        $version =~ s/\@//g;
+        chomp $version;
+
+        print "$version";
+
+        if (!defined $a_short) {
+            Time::HiRes::sleep($delay);
+        }
+
+        print "\n";
+    }
+
+    exit 0;
+}
+
