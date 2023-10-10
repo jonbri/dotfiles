@@ -6,11 +6,12 @@ use Time::HiRes;
 
 use Getopt::Long;
 
-my $delay = 0.2;
-
 my $a_full;
 my $a_short;
+my $a_poll;
 my $a_help;
+
+my $count = 0;
 
 sub help() {
     print STDOUT <<'HELP';
@@ -23,6 +24,7 @@ USAGE:
 Options:
   --full  (-f) show full "yarn why" output
   --short (-s) only show version number
+  --poll  (-p) doesn't work with --full
   --help  (-h)
 
 EXAMPLES:
@@ -41,11 +43,17 @@ sub runCommand($) {
     return @output;
 }
 
+sub clearScreen {
+    print "\033[2J";
+    print "\033[0;0H";
+}
+
 MAIN: {
     GetOptions(
         'help' => \$a_help,
         'full' => \$a_full,
         'short' => \$a_short,
+        'poll' => \$a_poll,
     ) || (help() && exit 1);
 
     if (defined $a_help) {
@@ -69,30 +77,51 @@ MAIN: {
         exit 0;
     }
 
-    $| = 1;
-    foreach my $arg (@args) {
-        if (!defined $a_short) {
-            print "$arg";
-            Time::HiRes::sleep($delay);
-            print "@";
+    do {
+        $| = 1;
+        my @results = ();
+        foreach my $arg (@args) {
+            my $result = "";
+            if (!defined $a_short) {
+                $result .= "$arg";
+                $result .= "@";
+            }
+
+            my @whyResults = runCommand("yarn why $arg");
+            my $version = join("", grep(/Found/, @whyResults));
+            $version =~ s/.*Found //;
+            $version =~ s/\"//g;
+            $version =~ s/$arg//;
+            $version =~ s/\@//g;
+            chomp $version;
+
+            $result .= "$version";
+            $result .= "\n";
+
+            push(@results, "$result");
         }
 
-        my @whyResults = runCommand("yarn why $arg");
-        my $version = join("", grep(/Found/, @whyResults));
-        $version =~ s/.*Found //;
-        $version =~ s/\"//g;
-        $version =~ s/$arg//;
-        $version =~ s/\@//g;
-        chomp $version;
-
-        print "$version";
-
-        if (!defined $a_short) {
-            Time::HiRes::sleep($delay);
+        foreach(@results) {
+            print("$_");
+            Time::HiRes::sleep(0.1);
         }
 
-        print "\n";
-    }
+        if (! defined $a_poll) {
+            exit 0;
+        }
+
+        clearScreen();
+        my $sd = `shortdate`;
+        chomp $sd;
+        print "$sd ($count)\n\n";
+        $count = $count + 1;
+        foreach(@results) {
+            print("$_");
+        }
+
+        print "\npolling...\n";
+        Time::HiRes::sleep(1);
+    } while (1);
 
     exit 0;
 }
