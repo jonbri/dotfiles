@@ -151,6 +151,7 @@ alias sl="echo 'assuming you mean ls...' && ls"
 alias surf="cd $HOME/surfermoon && persona home"
 alias no="notes"
 alias snow="snowball"
+alias win="cd /mnt/c/Users/jonbri/Desktop"
 
 alias fuit="fui && t"
 alias fuibt="fuib && t"
