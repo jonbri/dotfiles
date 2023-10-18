@@ -55,7 +55,7 @@ sub openBrowser($) {
         if (defined $a_hostname) {
             $targetLocalhost = $a_hostname;
         }
-        `cmd.exe /C start http://$targetLocalhost:$port 2>/dev/null`;
+        `open-browser "http://$targetLocalhost:$port"`;
     }
 }
 
