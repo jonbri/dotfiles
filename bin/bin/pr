@@ -1,0 +1,122 @@
+#!/usr/bin/perl -w
+# pr - open GitHub PRs in browser
+
+use strict;
+
+use Getopt::Long;
+
+my $a_all;
+my $a_remote;
+my $a_org;
+my $a_stats;
+my $a_verbose;
+my $a_dryRun;
+my $a_help;
+
+my $PORT = "80";
+
+sub help() {
+    print STDOUT <<'HELP';
+
+pr - open GitHub PRs in browser
+
+USAGE:
+  >> jira [issue-id] [args]
+
+Options:
+  --all     (-a) Show all PRs
+  --org     (-o) Explicit organization
+  --remote  (-r) Custom remote
+  --stats   (-s) Show usage stats
+  --verbose (-v) Print extra logging
+  --dry-run (-d) Don't open browser
+  --help    (-h) See this message
+
+EXAMPLES:
+  >> pr
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+MAIN: {
+    GetOptions(
+        'all' => \$a_all,
+        'org:s' => \$a_org,
+        'remote:s' => \$a_remote,
+        'stats' => \$a_stats,
+        'verbose' => \$a_verbose,
+        'dry-run' => \$a_dryRun,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if (!defined $a_remote) {
+        $a_remote = "origin";
+    }
+
+    my $fullUrl = `git remote get-url --all $a_remote | first`;
+    chomp $fullUrl;
+
+    if (!defined $a_org) {
+        $a_org = $fullUrl;
+        $a_org =~ s/.*://;
+        $a_org =~ s/\/.*//;
+    }
+
+    my $PROJECT = $fullUrl;
+    $PROJECT =~ s/.*\///;
+    $PROJECT =~ s/\.git//;
+
+    my $URL = "https://github.com/${a_org}/${PROJECT}/pulls";
+    if ($firstArg) {
+        $URL = "https://github.com/${a_org}/${PROJECT}/pull/${firstArg}";
+    }
+
+    if ($a_verbose) {
+        print "ORG: $a_org\n";
+        print "PROJECT: $PROJECT\n";
+        print "REMOTE: $a_remote\n";
+        print "URL: $URL\n";
+    }
+
+    if ($a_all) {
+        print runCommand("git ls-remote $a_remote 'pull/*/head'");
+        exit 0;
+    }
+
+    if ($a_stats) {
+        print runCommand("git shortlog -s -n");
+        exit 0;
+    }
+
+    if ($a_dryRun) {
+        exit 0;
+    }
+
+    `open-browser $URL`;
+
+    exit 0;
+}
+
