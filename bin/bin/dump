@@ -6,9 +6,12 @@ use POSIX;
 
 use Getopt::Long;
 
+my $a_write;
 my $a_verbose;
 my $a_dryRun;
 my $a_help;
+
+my $WIN_HOME="/mnt/c/Users/jonbri";
 
 sub help() {
     print STDOUT <<'HELP';
@@ -19,6 +22,7 @@ USAGE:
   >> dump [options]
 
 Options:
+  --write   (-w) Write to desktop
   --verbose (-v) See more logging
   --dry-run (-d) Don't open up editor
   --help    (-h) See this message
@@ -48,6 +52,7 @@ sub runCommand($) {
 
 MAIN: {
     GetOptions(
+        'write' => \$a_write,
         'verbose' => \$a_verbose,
         'dry-run' => \$a_dryRun,
         'help' => \$a_help,
@@ -85,6 +90,11 @@ MAIN: {
     close $fh;
 
     if (defined $a_dryRun) {
+        exit 0;
+    }
+
+    if (defined $a_write) {
+        `cp $DUMP_FILE_PATH ${WIN_HOME}/Desktop`;
         exit 0;
     }
 
