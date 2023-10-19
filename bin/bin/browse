@@ -31,21 +31,13 @@ Options:
   --help     (-h) See this message
 
 EXAMPLES:
-  >> browse 8080        # Open localhost:8080
-  >> browse "3000 3001" # Open multiple
-  >> browse             # same as --list
-  >> browse -g 80 -f    # Open first result
+  >> browse 8080      # Open localhost:8080
+  >> browse 3000 3001 # Open multiple
+  >> browse           # same as --list
+  >> browse -g 80 -f  # Open first result
   >> browse -n example.org
 
 HELP
-}
-
-sub getFirstNonOptionArg {
-    my $arg = shift @ARGV;
-    if (!defined $arg) {
-        return;
-    }
-    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
 }
 
 sub openBrowser($) {
@@ -71,9 +63,8 @@ MAIN: {
         'help' => \$a_help
     ) || (help() && exit 1);
 
-    # show help if either arg or option is given
-    my $firstArg=getFirstNonOptionArg();
-    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+    # show help
+    if (defined $a_help) {
         help();
         exit 1;
     }
@@ -83,8 +74,8 @@ MAIN: {
     }
     my $ports = `netstat -tulpn 2>/dev/null | grep LISTEN | grep ":::" | awk '{ print \$4 }' | sed 's/[^0-9]//g' | grep "$a_grep"`;
 
-    if (!defined $a_all && !defined $a_first && !defined $firstArg || defined $a_list) {
-        print $ports;
+    if (defined $a_list) {
+        print "Detected ports: ${ports}\n";
         exit 0;
     }
 
@@ -113,14 +104,14 @@ MAIN: {
         exit 0;
     }
 
-    if (defined $firstArg) {
-        my @args = split(' ', $firstArg);
-        for my $port (@args) {
-            print "browser opening at port $port...\n";
-            openBrowser($port);
+    my @args = @ARGV;
+
+    if (scalar @ARGV > 0) {
+        print "one\n";
+        foreach my $arg (@args) {
+            print "browser opening at port $arg...\n";
+            openBrowser($arg);
         }
-    } else {
-        print "nothing to do\n";
     }
 
     print "done\n";
