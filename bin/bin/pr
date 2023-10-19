@@ -9,6 +9,7 @@ my $a_all;
 my $a_remote;
 my $a_org;
 my $a_stats;
+my $a_me;
 my $a_filters;
 my $a_verbose;
 my $a_dryRun;
@@ -29,6 +30,7 @@ Options:
   --org     (-o) Explicit organization
   --remote  (-r) Custom remote
   --stats   (-s) Show usage stats
+  --me      (-m) Only show logged-in user PRs
   --filters (-f) Default GitHub PR filters
   --verbose (-v) Print extra logging
   --dry-run (-d) Don't open browser
@@ -63,6 +65,7 @@ MAIN: {
         'org:s' => \$a_org,
         'remote:s' => \$a_remote,
         'stats' => \$a_stats,
+        'me' => \$a_me,
         'filters:s' => \$a_filters,
         'verbose' => \$a_verbose,
         'dry-run' => \$a_dryRun,
@@ -97,9 +100,13 @@ MAIN: {
     if ($a_filters) {
         $filters = $a_filters;
     }
+
     my $URL = "https://github.com/${a_org}/${PROJECT}/pulls?${filters}";
     if ($firstArg) {
         $URL = "https://github.com/${a_org}/${PROJECT}/pull/${firstArg}";
+    }
+    if ($a_me) {
+        $URL = "https://github.com/${a_org}/${PROJECT}/pulls/\@me";
     }
 
     if ($a_verbose) {
