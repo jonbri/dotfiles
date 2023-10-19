@@ -32,14 +32,6 @@ EXAMPLES:
 HELP
 }
 
-sub getFirstNonOptionArg {
-    my $arg = shift @ARGV;
-    if (!defined $arg) {
-        return;
-    }
-    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
-}
-
 MAIN: {
     GetOptions(
         'verbose' => \$a_verbose,
@@ -47,29 +39,29 @@ MAIN: {
         'help' => \$a_help
     ) || (help() && exit 1);
 
-    # show help if either arg or option is given
-    my $firstArg=getFirstNonOptionArg();
-    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+    if (defined $a_help) {
         help();
         exit 1;
-    }
-
-    my $URL = "https://$HOST/issues";
-    if ($firstArg) {
-        $URL = "https://$HOST/browse/$firstArg";
     }
 
     if ($a_verbose) {
         print "HOST: $HOST\n";
         print "PORT: $PORT\n";
-        print "URL: $URL\n";
     }
 
-    if ($a_dryRun) {
-        exit 0;
+    my @args = @ARGV;
+    foreach my $arg (@args) {
+        my $URL = "https://$HOST/issues";
+        if ($arg) {
+            $URL = "https://$HOST/browse/$arg";
+        }
+        if ($a_verbose) {
+            print "URL: $URL\n";
+        }
+        if (!defined $a_dryRun) {
+            `open-browser $URL`;
+        }
     }
-
-    `open-browser $URL`;
 
     exit 0;
 }
