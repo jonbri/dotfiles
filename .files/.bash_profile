@@ -155,6 +155,7 @@ alias surf="cd $HOME/surfermoon && persona home"
 alias no="notes"
 alias snow="snowball"
 alias win="cd /mnt/c/Users/jonbri/Desktop"
+alias prs="fui && pr && site && pr"
 
 alias fuit="fui && t"
 alias fuibt="fuib && t"
