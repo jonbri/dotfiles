@@ -7,7 +7,13 @@ use Getopt::Long;
 
 my $a_list;
 my $a_notepad;
+my $a_dump;
 my $a_help;
+
+my $colorscheme = "blue";
+my $WIN_HOME="/mnt/c/Users/jonbri";
+my $SAVE_DIR="${WIN_HOME}/Desktop/save";
+
 
 sub help() {
     print STDOUT <<'HELP';
@@ -20,6 +26,7 @@ USAGE:
 Options:
   --list    (-l) List notes files
   --notepad (-n) Open in notepad
+  --dump    (-d) Save to desktop
   --help    (-h) See this message
 
 EXAMPLES:
@@ -51,6 +58,7 @@ MAIN: {
     GetOptions(
         'list' => \$a_list,
         'notepad:s' => \$a_notepad,
+        'dump' => \$a_dump,
         'help' => \$a_help,
     ) || (help() && exit 1);
 
@@ -60,10 +68,6 @@ MAIN: {
         help();
         exit 1;
     }
-
-    my $colorscheme = "blue";
-    my $WIN_HOME="/mnt/c/Users/jonbri";
-    my $SAVE_DIR="${WIN_HOME}/Desktop/save";
 
     if (defined $a_list) {
         my $lsCommand = "ls ${SAVE_DIR} | grep _notes";
@@ -86,6 +90,12 @@ MAIN: {
         `notepad.exe ${path}`;
         exit 0;
     }
+
+    if (defined $a_dump) {
+        `cp ${path} ${WIN_HOME}/Desktop`;
+        exit 0;
+    }
+
     system("nvim -c \"colorscheme $colorscheme | normal Gzz\" \"${path}\"");
     exit 0;
 }
