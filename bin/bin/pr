@@ -9,6 +9,7 @@ my $a_all;
 my $a_remote;
 my $a_org;
 my $a_stats;
+my $a_filters;
 my $a_verbose;
 my $a_dryRun;
 my $a_help;
@@ -28,12 +29,14 @@ Options:
   --org     (-o) Explicit organization
   --remote  (-r) Custom remote
   --stats   (-s) Show usage stats
+  --filters (-f) Default GitHub PR filters
   --verbose (-v) Print extra logging
   --dry-run (-d) Don't open browser
   --help    (-h) See this message
 
 EXAMPLES:
   >> pr
+  >> pr -f "q=is%3Adraft" # custom filter
 
 HELP
 }
@@ -60,6 +63,7 @@ MAIN: {
         'org:s' => \$a_org,
         'remote:s' => \$a_remote,
         'stats' => \$a_stats,
+        'filters:s' => \$a_filters,
         'verbose' => \$a_verbose,
         'dry-run' => \$a_dryRun,
         'help' => \$a_help
@@ -89,7 +93,11 @@ MAIN: {
     $PROJECT =~ s/.*\///;
     $PROJECT =~ s/\.git//;
 
-    my $URL = "https://github.com/${a_org}/${PROJECT}/pulls";
+    my $filters = "q=is%3Apr+is%3Aopen+review%3Arequired+-is%3Adraft";
+    if ($a_filters) {
+        $filters = $a_filters;
+    }
+    my $URL = "https://github.com/${a_org}/${PROJECT}/pulls?${filters}";
     if ($firstArg) {
         $URL = "https://github.com/${a_org}/${PROJECT}/pull/${firstArg}";
     }
