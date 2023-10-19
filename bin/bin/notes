@@ -8,12 +8,12 @@ use Getopt::Long;
 my $a_list;
 my $a_notepad;
 my $a_dump;
+my $a_color;
 my $a_help;
 
 my $colorscheme = "blue";
 my $WIN_HOME="/mnt/c/Users/jonbri";
 my $SAVE_DIR="${WIN_HOME}/Desktop/save";
-
 
 sub help() {
     print STDOUT <<'HELP';
@@ -27,10 +27,12 @@ Options:
   --list    (-l) List notes files
   --notepad (-n) Open in notepad
   --dump    (-d) Save to desktop
+  --color   (-c) Vim color scheme
   --help    (-h) See this message
 
 EXAMPLES:
   >> notes        # start taking notes
+  >> notes -d     # create copy of default notes file on desktop
   >> notes foo    # edit foo notes file
   >> notes -n     # edit default notes file in notepad
   >> notes foo -n # edit foo notes file in notepad
@@ -59,6 +61,7 @@ MAIN: {
         'list' => \$a_list,
         'notepad:s' => \$a_notepad,
         'dump' => \$a_dump,
+        'color:s' => \$a_color,
         'help' => \$a_help,
     ) || (help() && exit 1);
 
@@ -96,6 +99,9 @@ MAIN: {
         exit 0;
     }
 
+    if (defined $a_color) {
+        $colorscheme = $a_color;
+    }
     system("nvim -c \"colorscheme $colorscheme | normal Gzz\" \"${path}\"");
     exit 0;
 }
