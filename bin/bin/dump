@@ -7,6 +7,7 @@ use POSIX;
 use Getopt::Long;
 
 my $a_verbose;
+my $a_dryRun;
 my $a_help;
 
 sub help() {
@@ -19,6 +20,7 @@ USAGE:
 
 Options:
   --verbose (-v) See more logging
+  --dry-run (-d) Don't open up editor
   --help    (-h) See this message
 
 EXAMPLES:
@@ -47,6 +49,7 @@ sub runCommand($) {
 MAIN: {
     GetOptions(
         'verbose' => \$a_verbose,
+        'dry-run' => \$a_dryRun,
         'help' => \$a_help,
     ) || (help() && exit 1);
 
@@ -63,20 +66,27 @@ MAIN: {
     my $DUMP_FILE_PATH="${DUMP_DIR}/${datestring}.txt";
 
     if (defined $a_verbose) {
-        print "dump dir: $DUMP_DIR\n";
-        print "writing to $DUMP_FILE_PATH\n";
+        print "Dump dir: $DUMP_DIR\n";
+        print "Writing to: $DUMP_FILE_PATH\n";
     }
 
     runCommand("mkdir -p $DUMP_DIR");
 
     my $TMUX_BUFFER=`tmux save-buffer -`;
     if (defined $a_verbose) {
+        print "Buffer: \n";
+        print "<<<\n";
         print "$TMUX_BUFFER\n";
+        print ">>>\n";
     }
 
     open(my $fh, '>', $DUMP_FILE_PATH) or die "Could not open file '$DUMP_FILE_PATH' $!";
     print $fh $TMUX_BUFFER;
     close $fh;
+
+    if (defined $a_dryRun) {
+        exit 0;
+    }
 
     `notepad.exe $DUMP_FILE_PATH`;
 

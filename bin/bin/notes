@@ -6,6 +6,7 @@ use strict;
 use Getopt::Long;
 
 my $a_list;
+my $a_notepad;
 my $a_help;
 
 sub help() {
@@ -17,12 +18,15 @@ USAGE:
   >> notes [options]
 
 Options:
-  --list (-l) List notes files
-  --help (-h) See this message
+  --list    (-l) List notes files
+  --notepad (-n) Open in notepad
+  --help    (-h) See this message
 
 EXAMPLES:
-  >> notes     # start taking notes
-  >> notes foo # edit foo notes file
+  >> notes        # start taking notes
+  >> notes foo    # edit foo notes file
+  >> notes -n     # edit default notes file in notepad
+  >> notes foo -n # edit foo notes file in notepad
 
 HELP
 }
@@ -46,6 +50,7 @@ sub runCommand($) {
 MAIN: {
     GetOptions(
         'list' => \$a_list,
+        'notepad:s' => \$a_notepad,
         'help' => \$a_help,
     ) || (help() && exit 1);
 
@@ -72,13 +77,16 @@ MAIN: {
         exit 0;
     }
 
+    my $path = "${SAVE_DIR}/_notes.txt";
     if (defined $firstArg) {
-        system("nvim -c \"colorscheme $colorscheme | normal Gzz\" \"${SAVE_DIR}/_notes_$firstArg.txt\"");
-        exit 0;
+        $path = "${SAVE_DIR}/_notes_$firstArg.txt";
     }
 
-    system("nvim -c \"colorscheme $colorscheme | normal Gzz\" \"${SAVE_DIR}/_notes.txt\"");
-
+    if (defined $a_notepad) {
+        `notepad.exe ${path}`;
+        exit 0;
+    }
+    system("nvim -c \"colorscheme $colorscheme | normal Gzz\" \"${path}\"");
     exit 0;
 }
 
