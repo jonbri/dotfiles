@@ -7,7 +7,7 @@ use Getopt::Long;
 
 my $a_list;
 my $a_notepad;
-my $a_dump;
+my $a_write;
 my $a_print;
 my $a_color;
 my $a_help;
@@ -27,14 +27,14 @@ USAGE:
 Options:
   --list    (-l) List notes files
   --notepad (-n) Open in notepad
-  --dump    (-d) Save to desktop
+  --write   (-w) Save to desktop
   --print   (-p) Print to stdout
   --color   (-c) Vim color scheme
   --help    (-h) See this message
 
 EXAMPLES:
   >> notes        # start taking notes
-  >> notes -d     # create copy of default notes file on desktop
+  >> notes -w     # create copy of default notes file on desktop
   >> notes foo    # edit foo notes file
   >> notes -n     # edit default notes file in notepad
   >> notes foo -n # edit foo notes file in notepad
@@ -62,7 +62,7 @@ MAIN: {
     GetOptions(
         'list' => \$a_list,
         'notepad:s' => \$a_notepad,
-        'dump' => \$a_dump,
+        'write' => \$a_write,
         'print' => \$a_print,
         'color:s' => \$a_color,
         'help' => \$a_help,
@@ -103,7 +103,7 @@ MAIN: {
         exit 0;
     }
 
-    if (defined $a_dump) {
+    if (defined $a_write) {
         `cp ${path} ${WIN_HOME}/Desktop`;
         exit 0;
     }
