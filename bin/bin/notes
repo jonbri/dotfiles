@@ -10,6 +10,8 @@ my $a_notepad;
 my $a_write;
 my $a_print;
 my $a_color;
+my $a_delete;
+my $a_verbose;
 my $a_help;
 
 my $colorscheme = "blue";
@@ -30,6 +32,8 @@ Options:
   --write   (-w) Save to desktop
   --print   (-p) Print to stdout
   --color   (-c) Vim color scheme
+  --delete  (-d) Delete a note file
+  --verbose (-v) Extra logging
   --help    (-h) See this message
 
 EXAMPLES:
@@ -65,6 +69,8 @@ MAIN: {
         'write' => \$a_write,
         'print' => \$a_print,
         'color:s' => \$a_color,
+        'delete' => \$a_delete,
+        'verbose' => \$a_verbose,
         'help' => \$a_help,
     ) || (help() && exit 1);
 
@@ -98,13 +104,45 @@ MAIN: {
     }
 
     if (defined $a_print) {
+        if (defined $firstArg && ! -e $path) {
+            print "Notes file does not exist\n";
+            exit 1;
+        }
+
         print `cat ${path}`;
         print "\n";
         exit 0;
     }
 
     if (defined $a_write) {
+        if (defined $firstArg && ! -e $path) {
+            print "Notes file does not exist\n";
+            exit 1;
+        }
+
         `cp ${path} ${WIN_HOME}/Desktop`;
+        exit 0;
+    }
+
+    if (defined $a_delete) {
+        if (defined $firstArg && ! -e $path) {
+            print "Notes file does not exist\n";
+            exit 1;
+        }
+
+        # first make backup
+        my $backupDir = "${WIN_HOME}/Desktop/save/znotes_backup_${firstArg}.txt";
+        `cp ${path} ${backupDir}`;
+        if (defined $a_verbose) {
+            print "Backup saved to ${backupDir}\n";
+        }
+        if (defined $a_verbose) {
+            print "Removing ${path}...\n";
+        }
+        `rm ${path}`;
+        if (defined $a_verbose) {
+            print "Removed\n";
+        }
         exit 0;
     }
 
