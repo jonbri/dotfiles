@@ -11,6 +11,7 @@ my $a_write;
 my $a_print;
 my $a_color;
 my $a_delete;
+my $a_explorer;
 my $a_verbose;
 my $a_help;
 
@@ -31,14 +32,15 @@ USAGE:
   >> notes [options]
 
 Options:
-  --list    (-l) List notes files
-  --notepad (-n) Open in notepad
-  --write   (-w) Save to desktop
-  --print   (-p) Print to stdout
-  --color   (-c) Vim color scheme
-  --delete  (-d) Delete a note file
-  --verbose (-v) Extra logging
-  --help    (-h) See this message
+  --list     (-l) List notes files
+  --notepad  (-n) Open in notepad
+  --write    (-w) Save to desktop
+  --print    (-p) Print to stdout
+  --color    (-c) Vim color scheme
+  --delete   (-d) Delete a note file
+  --explorer (-d) Open notes dir
+  --verbose  (-v) Extra logging
+  --help     (-h) See this message
 
 EXAMPLES:
   >> notes        # start taking notes
@@ -74,6 +76,7 @@ MAIN: {
         'print' => \$a_print,
         'color:s' => \$a_color,
         'delete' => \$a_delete,
+        'explorer' => \$a_explorer,
         'verbose' => \$a_verbose,
         'help' => \$a_help,
     ) || (help() && exit 1);
@@ -87,6 +90,11 @@ MAIN: {
 
     `mkdir -p ${NOTES_DIR}`;
     `mkdir -p ${NOTES_BACKUP_DIR}`;
+
+    if (defined $a_explorer) {
+        system("explorer.exe `wslpath -w ${NOTES_DIR}`");
+        exit 0;
+    }
 
     if (defined $a_list) {
         if ($a_verbose) {
