@@ -11,7 +11,7 @@ my $a_verbose;
 my $a_dryRun;
 my $a_help;
 
-my $WIN_HOME="/mnt/c/Users/jonbri";
+my $WIN_HOME=$ENV{"WIN_HOME"};
 
 sub help() {
     print STDOUT <<'HELP';

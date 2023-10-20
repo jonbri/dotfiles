@@ -15,7 +15,7 @@ my $a_verbose;
 my $a_help;
 
 my $colorscheme = "blue";
-my $WIN_HOME="/mnt/c/Users/jonbri";
+my $WIN_HOME=$ENV{"WIN_HOME"};
 my $SAVE_DIR="${WIN_HOME}/Desktop/save";
 
 sub help() {

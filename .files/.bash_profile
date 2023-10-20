@@ -14,6 +14,7 @@ fi
 export DOTFILES_DIR=${HOME}/dotfiles
 export BINBIN=${DOTFILES_DIR}/bin/bin
 export TMUX_BUFFER=/tmp/_tmux-buffer.txt
+export WIN_HOME="/mnt/c/Users/${USER}"
 
 export N_PREFIX=$HOME/.n
 mkdir -p $N_PREFIX
@@ -155,7 +156,7 @@ alias sl="echo 'assuming you mean ls...' && ls"
 alias surf="cd $HOME/surfermoon && persona home"
 alias no="notes"
 alias snow="snowball"
-alias win="cd /mnt/c/Users/jonbri/Desktop"
+alias win="cd ${WIN_HOME}/Desktop"
 alias prs="fui && pr && site && pr"
 alias prm="pr --me"
 
@@ -180,7 +181,7 @@ novafast() {
   ticker-install
 
   EXCLUDE=$1
-  NC_PATH=/home/jonbri/nova0/nova-commons
+  NC_PATH=/home/${USER}/nova0/nova-commons
   find ${NC_PATH}/src/nova-commons/src \
     -type d -name "__stories__" \
     -not -ipath "*/*${EXCLUDE}*/*" \
