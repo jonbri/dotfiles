@@ -117,7 +117,12 @@ MAIN: {
     }
 
     if ($a_all) {
-        print runCommand("git ls-remote $a_remote 'pull/*/head'");
+        print runCommand("git ls-remote $a_remote 'pull/*/head' |
+            sed -e 's/refs\\/pull\\///' |
+            sed -e 's/\\/head//' |
+            awk -e 'BEGIN {printf \"%-2s %s\\n\", \"PR\", \"SHA\"} { printf \"%-2s %s\\n\", \$2, \$1 }' |
+            sort -n"
+        );
         exit 0;
     }
 
