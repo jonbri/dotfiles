@@ -59,7 +59,10 @@ MAIN: {
         exit 1;
     }
 
-    my $SERVER = getSecret("jira-server");
+    my $SERVER = $a_server;
+    if (!defined $SERVER) {
+        $SERVER = getSecret("jira-server");
+    }
 
     if ($a_verbose) {
         print "SERVER: $SERVER\n";
@@ -69,6 +72,7 @@ MAIN: {
     # if no args, then exit
     if (!@ARGV) {
         print "nothing to do\n";
+        help();
         exit 0;
     }
 
