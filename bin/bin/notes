@@ -89,6 +89,7 @@ MAIN: {
         $lsCommand .= " | sed -e 's/_notes_//g'"; # remove _notes_
         $lsCommand .= " | sed -e 's/^[_]*//g'"; # remove leading _
         $lsCommand .= " | sed -e 's/.txt\$//g'"; # remove .txt
+        $lsCommand .= " | sed -e 's/^notes\$/default/g'";
         print runCommand($lsCommand);
         exit 0;
     }
