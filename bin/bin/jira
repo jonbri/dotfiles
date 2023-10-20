@@ -5,12 +5,25 @@ use strict;
 
 use Getopt::Long;
 
+my $a_server;
 my $a_verbose;
 my $a_dryRun;
 my $a_help;
 
-my $HOST = "rndjira.sas.com";
 my $PORT = "80";
+
+sub getSecret($) {
+    my ($KEY) = @_;
+    my $EXISTS = `secret ${KEY} --exists`;
+    chomp $EXISTS;
+    if ($EXISTS eq "false") {
+        print "Error: \"${KEY}\" secret not found\n";
+        exit 1;
+    }
+    my $VALUE = `secret ${KEY}`;
+    chomp $VALUE;
+    return $VALUE;
+}
 
 sub help() {
     print STDOUT <<'HELP';
@@ -21,6 +34,7 @@ USAGE:
   >> jira [issue-id] [args]
 
 Options:
+  --server  (-s) Jira server
   --verbose (-v) Print extra logging
   --dry-run (-d) Don't open browser
   --help    (-h) See this message
@@ -34,6 +48,7 @@ HELP
 
 MAIN: {
     GetOptions(
+        'server=s' => \$a_server,
         'verbose' => \$a_verbose,
         'dry-run' => \$a_dryRun,
         'help' => \$a_help
@@ -44,16 +59,24 @@ MAIN: {
         exit 1;
     }
 
+    my $SERVER = getSecret("jira-server");
+
     if ($a_verbose) {
-        print "HOST: $HOST\n";
+        print "SERVER: $SERVER\n";
         print "PORT: $PORT\n";
+    }
+
+    # if no args, then exit
+    if (!@ARGV) {
+        print "nothing to do\n";
+        exit 0;
     }
 
     my @args = @ARGV;
     foreach my $arg (@args) {
-        my $URL = "https://$HOST/issues";
+        my $URL = "https://$SERVER/issues";
         if ($arg) {
-            $URL = "https://$HOST/browse/$arg";
+            $URL = "https://$SERVER/browse/$arg";
         }
         if ($a_verbose) {
             print "URL: $URL\n";
