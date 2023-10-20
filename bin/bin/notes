@@ -8,6 +8,7 @@ use Getopt::Long;
 my $a_list;
 my $a_notepad;
 my $a_dump;
+my $a_print;
 my $a_color;
 my $a_help;
 
@@ -27,6 +28,7 @@ Options:
   --list    (-l) List notes files
   --notepad (-n) Open in notepad
   --dump    (-d) Save to desktop
+  --print   (-p) Print to stdout
   --color   (-c) Vim color scheme
   --help    (-h) See this message
 
@@ -61,6 +63,7 @@ MAIN: {
         'list' => \$a_list,
         'notepad:s' => \$a_notepad,
         'dump' => \$a_dump,
+        'print' => \$a_print,
         'color:s' => \$a_color,
         'help' => \$a_help,
     ) || (help() && exit 1);
@@ -91,6 +94,12 @@ MAIN: {
 
     if (defined $a_notepad) {
         `notepad.exe ${path}`;
+        exit 0;
+    }
+
+    if (defined $a_print) {
+        print `cat ${path}`;
+        print "\n";
         exit 0;
     }
 
