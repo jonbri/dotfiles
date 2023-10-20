@@ -14,9 +14,13 @@ my $a_delete;
 my $a_verbose;
 my $a_help;
 
+my $DEFAULT_NOTE_NAME="_default";
 my $colorscheme = "blue";
-my $WIN_HOME=$ENV{"WIN_HOME"};
-my $SAVE_DIR="${WIN_HOME}/Desktop/save";
+my $WIN_DESKTOP=$ENV{"WIN_DESKTOP"};
+my $WIN_DESKTOP_SAVE=$ENV{"WIN_DESKTOP_SAVE"};
+my $NOTES_DIR="${WIN_DESKTOP_SAVE}/_notes";
+my $BACKUP_DIR_NAME="z_backup";
+my $NOTES_BACKUP_DIR="${NOTES_DIR}/${BACKUP_DIR_NAME}";
 
 sub help() {
     print STDOUT <<'HELP';
@@ -81,22 +85,27 @@ MAIN: {
         exit 1;
     }
 
+    `mkdir -p ${NOTES_DIR}`;
+    `mkdir -p ${NOTES_BACKUP_DIR}`;
+
     if (defined $a_list) {
-        my $lsCommand = "ls ${SAVE_DIR} | grep _notes";
+        if ($a_verbose) {
+            print "NOTES_DIR: ${NOTES_DIR}\n";
+            print "NOTES_BACKUP_DIR: ${NOTES_BACKUP_DIR}\n";
+        }
+
+        my $lsCommand = "ls ${NOTES_DIR} | grep -v ${BACKUP_DIR_NAME}";
         if (defined $firstArg) {
             $lsCommand .= " | grep $firstArg";
         }
-        $lsCommand .= " | sed -e 's/_notes_//g'"; # remove _notes_
-        $lsCommand .= " | sed -e 's/^[_]*//g'"; # remove leading _
-        $lsCommand .= " | sed -e 's/.txt\$//g'"; # remove .txt
-        $lsCommand .= " | sed -e 's/^notes\$/default/g'";
+        $lsCommand .= " | sed -e 's/.txt\$//g'";
         print runCommand($lsCommand);
         exit 0;
     }
 
-    my $path = "${SAVE_DIR}/_notes.txt";
+    my $path = "${NOTES_DIR}/${DEFAULT_NOTE_NAME}.txt";
     if (defined $firstArg) {
-        $path = "${SAVE_DIR}/_notes_$firstArg.txt";
+        $path = "${NOTES_DIR}/$firstArg.txt";
     }
 
     if (defined $a_notepad) {
@@ -121,7 +130,7 @@ MAIN: {
             exit 1;
         }
 
-        `cp ${path} ${WIN_HOME}/Desktop`;
+        `cp ${path} ${WIN_DESKTOP}`;
         exit 0;
     }
 
@@ -132,7 +141,7 @@ MAIN: {
         }
 
         # first make backup
-        my $backupDir = "${WIN_HOME}/Desktop/save/znotes_backup_${firstArg}.txt";
+        my $backupDir = "${NOTES_BACKUP_DIR}/${firstArg}.txt";
         `cp ${path} ${backupDir}`;
         if (defined $a_verbose) {
             print "Backup saved to ${backupDir}\n";

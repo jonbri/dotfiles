@@ -15,6 +15,8 @@ export DOTFILES_DIR=${HOME}/dotfiles
 export BINBIN=${DOTFILES_DIR}/bin/bin
 export TMUX_BUFFER=/tmp/_tmux-buffer.txt
 export WIN_HOME="/mnt/c/Users/${USER}"
+export WIN_DESKTOP="${WIN_HOME}/desktop"
+export WIN_DESKTOP_SAVE="${WIN_DESKTOP}/save"
 
 export N_PREFIX=$HOME/.n
 mkdir -p $N_PREFIX
