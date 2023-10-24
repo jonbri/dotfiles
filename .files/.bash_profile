@@ -159,7 +159,7 @@ alias surf="cd $HOME/surfermoon && persona home"
 alias no="notes"
 alias snow="snowball"
 alias win="cd ${WIN_HOME}/Desktop"
-alias prs="fui && pr && site && pr"
+alias prs="site && pr && fui && pr"
 alias prm="pr --me"
 
 alias fuit="fui && t"
