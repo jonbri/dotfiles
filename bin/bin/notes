@@ -38,7 +38,7 @@ Options:
   --print    (-p) Print to stdout
   --color    (-c) Vim color scheme
   --delete   (-d) Delete a note file
-  --explorer (-d) Open notes dir
+  --explorer (-e) Open notes dir
   --verbose  (-v) Extra logging
   --help     (-h) See this message
 
