@@ -96,12 +96,13 @@ MAIN: {
         exit 0;
     }
 
-    if (defined $a_list) {
-        if ($a_verbose) {
-            print "NOTES_DIR: ${NOTES_DIR}\n";
-            print "NOTES_BACKUP_DIR: ${NOTES_BACKUP_DIR}\n";
-        }
+    if ($a_verbose) {
+        print "Both active notes and backup notes are stored in Windows filesystem\n";
+        print "NOTES_DIR: ${NOTES_DIR}\n";
+        print "NOTES_BACKUP_DIR: ${NOTES_BACKUP_DIR}\n";
+    }
 
+    if (defined $a_list) {
         my $lsCommand = "ls ${NOTES_DIR} | grep -v ${BACKUP_DIR_NAME}";
         if (defined $firstArg) {
             $lsCommand .= " | grep $firstArg";
