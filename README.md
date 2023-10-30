@@ -1,12 +1,14 @@
 # dotfiles
 
-Run `install` to get started
+- install packages from apt and node (see below)
+- `mkdir -p ~/tools`
+- `./install`
 
 ## Packages
 
 ### apt
 ```sh
-tree tmux vim openssh-server openssh-client g++ curl libssl-dev make net-tools
+openssh-server openssh-client g++ curl libssl-dev make net-tools
 ```
 
 ### Neovim
