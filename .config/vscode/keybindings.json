@@ -10,5 +10,11 @@
   {
     "key": "ctrl+j",
     "command": "workbench.action.togglePanel"
+  },
+  {
+    "key": "ctrl+f5",
+    "command": "workbench.action.reloadWindow",
+    "when": "editorTextFocus"
   }
 ]
+
