@@ -4,7 +4,7 @@ if not vim.g.vscode then
     Plug 'junegunn/seoul256.vim'
     Plug 'junegunn/vader.vim'
     Plug 'pocco81/true-zen.nvim'
-    Plug 'stevearc/oil.nvim'
+    -- Plug 'stevearc/oil.nvim'
     Plug 'tpope/vim-projectionist'
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-flagship'
@@ -17,6 +17,7 @@ if not vim.g.vscode then
     Plug 'tpope/vim-dispatch'
     Plug 'tpope/vim-abolish'
     Plug 'tpope/vim-capslock'
+    Plug 'tpope/vim-vinegar'
     Plug 'duff/vim-bufonly'
     Plug 'jonbri/vim-configure'
     Plug 'jonbri/vim-flash'
@@ -30,28 +31,28 @@ if not vim.g.vscode then
     Plug 'jonbri/vim-zargs'
     Plug 'jonbri/vim-dictionary'
     Plug 'AndrewRadev/discotheque.vim'
-    Plug 'github/copilot.vim'
+    -- Plug 'github/copilot.vim'
     Plug 'numToStr/Comment.nvim'
     vim.call('plug#end');
 
-    require("oil").setup({
-        columns = {},
-        win_options = {
-            number = false
-        },
-        view_options = {
-            show_hidden = true
-        },
-        keymaps = {
-            ["ge"] = "actions.open_cmdline"
-        }
-    });
-    vim.keymap.set(
-      "n",
-      "-",
-      require("oil").open,
-      { desc = "Open parent directory" }
-    )
+    -- require("oil").setup({
+    --    columns = {},
+    --    win_options = {
+    --        number = false
+    --    },
+    --    view_options = {
+    --        show_hidden = true
+    --    },
+    --    keymaps = {
+    --        ["ge"] = "actions.open_cmdline"
+    --    }
+    --});
+    --vim.keymap.set(
+    --  "n",
+    --  "-",
+    --  require("oil").open,
+    --  { desc = "Open parent directory" }
+    -- )
 
     vim.keymap.set(
       "n",
@@ -60,24 +61,25 @@ if not vim.g.vscode then
       {}
     )
 
-    require("oil").setup({
-        columns = {},
-        win_options = {
-            number = false
-        },
-        view_options = {
-            show_hidden = true
-        },
-        keymaps = {
-            ["ge"] = "actions.open_cmdline"
-        }
-    });
-    vim.keymap.set(
-      "n",
-      "-",
-      require("oil").open,
-      { desc = "Open parent directory" }
-    )
+    -- require("oil").setup({
+    --    columns = {},
+    --    win_options = {
+    --        number = false
+    --    },
+    --    view_options = {
+    --        show_hidden = true
+    --    },
+    --    keymaps = {
+    --        ["ge"] = "actions.open_cmdline"
+    --    }
+    --});
+    --vim.keymap.set(
+    --  "n",
+    --  "-",
+    --  require("oil").open,
+    --  { desc = "Open parent directory" }
+    --)
+
     vim.keymap.set(
       "n",
       "<leader>z",
