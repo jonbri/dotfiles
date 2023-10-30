@@ -1,6 +1,8 @@
 [user]
 	name = Jonathan Brink
 	email = jonathandavidbrink@gmail.com
+[init]
+    defaultBranch = main
 [alias]
     l = "!git log --graph --pretty='tformat:%C(yellow)%h{%C(green)%ar{%C(bold blue)%an{%C(red)%d%C(reset) %s' $* | column -t -s '{' | less -FXRS"
     l5 = "!git log -5 --graph --pretty='tformat:%C(yellow)%h{%C(green)%ar{%C(bold blue)%an{%C(red)%d%C(reset) %s' $* | column -t -s '{'"
