@@ -2,6 +2,7 @@
 
 - install packages from apt and node (see below)
 - `mkdir -p ~/tools`
+- `mkdir -p ~/dotfiles/tmp`
 - `./install`
 
 ## Packages
