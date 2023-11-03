@@ -7,6 +7,8 @@ use Getopt::Long;
 
 my $a_help;
 my $a_show;
+my $a_delete;
+my $a_verbose;
 
 my $KEY = "";
 my $FILE = "";
@@ -22,11 +24,14 @@ USAGE:
   >> increment [key] [options]
 
 Options:
-  --show (-s) just print value
+  --show    (-s) just print value
+  --delete  (-d) remove counter file
+  --verbose (-v) print extra info
 
 EXAMPLES:
   >> increment my-key    # increments the "my-key" value
   >> increment my-key -s # print value
+  >> increment my-key -d # remove my-key
 
 HELP
 }
@@ -37,6 +42,14 @@ sub getFirstNonOptionArg {
         return;
     }
     return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
 }
 
 sub render($) {
@@ -50,7 +63,9 @@ sub render($) {
 MAIN: {
     GetOptions(
         'help' => \$a_help,
-        'show' => \$a_show
+        'show' => \$a_show,
+        'delete' => \$a_delete,
+        'verbose' => \$a_verbose
     ) || (help() && exit 1);
 
     # show help if either arg or option is given
@@ -58,6 +73,10 @@ MAIN: {
     if (($firstArg && $firstArg eq "help") || defined $a_help) {
         help();
         exit 1;
+    }
+
+    if (defined $a_verbose) {
+        print "files: ${tmp_dir}\n";
     }
 
     $KEY = $firstArg;
@@ -68,6 +87,19 @@ MAIN: {
     $KEY = uc($KEY);
 
     $FILE = "$tmp_dir/$KEY";
+
+    if (defined $a_delete) {
+      if (! -e $FILE) {
+        print "$FILE does not exist\n";
+        exit 1;
+      }
+      my $command = "rm ${FILE}";
+      print "$command\n";
+      runCommand($command);
+      print "done\n";
+      exit 0;
+    }
+
     if (!defined $a_show && ! -e $FILE) {
       render(0);
       exit 1;
