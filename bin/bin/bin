@@ -1,11 +1,135 @@
-#!/bin/bash
+#!/usr/bin/perl -w
 
-if test -f "$FILE"; then
-    nvim $DOTFILES_DIR/bin/bin/$1
-    exit 0
-fi
+use strict;
 
-touch $DOTFILES_DIR/bin/bin/$1
-chmod 777 $DOTFILES_DIR/bin/bin/$1
-nvim $DOTFILES_DIR/bin/bin/$1
+use Getopt::Long;
+
+my $a_list;
+my $a_exists;
+my $a_delete;
+my $a_help;
+
+my $DOTFILES_DIR = $ENV{"DOTFILES_DIR"};
+my $BINBIN_DIR = "$DOTFILES_DIR/bin/bin";
+my $EDITOR = $ENV{"EDITOR"};
+
+sub help() {
+    print STDERR <<'HELP';
+
+bin - manage bin tools
+
+Options:
+  --list   (-l) List tools
+  --exists (-e) Check if tool exists
+  --delete (-d) Remove tool
+  --help   (-h) See this message
+
+EXAMPLES:
+  >> bin     # edit directory
+  >> bin abc # open or create "abc" tool
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+sub confirm($) {
+    my ($message)=@_;
+    print $message;
+    my $ok=<>;
+    chomp $ok;
+    return $ok;
+}
+
+MAIN: {
+    GetOptions(
+        'list' => \$a_list,
+        'exists' => \$a_exists,
+        'delete' => \$a_delete,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if (defined $a_list) {
+        print `ls -l $BINBIN_DIR | tail -n+2 | awk -e '{ print \$9 }'`;
+        exit 0;
+    }
+
+    if (defined $a_exists) {
+        if (!defined $firstArg) {
+            print "argument required\n";
+            exit 1;
+        }
+        my $targetFile = "$BINBIN_DIR/$firstArg";
+        if (-e $targetFile) {
+            print "true\n";
+        } else {
+            print "false\n";
+        }
+        exit 0;
+    }
+
+    if (defined $a_delete) {
+        if (!defined $firstArg) {
+            print "argument required\n";
+            exit 1;
+        }
+    }
+
+    if (!defined $firstArg) {
+        system("$EDITOR $BINBIN_DIR");
+        exit 0;
+    }
+
+    my $targetFile = "$BINBIN_DIR/$firstArg";
+
+    if (defined $a_delete) {
+        if (-e $targetFile) {
+            print "rm ${targetFile}\n";
+            `rm ${targetFile}`;
+            print "done\n";
+        } else {
+            print "$targetFile not found\n";
+        }
+        exit 0;
+    }
+
+    if (-e $targetFile) {
+        print "${targetFile} exists\n";
+    } else {
+        confirm("${targetFile} does NOT exist. Continue and create? ");
+        my $touchCommand = "touch $targetFile";
+        my $chmodCommand = "chmod 777 $targetFile";
+        print "touchCommand\n";
+        runCommand($touchCommand);
+        print "chmodCommand\n";
+        runCommand($chmodCommand);
+        print "opening in editor...\n";
+        sleep 1;
+    }
+
+    system("$EDITOR $targetFile");
+
+    exit 0;
+}
 

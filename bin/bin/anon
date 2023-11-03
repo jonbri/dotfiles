@@ -42,14 +42,6 @@ sub runCommand($) {
     return @output;
 }
 
-sub confirm($) {
-    my ($message)=@_;
-    print $message;
-    my $ok=<>;
-    chomp $ok;
-    return $ok;
-}
-
 MAIN: {
     GetOptions(
         'restore' => \$a_restore,
