@@ -35,7 +35,7 @@ MAIN: {
 
         print join('', runCommand("ln -sfv $cwd/.files/$_ $home"));
     }
-    print join('', runCommand("ln -sfv $cwd/.config/nvim $home/.config"));
+    print join('', runCommand("ln -sfv $cwd/.config/nvim $home/.config/nvim"));
 
     print "\nUpdating tools...\n";
 
