@@ -7,6 +7,7 @@ use Getopt::Long;
 
 my $a_report;
 my $a_delete;
+my $a_verbose;
 my $a_help;
 
 my $home=$ENV{HOME};
@@ -24,9 +25,10 @@ USAGE:
   >> name [name] [options]
 
 Options:
-  --report (-r) Print name (default)
-  --delete (-d) Delete name file
-  --help   (-h) See this message
+  --report  (-r) Print name (default)
+  --delete  (-d) Delete name file
+  --verbose (-v) Print extra debugging information
+  --help    (-h) See this message
 
 EXAMPLES:
   >> name      # show name
@@ -55,6 +57,7 @@ MAIN: {
     GetOptions(
         'report' => \$a_report,
         'delete' => \$a_delete,
+        'verbose' => \$a_verbose,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -64,6 +67,11 @@ MAIN: {
         help();
         exit 1;
     }
+
+    if (defined $a_verbose) {
+        print "name file: $NAME_FILE\n";
+    }
+
 
     if (defined $a_delete) {
         `rm $NAME_FILE`;
