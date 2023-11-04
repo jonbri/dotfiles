@@ -167,6 +167,8 @@ alias fuibt="fuib && t"
 alias sitet="site && t"
 alias sitebt="siteb && t"
 
+alias wilbur="cd $HOME/wilbur && persona home"
+
 alias b="browse 80 -n example.org"
 alias b3="browse 3000"
 alias b31="browse 3001"
