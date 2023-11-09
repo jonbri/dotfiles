@@ -123,6 +123,7 @@ alias bowlingball="cd $HOME/bowlingball && persona home"
 alias site="cd $HOME/d*-s*-s*e && persona work"
 alias siteb="cd $HOME/b/d*-s*-s*e && persona work"
 alias grape="cd $HOME/icecoldnugrape && persona home"
+alias seeds="cd $HOME/seeds && persona home && $EDITOR -c \"colorscheme morning | normal Gzz\" README.md"
 alias apps="cd $NC"/../apps
 alias snip="cd $NC"/../nova-snippets
 alias capture="tmux capture-pane && sb"
