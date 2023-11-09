@@ -1,6 +1,6 @@
 set -o vi
 export EDITOR=nvim
-export GIT_EDITOR=nvim
+export GIT_EDITOR=$EDITOR
 export PATH=~/bin:$PATH
 
 export NC_CACHE_FILE="${HOME}/.nc"
@@ -64,9 +64,9 @@ alias grhhhhh="git reset HEAD~~~~~"
 alias gcfd="git clean --force -d"
 alias ge="g email"
 alias gstart="g init && ga && git commit -m 'start'"
-alias v="nvim"
-alias vi="nvim"
-alias vim="nvim"
+alias v="$EDITOR"
+alias vi="v"
+alias vim="v"
 alias bram="/usr/bin/vim"
 alias vp="v package.json"
 alias vr="v README.md"
