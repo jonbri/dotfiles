@@ -10,6 +10,7 @@ my $a_notepad;
 my $a_write;
 my $a_print;
 my $a_color;
+my $a_archive;
 my $a_delete;
 my $a_explorer;
 my $a_verbose;
@@ -17,11 +18,35 @@ my $a_help;
 
 my $DEFAULT_NOTE_NAME="_default";
 my $colorscheme = "blue";
+my $home=$ENV{HOME};
 my $WIN_DESKTOP=$ENV{"WIN_DESKTOP"};
 my $WIN_DESKTOP_SAVE=$ENV{"WIN_DESKTOP_SAVE"};
-my $NOTES_DIR="${WIN_DESKTOP_SAVE}/_notes";
+
+my $DESKTOP=$WIN_DESKTOP;
+if (! -d $DESKTOP) {
+    $DESKTOP="${home}/Desktop";
+}
+if (! -d $DESKTOP) {
+    print "Cannot find $DESKTOP\n";
+    print "exiting\n";
+    exit 1;
+}
+
+my $DESKTOP_SAVE=$WIN_DESKTOP_SAVE;
+if (! -d $DESKTOP_SAVE) {
+    $DESKTOP_SAVE="${DESKTOP}/save";
+}
+if (! -d $DESKTOP_SAVE) {
+    print "Cannot find $DESKTOP_SAVE\n";
+    print "exiting\n";
+    exit 1;
+}
+
+my $NOTES_DIR="${DESKTOP_SAVE}/_notes";
 my $BACKUP_DIR_NAME="z_backup";
+my $ARCHIVE_DIR_NAME="z_archive";
 my $NOTES_BACKUP_DIR="${NOTES_DIR}/${BACKUP_DIR_NAME}";
+my $NOTES_ARCHIVE_DIR="${NOTES_DIR}/${ARCHIVE_DIR_NAME}";
 
 sub help() {
     print STDOUT <<'HELP';
@@ -37,6 +62,7 @@ Options:
   --write    (-w) Save to desktop
   --print    (-p) Print to stdout
   --color    (-c) Vim color scheme
+  --archive  (-a) Archive a note file
   --delete   (-d) Delete a note file
   --explorer (-e) Open notes dir
   --verbose  (-v) Extra logging
@@ -68,6 +94,15 @@ sub runCommand($) {
     return @output;
 }
 
+sub confirm($) {
+    my ($message)=@_;
+    print $message;
+    my $ok=<>;
+    chomp $ok;
+    return $ok;
+}
+
+
 MAIN: {
     GetOptions(
         'list' => \$a_list,
@@ -75,6 +110,7 @@ MAIN: {
         'write' => \$a_write,
         'print' => \$a_print,
         'color:s' => \$a_color,
+        'archive' => \$a_archive,
         'delete' => \$a_delete,
         'explorer' => \$a_explorer,
         'verbose' => \$a_verbose,
@@ -90,6 +126,7 @@ MAIN: {
 
     `mkdir -p ${NOTES_DIR}`;
     `mkdir -p ${NOTES_BACKUP_DIR}`;
+    `mkdir -p ${NOTES_ARCHIVE_DIR}`;
 
     if (defined $a_explorer) {
         system("explorer.exe `wslpath -w ${NOTES_DIR}`");
@@ -97,13 +134,13 @@ MAIN: {
     }
 
     if ($a_verbose) {
-        print "Both active notes and backup notes are stored in Windows filesystem\n";
         print "NOTES_DIR: ${NOTES_DIR}\n";
         print "NOTES_BACKUP_DIR: ${NOTES_BACKUP_DIR}\n";
+        print "NOTES_ARCHIVE_DIR: ${NOTES_ARCHIVE_DIR}\n";
     }
 
     if (defined $a_list) {
-        my $lsCommand = "ls ${NOTES_DIR} | grep -v ${BACKUP_DIR_NAME}";
+        my $lsCommand = "ls ${NOTES_DIR} | grep -v ${ARCHIVE_DIR_NAME} | grep -v ${BACKUP_DIR_NAME}";
         if (defined $firstArg) {
             $lsCommand .= " | grep $firstArg";
         }
@@ -133,35 +170,69 @@ MAIN: {
         exit 0;
     }
 
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
+    $year += 1900;
+    $mon += 1;
+    my $timestamp = "$year\_$mon\_$mday\_$hour\_$min\_$sec";
+
+    # make backup
+    my $backupFile = "${NOTES_BACKUP_DIR}/${DEFAULT_NOTE_NAME}";
+    if (defined $firstArg) {
+        $backupFile = "${NOTES_BACKUP_DIR}/$firstArg";
+    }
+    $backupFile = "${backupFile}-${timestamp}.txt";
+    if (! -e $path) {
+        if (defined $a_verbose) {
+            print "Skipping backup since file not found: ${path}\n";
+        }
+    } else {
+        `cp ${path} ${backupFile}`;
+        if (defined $a_verbose) {
+            print "Backup saved to ${backupFile}\n";
+        }
+    }
+
     if (defined $a_write) {
-        if (defined $firstArg && ! -e $path) {
-            print "Notes file does not exist\n";
+        # if (defined $firstArg && ! -e $path) {
+        if (! -e $path) {
+            print "File not found: ${path}\n";
+            exit 1;
+        }
+        `cp ${path} ${DESKTOP}`;
+        exit 0;
+    }
+
+    if (defined $a_archive) {
+        if (! -e $path) {
+            print "File not found: ${path}\n";
             exit 1;
         }
 
-        `cp ${path} ${WIN_DESKTOP}`;
+        my $archiveFile = "${NOTES_ARCHIVE_DIR}/${DEFAULT_NOTE_NAME}";
+        if (defined $firstArg) {
+            $archiveFile = "${NOTES_ARCHIVE_DIR}/$firstArg";
+        }
+        $archiveFile = "${archiveFile}.txt";
+
+        `mv ${path} ${archiveFile}`;
+        if (defined $a_verbose) {
+            print "Archive saved to: ${archiveFile}\n";
+        }
         exit 0;
     }
 
     if (defined $a_delete) {
-        if (defined $firstArg && ! -e $path) {
-            print "Notes file does not exist\n";
+        if (! -e $path) {
+            print "File not found: ${path}\n";
             exit 1;
         }
 
-        # first make backup
-        my $backupDir = "${NOTES_BACKUP_DIR}/${firstArg}.txt";
-        `cp ${path} ${backupDir}`;
-        if (defined $a_verbose) {
-            print "Backup saved to ${backupDir}\n";
-        }
+        confirm("rm ${path} ?");
         if (defined $a_verbose) {
             print "Removing ${path}...\n";
         }
         `rm ${path}`;
-        if (defined $a_verbose) {
-            print "Removed\n";
-        }
+        print "Removed\n";
         exit 0;
     }
 
