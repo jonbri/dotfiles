@@ -86,7 +86,7 @@ sub deleteLocalBranch {
     my $command = "git branch -D $branch";
     my $sha = `git rev-parse --short $branch`;
     chomp $sha;
-    my $message = `git log -1 --pretty=%B $branch | first`;
+    my $message = `git log -1 --pretty=%B $branch | nth 0`;
     chomp $message;
     my $answer = '';
     if (!defined $a_force) {
@@ -117,7 +117,7 @@ sub deleteRemoteBranch {
     $remoteBranch =~ tr/\// /;
     my $command = "git push --delete $a_remote $remoteBranch";
     my $sha = `git rev-parse --short $a_remote/$remoteBranch`;
-    my $message = `git log -1 --pretty=%B $a_remote/$remoteBranch | first`;
+    my $message = `git log -1 --pretty=%B $a_remote/$remoteBranch | nth 0`;
     chomp $sha;
     chomp $message;
     my $answer = confirm("\n".generatePrefix." REMOTE\n${sha} ${message}\n${command} (y/n/i) ");
