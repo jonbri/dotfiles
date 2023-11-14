@@ -31,7 +31,14 @@ if not vim.g.vscode then
     Plug 'jonbri/vim-zargs'
     Plug 'jonbri/vim-dictionary'
     Plug 'AndrewRadev/discotheque.vim'
-    -- Plug 'github/copilot.vim'
+
+    local handle = io.popen("name")
+    local result = handle:read("*a")
+    handle:close()
+    if result == "t14" then
+        Plug 'github/copilot.vim'
+    end
+
     Plug 'numToStr/Comment.nvim'
     vim.call('plug#end');
 
