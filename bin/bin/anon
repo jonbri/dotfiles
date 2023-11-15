@@ -56,9 +56,9 @@ MAIN: {
     }
 
     if (defined $a_restore) {
-        my $restoreSHA = `crumb -l | grep anonStart | first | awk '{ print \$1 }'`;
+        my $restoreSHA = `crumb -l | grep anonStart | nth 0 | awk '{ print \$1 }'`;
         chomp $restoreSHA;
-        my $restoreBranch = `crumb -l | grep anonStart | first | awk '{ print \$4 }' | awk -F 'anonStart=' '{ print \$2 }'`;
+        my $restoreBranch = `crumb -l | grep anonStart | nth 0 | awk '{ print \$4 }' | awk -F 'anonStart=' '{ print \$2 }'`;
         chomp $restoreBranch;
         `gwip`;
         `git checkout $restoreBranch`;

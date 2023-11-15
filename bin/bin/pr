@@ -83,7 +83,7 @@ MAIN: {
         $a_remote = "origin";
     }
 
-    my $fullUrl = `git remote get-url --all $a_remote | first`;
+    my $fullUrl = `git remote get-url --all $a_remote | nth 0`;
     chomp $fullUrl;
 
     if (!defined $a_org) {
