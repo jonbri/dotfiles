@@ -17,7 +17,7 @@
     "when": "editorTextFocus"
   },
   {
-    "key": "ctrl+l",
+    "key": "alt+l",
     "command": "settings.cycle.lineNumbers",
     "when": "editorFocus"
   }
