@@ -32,10 +32,12 @@ if not vim.g.vscode then
     Plug 'jonbri/vim-dictionary'
     Plug 'AndrewRadev/discotheque.vim'
 
+    -- get value of `name`
     local handle = io.popen("name")
-    local result = handle:read("*a")
+    local name = handle:read("*a")
     handle:close()
-    if result == "t14" then
+
+    if name == "t14\n" then
         Plug 'github/copilot.vim'
     end
 
