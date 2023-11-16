@@ -13,6 +13,8 @@ if not vim.g.vscode then
     vim.keymap.set("n", "<leader>bo", ":BufOnly<CR>", {})
     vim.keymap.set("n", "<leader>e", ":windo edit<CR>", {})
     vim.keymap.set("n", "gb", ":ls<CR>:b<Space>", {})
+    vim.keymap.set("n", "<C-Right>", "zl", {})
+    vim.keymap.set("n", "<C-Left>", "zh", {})
 end
 
 if not vim.g.vscode then
