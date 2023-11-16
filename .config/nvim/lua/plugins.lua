@@ -32,6 +32,10 @@ if not vim.g.vscode then
     Plug 'jonbri/vim-dictionary'
     Plug 'AndrewRadev/discotheque.vim'
 
+    -- in development
+    -- Plug '~/vim-bpm'
+    Plug 'jonbri/vim-bpm'
+
     -- get value of `name`
     local handle = io.popen("name")
     local name = handle:read("*a")
