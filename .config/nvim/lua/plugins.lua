@@ -118,6 +118,7 @@ else
     -- Plug 'jonbri/vim-dictionary'
     Plug 'AndrewRadev/discotheque.vim'
     Plug 'numToStr/Comment.nvim'
+    Plug 'jonbri/vim-bpm'
     vim.call('plug#end');
 end
 
