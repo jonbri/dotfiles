@@ -13,12 +13,17 @@ if not vim.g.vscode then
     vim.keymap.set("n", "<leader>bo", ":BufOnly<CR>", {})
     vim.keymap.set("n", "<leader>e", ":windo edit<CR>", {})
     vim.keymap.set("n", "gb", ":ls<CR>:b<Space>", {})
-    vim.keymap.set("n", "<C-Right>", "zl", {})
-    vim.keymap.set("n", "<C-Left>", "zh", {})
 end
 
 if not vim.g.vscode then
     require('togglecc');
 end
 
+-- TODO: should this belong in vim-bpm
+vim.keymap.set("n", "<C-Right>", "zl", {})
+vim.keymap.set("n", "<C-Left>", "zh", {})
+vim.keymap.set("n", "<C-Up>", "<C-y>", {})
+vim.keymap.set("n", "<C-Down>", "<C-e>", {})
+
 vim.cmd [[ source /home/jonbri/dotfiles/.config/nvim/vimrc.vim ]]
+
