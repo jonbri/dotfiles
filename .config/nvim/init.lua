@@ -19,11 +19,5 @@ if not vim.g.vscode then
     require('togglecc');
 end
 
--- TODO: should this belong in vim-bpm
-vim.keymap.set("n", "<C-Right>", "zl", {})
-vim.keymap.set("n", "<C-Left>", "zh", {})
-vim.keymap.set("n", "<C-Up>", "<C-y>", {})
-vim.keymap.set("n", "<C-Down>", "<C-e>", {})
-
 vim.cmd [[ source /home/jonbri/dotfiles/.config/nvim/vimrc.vim ]]
 
