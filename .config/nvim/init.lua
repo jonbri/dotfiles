@@ -16,11 +16,7 @@ if not vim.g.vscode then
     require('togglecc');
 end
 
--- TODO: not working
-if vim.g.vscode then
-    vim.keymap.set("n", "<C-e>", ":call ScrollDownOnce()<CR>", {})
-    vim.keymap.set("n", "<C-y>", ":call ScrollUpOnce()<CR>", {})
-end
+vim.keymap.set("n", "E", ":call EScroll()<CR>", {})
 
 vim.cmd [[ source /home/jonbri/dotfiles/.config/nvim/vimrc.vim ]]
 
