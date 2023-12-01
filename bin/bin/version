@@ -100,6 +100,11 @@ MAIN: {
             } else {
                 print "${output}\n";
             }
+            my $tagsCommand = "npm dist-tags $package 2> /dev/null";
+            my $tagsOutput = `$tagsCommand`;
+            chomp $tagsOutput;
+            print "${tagsOutput}\n";
+
             if ($arg ne $args[-1]) {
                 print "\n";
             }
