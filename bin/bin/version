@@ -32,7 +32,8 @@ Options:
 EXAMPLES:
   >> version react # see all versions
   >> version react -l # just the latest
-  >> version react lodash serve
+  >> version react lodash serve --poll
+  >> version . # use cwd for package
 
 HELP
 }
