@@ -163,7 +163,7 @@ MAIN: {
 
     my $TARGET_BRANCH=$MAIN;
     if (defined $FILTER) {
-        my @results = runCommand("git branch --all");
+        my @results = runCommand("git branch --all | grep -v HEAD");
 
         my @grepResults = grep(/remotes.*${FILTER}/i, @results);
 
