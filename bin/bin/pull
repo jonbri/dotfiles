@@ -115,7 +115,7 @@ MAIN: {
             print "skipping fetch\n";
         }
     } else {
-        `git fetch --all --quiet`;
+        `git fetch --all`;
     }
 
     my $FILTER=$firstArg;
