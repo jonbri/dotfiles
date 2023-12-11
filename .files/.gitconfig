@@ -35,6 +35,7 @@
     revl = !git review -l
     revd = !revd $1
     revd-look = !revd-look $1
+    stats = shortlog -s -n
 
 [gitreview]
     remote = origin
