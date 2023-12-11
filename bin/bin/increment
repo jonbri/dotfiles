@@ -75,6 +75,10 @@ MAIN: {
         exit 1;
     }
 
+    if (! -e $tmp_dir) {
+      runCommand("mkdir -p ${tmp_dir}");
+    }
+
     if (defined $a_verbose) {
         print "files: ${tmp_dir}\n";
     }
