@@ -1,0 +1,145 @@
+#!/usr/bin/perl -w
+# tagger
+
+use strict;
+
+use Getopt::Long;
+
+my $a_write;
+my $a_push;
+my $a_dryRun;
+my $a_clean;
+my $a_remote;
+my $a_help;
+
+sub help() {
+    print STDERR <<'HELP';
+
+tagger
+
+USAGE:
+  >> tagger [options]
+
+Options:
+  --write   (-w) # Create tag if missing
+  --push    (-p) # Push tag to remote
+  --clean   (-c) # Sync local tags with remote
+  --dry-run (-d) # Just show commands
+  --remote  (-r) # Use a non-origin remote
+  --help    (-h)
+
+EXAMPLES:
+  >> tagger       # show release commits
+  >> tagger -w -p # update repo
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help,
+        'write' => \$a_write,
+        'clean' => \$a_clean,
+        'dry-run' => \$a_dryRun,
+        'push' => \$a_push,
+        'remote:s' => \$a_remote,
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my $REMOTE="origin";
+    if (defined $a_remote) {
+        $REMOTE=$a_remote;
+        print "remote: $REMOTE\n";
+    }
+
+    if (defined $a_clean) {
+        my @localTags = runCommand("git tag");
+        foreach my $localTag (@localTags) {
+            chomp $localTag;
+            my $deleteTagCommand = "git tag -d $localTag";
+            if (defined $a_dryRun) {
+                print "$deleteTagCommand\n";
+            } else {
+                runCommand($deleteTagCommand);
+            }
+        }
+        if (!defined $a_dryRun) {
+            runCommand("git fetch $REMOTE --tags --quiet");
+            print runCommand("git tag");
+        }
+        exit 0;
+    }
+
+    my @commits = runCommand("git rev-list HEAD");
+    my $commit;
+    my $previousReleaseVersion;
+    my $previousCommit;
+    foreach $commit (@commits) {
+        chomp $commit;
+        my $shortCommit = substr($commit, 0, 7);
+
+        my @versionCommand = runCommand("git show $commit:package.json | grep version");
+        my $version = $versionCommand[0];
+        if (!defined $version) {
+            print "exit early on commit ${commit}\n";
+            exit 0;
+        }
+        chomp $version;
+        $version =~ s/.*: "//;
+        $version =~ s/",//;
+
+        if (!defined $previousReleaseVersion) {
+            $previousReleaseVersion = $version;
+        }
+
+        if ($previousReleaseVersion ne $version) {
+            if (!defined $a_write && !defined $a_push) {
+                print "$previousReleaseVersion $previousCommit\n";
+            }
+
+            if (defined $a_write) {
+                my $writeCommand = "git tag v$previousReleaseVersion $previousCommit";
+                if (defined $a_dryRun) {
+                    print "$writeCommand;\n";
+                } else {
+                    runCommand("$writeCommand");
+                    print "$version tag created\n";
+                }
+            }
+
+            if (defined $a_push) {
+                my $pushCommand = "git push $REMOTE v$previousReleaseVersion;";
+                print "$pushCommand\n";
+            }
+
+            $previousReleaseVersion = $version;
+        }
+        $previousCommit = $shortCommit;
+    }
+
+    exit 0;
+}
+
