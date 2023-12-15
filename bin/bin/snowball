@@ -10,6 +10,7 @@ my $a_index;
 my $a_untracked;
 my $a_conflict;
 my $a_empty;
+my $a_message;
 my $a_help;
 
 my $MAIN=`main`;
@@ -29,6 +30,7 @@ Options:
   --untracked (-u) create untracked file
   --empty     (-e) create empty commit
   --conflict  (-c) create merge conflict
+  --message   (-m) commit message to use
 
 EXAMPLES:
   >> snowball    # create fake commit
@@ -63,6 +65,7 @@ MAIN: {
         'untracked' => \$a_untracked,
         'conflict' => \$a_conflict,
         'empty' => \$a_empty,
+        'message=s' => \$a_message,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -133,9 +136,12 @@ MAIN: {
     # default behavior: create commit
     print `echo "snowball" >> snowball_commit_log.txt`;
     print `git add snowball_commit_log.txt`;
-    print `git commit -m 'snowball'`;
+    my $commitMessage = "snowball";
+    if (defined $a_message) {
+        $commitMessage = $a_message;
+    }
+    print `git commit -m '$commitMessage'`;
 
     exit 0;
 }
-
 
