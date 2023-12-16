@@ -6,6 +6,7 @@
 [alias]
     l = "!git log --graph --pretty='tformat:%C(yellow)%h{%C(green)%ar{%C(bold blue)%an{%C(red)%d%C(reset) %s' $* | column -t -s '{' | less -FXRS"
     l5 = "!git log -5 --graph --pretty='tformat:%C(yellow)%h{%C(green)%ar{%C(bold blue)%an{%C(red)%d%C(reset) %s' $* | column -t -s '{'"
+    lo = "!git log --oneline"
     lo1 = "!git log --oneline -1"
     lo2 = "!git log --oneline -2"
     lo3 = "!git log --oneline -3"
