@@ -88,7 +88,7 @@ MAIN: {
         }
         if (!defined $a_dryRun) {
             runCommand("git fetch $REMOTE --tags --quiet");
-            print runCommand("git tag");
+            print runCommand("git tag -l --sort=-v:refname");
         }
         exit 0;
     }
