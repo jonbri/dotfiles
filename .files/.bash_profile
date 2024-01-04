@@ -162,6 +162,7 @@ alias d="source d"
 alias dt="d && t"
 alias D="d bash"
 alias V="v ~/dotfiles/.config/nvim/init.lua"
+alias fast="slow -d 0.03"
 
 alias droplet="ssh root@192.81.214.19"
 alias fui="cd $HOME/d*-s*-f*-u* && persona work"
