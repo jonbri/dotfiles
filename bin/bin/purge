@@ -8,6 +8,7 @@ use Getopt::Long;
 my $a_dryRun;
 my $a_force;
 my $a_remote;
+my $a_only;
 my $a_help;
 my @localBranches;
 my @remoteBranches;
@@ -25,14 +26,17 @@ USAGE:
 Options:
   --dry-run (-d) Just show branch matches
   --remote  (-r) Specify a remote
+  --only    (-o) Only show "local" or "remote"
   --force   (-f) Skip confirmation
   --help    (-h) See this message
 
 EXAMPLES:
-  >> purge        # interactive mode with all branches
-  >> purge -d     # see local branches
-  >> purge abc -d # see "abc" matches
-  >> purge abc -f # force delete via pattern
+  >> purge           # interactive mode with all branches
+  >> purge -d        # see local branches
+  >> purge abc -d    # see "abc" matches
+  >> purge abc -f    # force delete via pattern
+  >> purge -o remote # only show remote branches
+  >> purge -o local  # only show local branches
 
 HELP
 }
@@ -137,12 +141,17 @@ MAIN: {
     GetOptions(
         'dry-run' => \$a_dryRun,
         'remote:s' => \$a_remote,
+        'only:s' => \$a_only,
         'force' => \$a_force,
         'help' => \$a_help
     ) || (help() && exit 1);
 
     if (!defined $a_remote) {
         $a_remote = "origin";
+    }
+
+    if (!defined $a_only) {
+        $a_only = "";
     }
 
     # show help if either arg or option is given
@@ -161,19 +170,26 @@ MAIN: {
         }
     }
 
-    @localBranches = runCommand("git for-each-ref --format='%(refname:short)' refs/heads/");
     my $currentBranch = join('', runCommand("git rev-parse --abbrev-ref HEAD"));
     chomp($currentBranch);
 
     # exclude main and the current branch
+    @localBranches = runCommand("git for-each-ref --format='%(refname:short)' refs/heads/");
     @localBranches = grep(!/^master$/, @localBranches);
     @localBranches = grep(!/^main$/, @localBranches);
     @localBranches = grep(!/^$currentBranch$/, @localBranches);
+    if ($a_only eq "remote") {
+        @localBranches = ();
+    }
 
     @remoteBranches = runCommand("git branch -r | sed 's/^  //'");
     @remoteBranches = grep(!/^$a_remote\/master$/, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/main$/, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/$currentBranch$/, @remoteBranches);
+
+    if ($a_only eq "local") {
+        @remoteBranches = ();
+    }
 
     if (defined $firstArg) {
         @localBranches = grep (/.*$firstArg/, @localBranches);
@@ -211,6 +227,9 @@ MAIN: {
     @remoteBranches = grep(!/^$a_remote\/$currentBranch$/, @remoteBranches);
     if (defined $firstArg) {
         @remoteBranches = grep (/.*$firstArg/, @remoteBranches);
+    }
+    if ($a_only eq "local") {
+        @remoteBranches = ();
     }
     foreach (@remoteBranches) {
         chomp;
