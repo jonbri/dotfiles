@@ -177,6 +177,7 @@ MAIN: {
     @localBranches = runCommand("git for-each-ref --format='%(refname:short)' refs/heads/");
     @localBranches = grep(!/^master$/, @localBranches);
     @localBranches = grep(!/^main$/, @localBranches);
+    @localBranches = grep(!/^create-pull-request\/patch$/, @localBranches);
     @localBranches = grep(!/^$currentBranch$/, @localBranches);
     if ($a_only eq "remote") {
         @localBranches = ();
@@ -185,6 +186,7 @@ MAIN: {
     @remoteBranches = runCommand("git branch -r | sed 's/^  //'");
     @remoteBranches = grep(!/^$a_remote\/master$/, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/main$/, @remoteBranches);
+    @remoteBranches = grep(!/^$a_remote\/create-pull-request\/patch$/, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/$currentBranch$/, @remoteBranches);
 
     if ($a_only eq "local") {
@@ -224,6 +226,7 @@ MAIN: {
     @remoteBranches = grep(!/^$a_remote\/HEAD /, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/master$/, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/main$/, @remoteBranches);
+    @remoteBranches = grep(!/^$a_remote\/create-pull-request\/patch$/, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/$currentBranch$/, @remoteBranches);
     if (defined $firstArg) {
         @remoteBranches = grep (/.*$firstArg/, @remoteBranches);
