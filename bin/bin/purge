@@ -6,11 +6,12 @@ use strict;
 use Getopt::Long;
 
 my $a_dryRun;
+my $a_user;
 my $a_force;
 my $a_remote;
 my $a_only;
+my $a_everyone;
 my $a_help;
-my $targetUser = "jonbri";
 my @localBranches;
 my @remoteBranches;
 my $count = 1;
@@ -25,11 +26,12 @@ USAGE:
   >> purge [pattern] [options]
 
 Options:
-  --dry-run (-d) Just show branch matches
-  --remote  (-r) Specify a remote
-  --only    (-o) Only show "local" or "remote"
-  --force   (-f) Skip confirmation
-  --help    (-h) See this message
+  --dry-run  (-d) Just show branch matches
+  --remote   (-r) Specify a remote
+  --only     (-o) Only show "local" or "remote"
+  --force    (-f) Skip confirmation
+  --everyone (-e) Not only the target user's branches
+  --help     (-h) See this message
 
 EXAMPLES:
   >> purge           # interactive mode with all branches
@@ -127,8 +129,8 @@ sub deleteRemoteBranch {
     chomp $message;
     my $answer = confirm("\n".generatePrefix." REMOTE\n${sha} ${message}\n${command} (y/n/i) ");
     if ($answer =~ /^y/i) {
-        if (index($branch, $targetUser) == -1) {
-            confirm("\n**Warning**: ${targetUser} not found in branch name: ${branch}\nPress enter to proceed...");
+        if (index($branch, $a_user) == -1) {
+            confirm("\n**Warning**: ${a_user} not found in branch name: ${branch}\nPress enter to proceed...");
         }
         runCommand("crumb purge_$branch");
         runCommand($command);
@@ -143,12 +145,18 @@ sub deleteRemoteBranch {
 
 MAIN: {
     GetOptions(
+        'user:s' => \$a_user,
         'dry-run' => \$a_dryRun,
         'remote:s' => \$a_remote,
         'only:s' => \$a_only,
+        'everyone' => \$a_everyone,
         'force' => \$a_force,
         'help' => \$a_help
     ) || (help() && exit 1);
+
+    if (!defined $a_user) {
+        $a_user = "jonbri";
+    }
 
     if (!defined $a_remote) {
         $a_remote = "origin";
@@ -183,6 +191,9 @@ MAIN: {
     @localBranches = grep(!/^main$/, @localBranches);
     @localBranches = grep(!/^create-pull-request\/patch$/, @localBranches);
     @localBranches = grep(!/^$currentBranch$/, @localBranches);
+    if (!defined $a_everyone) {
+        @localBranches = grep(/$a_user/, @localBranches);
+    }
     if ($a_only eq "remote") {
         @localBranches = ();
     }
@@ -192,6 +203,10 @@ MAIN: {
     @remoteBranches = grep(!/^$a_remote\/main$/, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/create-pull-request\/patch$/, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/$currentBranch$/, @remoteBranches);
+
+    if (!defined $a_everyone) {
+        @remoteBranches = grep(/$a_user/, @remoteBranches);
+    }
 
     if ($a_only eq "local") {
         @remoteBranches = ();
@@ -232,6 +247,11 @@ MAIN: {
     @remoteBranches = grep(!/^$a_remote\/main$/, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/create-pull-request\/patch$/, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/$currentBranch$/, @remoteBranches);
+
+    if (!defined $a_everyone) {
+        @remoteBranches = grep(/$a_user/, @remoteBranches);
+    }
+
     if (defined $firstArg) {
         @remoteBranches = grep (/.*$firstArg/, @remoteBranches);
     }
