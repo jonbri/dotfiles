@@ -10,6 +10,7 @@ my $a_force;
 my $a_remote;
 my $a_only;
 my $a_help;
+my $targetUser = "jonbri";
 my @localBranches;
 my @remoteBranches;
 my $count = 1;
@@ -126,6 +127,9 @@ sub deleteRemoteBranch {
     chomp $message;
     my $answer = confirm("\n".generatePrefix." REMOTE\n${sha} ${message}\n${command} (y/n/i) ");
     if ($answer =~ /^y/i) {
+        if (index($branch, $targetUser) == -1) {
+            confirm("\n**Warning**: ${targetUser} not found in branch name: ${branch}\nPress enter to proceed...");
+        }
         runCommand("crumb purge_$branch");
         runCommand($command);
         reportDone();
