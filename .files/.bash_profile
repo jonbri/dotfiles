@@ -184,7 +184,6 @@ alias snowfeatbang="snow -m \"feat(bump)!: snowball\""
 alias win="cd ${WIN_HOME}/Desktop"
 alias prs="site && pr && fui && pr"
 alias prm="pr --me"
-alias path='echo -e ${PATH//:/\\n}'
 
 alias fuit="fui && t"
 alias fuibt="fuib && t"

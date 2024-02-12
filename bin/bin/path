@@ -1,0 +1,105 @@
+#!/usr/bin/perl -w
+# path - manage PATH environment variable
+
+use strict;
+
+use Getopt::Long;
+
+my $a_help;
+my $a_edit;
+my $a_archive;
+my $dotfiles_dir = $ENV{"DOTFILES_DIR"};
+my $tmp_dir = "$dotfiles_dir/tmp";
+my $path_edit_file = "$tmp_dir/path-edit.sh";
+
+sub help() {
+    print STDOUT <<'HELP';
+
+path - manage $PATH
+
+USAGE:
+  >> path [options]
+
+Options:
+  --help    (-h) See this message
+  --edit    (-e) Edit path entry
+  --archive (-a) Save path entry
+
+EXAMPLES:
+  >> path     # show path
+  >> path foo # show foo entry
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+sub printPath() {
+    print `echo $ENV{PATH}`;
+}
+sub printPathFormatted() {
+    print `echo $ENV{PATH} | tr ':' '\n'`;
+}
+
+sub printEntry($) {
+    my ($name) = @_;
+    my $path = $ENV{PATH};
+    my @entries = split /:/, $path;
+    foreach my $entry (@entries) {
+        if ($entry =~ /$name/) {
+            print "$entry\n";
+        }
+    }
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help,
+        'edit' => \$a_edit,
+        'archive' => \$a_archive,
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    # TODO
+    # for now just print out so it's in the history
+    if (defined $a_archive) {
+        printPath();
+        exit 0;
+    }
+
+    # TODO
+    if (defined $a_edit) {
+        `touch $path_edit_file`;
+        exit 0;
+    }
+
+    if (defined $firstArg) {
+        printEntry($firstArg);
+        exit 0;
+    }
+
+    printPathFormatted();
+
+    exit 0;
+}
+
