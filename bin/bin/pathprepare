@@ -4,12 +4,12 @@ use strict;
 
 my $dotfiles_dir = $ENV{"DOTFILES_DIR"};
 my $tmp_dir = "$dotfiles_dir/tmp";
-my $path_edit_file = "$tmp_dir/path-edit.sh";
+my $edit_file = "$tmp_dir/path-edit.sh";
 
-`touch $path_edit_file`;
-`chmod +x $path_edit_file`;
+`touch $edit_file`;
+`chmod +x $edit_file`;
 
-open my $fh, '>', $path_edit_file or die "Could not open file '$path_edit_file' $!";
+open my $fh, '>', $edit_file or die "Could not open file '$edit_file' $!";
 print $fh '#!/bin/bash
 
 function join_by { local IFS="$1"; shift; echo "$*"; }

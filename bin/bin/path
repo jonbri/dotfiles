@@ -60,7 +60,7 @@ MAIN: {
     }
 
     if (defined $a_edit) {
-        print "Run \"pathedit\" then \"pathwrite\"\n";
+        print "Run \"pathedit\"\n";
         exit 0;
     }
 
