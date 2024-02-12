@@ -1,0 +1,31 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+my $dotfiles_dir = $ENV{"DOTFILES_DIR"};
+my $tmp_dir = "$dotfiles_dir/tmp";
+my $path_edit_file = "$tmp_dir/path-edit.sh";
+
+`touch $path_edit_file`;
+`chmod +x $path_edit_file`;
+
+open my $fh, '>', $path_edit_file or die "Could not open file '$path_edit_file' $!";
+print $fh '#!/bin/bash
+
+function join_by { local IFS="$1"; shift; echo "$*"; }
+
+entries=(
+';
+
+# loop over PATH entries and add them to an array
+foreach my $entry (split /:/, $ENV{PATH}) {
+  print $fh "  \"$entry\"\n";
+}
+
+print $fh ')
+
+joined=$(join_by : "${entries[@]}")
+export PATH="$joined"';
+
+close $fh;
+

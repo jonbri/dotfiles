@@ -7,10 +7,6 @@ use Getopt::Long;
 
 my $a_help;
 my $a_edit;
-my $a_archive;
-my $dotfiles_dir = $ENV{"DOTFILES_DIR"};
-my $tmp_dir = "$dotfiles_dir/tmp";
-my $path_edit_file = "$tmp_dir/path-edit.sh";
 
 sub help() {
     print STDOUT <<'HELP';
@@ -23,7 +19,6 @@ USAGE:
 Options:
   --help    (-h) See this message
   --edit    (-e) Edit path entry
-  --archive (-a) Save path entry
 
 EXAMPLES:
   >> path     # show path
@@ -38,21 +33,6 @@ sub getFirstNonOptionArg {
         return;
     }
     return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
-}
-
-sub runCommand($) {
-    my ($command) = @_;
-    open CMD, "$command |" || die "Unable to run $command: $!";
-    my @output = <CMD>;
-    close CMD;
-    return @output;
-}
-
-sub printPath() {
-    print `echo $ENV{PATH}`;
-}
-sub printPathFormatted() {
-    print `echo $ENV{PATH} | tr ':' '\n'`;
 }
 
 sub printEntry($) {
@@ -70,7 +50,6 @@ MAIN: {
     GetOptions(
         'help' => \$a_help,
         'edit' => \$a_edit,
-        'archive' => \$a_archive,
     ) || (help() && exit 1);
 
     # show help if either arg or option is given
@@ -80,16 +59,8 @@ MAIN: {
         exit 1;
     }
 
-    # TODO
-    # for now just print out so it's in the history
-    if (defined $a_archive) {
-        printPath();
-        exit 0;
-    }
-
-    # TODO
     if (defined $a_edit) {
-        `touch $path_edit_file`;
+        print "Run \"pathedit\" then \"pathwrite\"\n";
         exit 0;
     }
 
@@ -98,7 +69,7 @@ MAIN: {
         exit 0;
     }
 
-    printPathFormatted();
+    print `echo $ENV{PATH} | tr ':' '\n'`;
 
     exit 0;
 }
