@@ -185,7 +185,7 @@ alias snowfeatbang="snow -m \"feat(bump)!: snowball\""
 alias win="cd ${WIN_HOME}/Desktop"
 alias prs="site && pr && fui && pr"
 alias prm="pr --me"
-alias pathsave="echo $PATH >> ${DOTFILES_TMP}/path-save"
+alias pathsave="echo \"${PATH}\" >> ${DOTFILES_TMP}/path-save.txt"
 alias pathedit="pathprepare && v ${DOTFILES_TMP}/path-edit.sh && confirm writing && pathsave && source ${DOTFILES_TMP}/path-edit.sh && path"
 
 alias fuit="fui && t"
