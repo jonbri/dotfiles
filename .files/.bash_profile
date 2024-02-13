@@ -13,6 +13,7 @@ fi
 
 export DOTFILES_DIR=${HOME}/dotfiles
 export BINBIN=${DOTFILES_DIR}/bin/bin
+export DOTFILES_TMP=${DOTFILES_DIR}/tmp
 export TMUX_BUFFER=/tmp/_tmux-buffer.txt
 export WIN_HOME="/mnt/c/Users/${USER}"
 export WIN_DESKTOP="${WIN_HOME}/desktop"
@@ -184,8 +185,8 @@ alias snowfeatbang="snow -m \"feat(bump)!: snowball\""
 alias win="cd ${WIN_HOME}/Desktop"
 alias prs="site && pr && fui && pr"
 alias prm="pr --me"
-alias pathsave="echo $PATH >> ${DOTFILES_DIR}/tmp/path-save"
-alias pathedit="pathprepare && v ${DOTFILES_DIR}/tmp/path-edit.sh && echo \"about to write...\" && sleep 3 && pathsave && source ${DOTFILES_DIR}/tmp/path-edit.sh && path"
+alias pathsave="echo $PATH >> ${DOTFILES_TMP}/path-save"
+alias pathedit="pathprepare && v ${DOTFILES_TMP}/path-edit.sh && confirm writing && pathsave && source ${DOTFILES_TMP}/path-edit.sh && path"
 
 alias fuit="fui && t"
 alias fuibt="fuib && t"
