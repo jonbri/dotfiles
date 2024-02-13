@@ -12,18 +12,19 @@ my $edit_file = "$tmp_dir/path-edit.sh";
 open my $fh, '>', $edit_file or die "Could not open file '$edit_file' $!";
 print $fh '#!/bin/bash
 
-function join_by { local IFS="$1"; shift; echo "$*"; }
-
-entries=(
+read -r -d \'\' entries << \'EOF\'
 ';
+
 
 # loop over PATH entries and add them to an array
 foreach my $entry (split /:/, $ENV{PATH}) {
-  print $fh "  \"$entry\"\n";
+  print $fh "$entry\n";
 }
 
-print $fh ')
+print $fh 'EOF
 
+IFS=$\'\n\' read -rd \'\' -a entries <<< "$entries"
+function join_by { local IFS="$1"; shift; echo "$*"; }
 joined=$(join_by : "${entries[@]}")
 export PATH="$joined"';
 
