@@ -32,7 +32,6 @@ if not vim.g.vscode then
     Plug 'jonbri/vim-zargs'
     Plug 'jonbri/vim-dictionary'
     Plug 'AndrewRadev/discotheque.vim'
-    Plug 'tamton-aquib/duck.nvim'
 
     Plug 'jonbri/vim-bpm'
     Plug 'jonbri/vim-escroll'
@@ -123,17 +122,6 @@ else
     Plug 'jonbri/vim-escroll'
     vim.call('plug#end');
 end
-
-vim.keymap.set(
-  "n",
-  "<leader>dd",
-  function() require('duck').hatch("🦀", 10); end
-)
-vim.keymap.set(
-  "n",
-  "<leader>dk",
-  require('duck').cook
-)
 
 require("Comment").setup();
 
