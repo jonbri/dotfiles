@@ -1,0 +1,75 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+$| = 1;
+
+use Getopt::Long;
+
+my $a_delay;
+my $a_help;
+
+sub help() {
+    print STDERR <<'HELP';
+
+confirm <options> [message]
+
+Options:
+  --delay (-d) Total delay in seconds (default: 3)
+  --help  (-h) See this message
+
+EXAMPLES:
+  >> confirm
+  >> confirm "deleting file"
+  >> confirm -d 1 # only 1 second delay
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+MAIN: {
+    GetOptions(
+        'delay:s' => \$a_delay,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    if (!defined $a_delay) {
+        $a_delay = "3";
+    }
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if (defined $firstArg) {
+      print "${firstArg} in ";
+    }
+
+    for (my $i = $a_delay; $i >= 0; $i--) {
+        print "${i} ";
+        sleep 1;
+    }
+
+    sleep 0.3;
+
+    exit 0;
+}
+
