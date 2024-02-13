@@ -34,7 +34,6 @@ if not vim.g.vscode then
     Plug 'AndrewRadev/discotheque.vim'
 
     Plug 'jonbri/vim-bpm'
-    Plug 'jonbri/vim-escroll'
 
     -- get value of `name`
     local handle = io.popen("name")
@@ -119,7 +118,6 @@ else
     Plug 'AndrewRadev/discotheque.vim'
     Plug 'numToStr/Comment.nvim'
     Plug 'jonbri/vim-bpm'
-    Plug 'jonbri/vim-escroll'
     vim.call('plug#end');
 end
 
