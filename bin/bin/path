@@ -69,7 +69,10 @@ MAIN: {
         exit 0;
     }
 
-    print `echo $ENV{PATH} | tr ':' '\n'`;
+    my @entries = split /:/, $ENV{PATH};
+    foreach my $entry (@entries) {
+        print "$entry\n";
+    }
 
     exit 0;
 }
