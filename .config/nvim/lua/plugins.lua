@@ -1,4 +1,10 @@
-if not vim.g.vscode then
+if not vim.g.vscode then -- in terminal
+
+    -- get machine "name"
+    local handle = io.popen("name")
+    local name = handle:read("*a")
+    handle:close()
+
     local Plug = vim.fn['plug#'];
     vim.call('plug#begin', '~/.config/nvim/plugged')
     Plug 'junegunn/seoul256.vim'
@@ -29,22 +35,13 @@ if not vim.g.vscode then
     Plug 'jonbri/vim-zargs'
     Plug 'jonbri/vim-dictionary'
     Plug 'AndrewRadev/discotheque.vim'
-
     Plug 'jonbri/vim-bpm'
     Plug 'jonbri/vim-sanity'
-
-    -- get value of `name`
-    local handle = io.popen("name")
-    local name = handle:read("*a")
-    handle:close()
-
-    if name == "t14\n" then
-        Plug 'github/copilot.vim'
-    end
-
     Plug 'numToStr/Comment.nvim'
+    if name == "t14\n" then Plug 'github/copilot.vim' end
     vim.call('plug#end');
-else
+
+else -- in vscode
     local Plug = vim.fn['plug#'];
     vim.call('plug#begin', '~/.config/nvim/plugged')
     Plug 'tpope/vim-unimpaired'
@@ -66,4 +63,3 @@ else
 end
 
 require("Comment").setup();
-
