@@ -52,14 +52,9 @@ if not vim.g.vscode then -- in terminal
   vim.keymap.set("n", "gb", ":ls<CR>:b<Space>", {})
 
   local function GetCC()
-    local defaultCC = "80"
-    if vim.o.colorcolumn == defaultCC then
-      vim.opt.colorcolumn = "0"
-    else
-      vim.opt.colorcolumn = defaultCC
-    end
+    vim.opt.colorcolumn = vim.o.colorcolumn == "80" and "0" or "80"
   end
-  vim.keymap.set( "n", "<leader>cc", GetCC, {})
+  vim.keymap.set("n", "<leader>cc", GetCC, {})
 
 else -- in vscode
     local Plug = vim.fn['plug#'];
