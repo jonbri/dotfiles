@@ -3,7 +3,6 @@ if not vim.g.vscode then
     vim.call('plug#begin', '~/.config/nvim/plugged')
     Plug 'junegunn/seoul256.vim'
     Plug 'junegunn/vader.vim'
-    Plug 'pocco81/true-zen.nvim'
     Plug 'tpope/vim-projectionist'
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-flagship'
@@ -45,20 +44,6 @@ if not vim.g.vscode then
 
     Plug 'numToStr/Comment.nvim'
     vim.call('plug#end');
-
-    vim.keymap.set(
-      "n",
-      "<leader>z",
-      ":TZAtaraxis<CR>",
-      {}
-    )
-
-    vim.keymap.set(
-      "n",
-      "<leader>z",
-      ":TZAtaraxis<CR>",
-      {}
-    )
 else
     local Plug = vim.fn['plug#'];
     vim.call('plug#begin', '~/.config/nvim/plugged')
