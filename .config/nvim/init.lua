@@ -42,7 +42,7 @@ if not vim.g.vscode then -- in terminal
   Plug 'jonbri/vim-dictionary'
   Plug 'AndrewRadev/discotheque.vim'
   Plug 'jonbri/vim-bpm'
-  Plug 'jonbri/vim-sanity'
+  Plug 'jonbri/vim-sane'
   Plug 'numToStr/Comment.nvim'
   if name == "t14\n" then Plug 'github/copilot.vim' end
   vim.call('plug#end');
@@ -72,7 +72,7 @@ else -- in vscode
     Plug 'AndrewRadev/discotheque.vim'
     Plug 'numToStr/Comment.nvim'
     Plug 'jonbri/vim-bpm'
-    Plug 'jonbri/vim-sanity'
+    Plug 'jonbri/vim-sane'
     vim.call('plug#end');
 end
 
