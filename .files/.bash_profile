@@ -24,6 +24,7 @@ mkdir -p $N_PREFIX
 export PATH=$N_PREFIX/bin:$PATH
 export PATH=/usr/local/go/bin:$PATH
 
+alias beep="echo -e '\a'"
 alias c="clear"
 alias ll="ls -la"
 alias e="exit"
