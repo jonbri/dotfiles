@@ -1,7 +1,75 @@
-#!/bin/bash
+#!/usr/bin/perl -w
 
-HISTFILE=~/.bash_history
-set -o history
+use strict;
 
-history | awk '{a[$2]++}END{for(i in a){print a[i] " " i}}' | sort -rn | head
+use Getopt::Long;
+
+my $a_help;
+
+sub help() {
+    print STDERR <<'HELP';
+
+most - show the most-used commands
+
+USAGE:
+  >> most
+
+Options:
+  --help  (-h) See this message
+
+EXAMPLES:
+  >> most
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    # read in ~/.bash_history
+    my $historyFile = $ENV{"HISTFILE"} || "$ENV{HOME}/.bash_history";
+    my @history = ();
+    if (-e $historyFile) {
+        open FILE, "<$historyFile" || die "Unable to open $historyFile: $!";
+        @history = <FILE>;
+        close FILE;
+    }
+
+    # count the number of times each command has been used and store the results in a hash
+    my %commandCount = ();
+    foreach my $line (@history) {
+        chomp $line;
+        $commandCount{$line}++;
+    }
+
+    # sort the commands by usage
+    my @sortedCommands = sort { $commandCount{$b} <=> $commandCount{$a} } keys %commandCount;
+
+    # print the 10 most-used commands
+    my $count = 0;
+    foreach my $command (@sortedCommands) {
+        print "$commandCount{$command} $command\n";
+        $count++;
+        last if $count >= 10;
+    }
+
+    exit 0;
+}
 
