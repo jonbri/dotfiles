@@ -5,6 +5,7 @@ use strict;
 use Getopt::Long;
 
 my $a_all;
+my $a_reverse;
 my $a_help;
 
 sub help() {
@@ -16,8 +17,9 @@ USAGE:
   >> most
 
 Options:
-  --all  (-a) Show all commands, not just the top 10
-  --help (-h) See this message
+  --all     (-a) Show all commands, not just the top 10
+  --reverse (-r) Show the least-used commands
+  --help    (-h) See this message
 
 EXAMPLES:
   >> most
@@ -36,7 +38,8 @@ sub getFirstNonOptionArg {
 MAIN: {
     GetOptions(
         'help' => \$a_help,
-        'all' => \$a_all
+        'all' => \$a_all,
+        'reverse' => \$a_reverse,
     ) || (help() && exit 1);
 
     # show help if either arg or option is given
@@ -62,15 +65,24 @@ MAIN: {
         $commandCount{$line}++;
     }
 
-    # sort the commands by usage
-    my @sortedCommands = sort { $commandCount{$b} <=> $commandCount{$a} } keys %commandCount;
+    # sort the commands by usage, followed by the command itself alphabetically
+    my @sortedCommands = sort {
+        $commandCount{$b} <=> $commandCount{$a} || $a cmp $b
+    } keys %commandCount;
 
+    my @output = ();
     my $count = 0;
     foreach my $command (@sortedCommands) {
-        print "$commandCount{$command} $command\n";
+        push @output, "$commandCount{$command} $command\n";
         $count++;
         last if $count >= 10 && !$a_all;
     }
+
+    if (defined $a_reverse) {
+        @output = reverse @output;
+    }
+
+    print @output;
 
     exit 0;
 }
