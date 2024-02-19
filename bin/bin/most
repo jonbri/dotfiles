@@ -4,6 +4,7 @@ use strict;
 
 use Getopt::Long;
 
+my $a_all;
 my $a_help;
 
 sub help() {
@@ -15,7 +16,8 @@ USAGE:
   >> most
 
 Options:
-  --help  (-h) See this message
+  --all  (-a) Show all commands, not just the top 10
+  --help (-h) See this message
 
 EXAMPLES:
   >> most
@@ -33,7 +35,8 @@ sub getFirstNonOptionArg {
 
 MAIN: {
     GetOptions(
-        'help' => \$a_help
+        'help' => \$a_help,
+        'all' => \$a_all
     ) || (help() && exit 1);
 
     # show help if either arg or option is given
@@ -62,12 +65,11 @@ MAIN: {
     # sort the commands by usage
     my @sortedCommands = sort { $commandCount{$b} <=> $commandCount{$a} } keys %commandCount;
 
-    # print the 10 most-used commands
     my $count = 0;
     foreach my $command (@sortedCommands) {
         print "$commandCount{$command} $command\n";
         $count++;
-        last if $count >= 10;
+        last if $count >= 10 && !$a_all;
     }
 
     exit 0;
