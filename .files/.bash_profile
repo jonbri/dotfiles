@@ -2,6 +2,7 @@ set -o vi
 export EDITOR=nvim
 export GIT_EDITOR=$EDITOR
 export PATH=~/bin:$PATH
+export HISTFILESIZE=5000
 
 export NC_CACHE_FILE="${HOME}/.nc"
 if [ -f $NC_CACHE_FILE ]; then
