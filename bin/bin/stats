@@ -1,0 +1,51 @@
+#!/usr/bin/perl -w
+
+use strict;
+use warnings;
+
+use Getopt::Long;
+
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+stats - show git stats
+
+USAGE:
+  >> stats [options]
+
+Options:
+  --help     (-h) See this message
+
+EXAMPLES:
+  >> stats
+
+HELP
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help
+    if (defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my $output = `git shortlog -s -n -e`;
+    my @lines = split("\n", $output);
+    my $count = 0;
+    foreach my $line (@lines) {
+      print $line . "\n";
+      $count++;
+      last if $count == 10;
+    }
+
+    print `git count-objects -vH`;
+
+    exit 0;
+}
+
