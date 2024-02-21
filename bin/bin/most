@@ -62,6 +62,10 @@ MAIN: {
     my %commandCount = ();
     foreach my $line (@history) {
         chomp $line;
+
+        # remove everything after the first space
+        $line =~ s/ .*$//;
+
         $commandCount{$line}++;
     }
 
@@ -70,12 +74,13 @@ MAIN: {
         $commandCount{$b} <=> $commandCount{$a} || $a cmp $b
     } keys %commandCount;
 
+    my $total = 10;
     my @output = ();
     my $count = 0;
     foreach my $command (@sortedCommands) {
         push @output, "$commandCount{$command} $command\n";
         $count++;
-        last if $count >= 10 && !$a_all;
+        last if $count >= $total && !$a_all;
     }
 
     if (defined $a_reverse) {
