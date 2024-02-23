@@ -39,7 +39,7 @@ if not vim.g.vscode then -- in terminal
   Plug 'jonbri/vim-spaced'
   Plug 'jonbri/vim-yankee'
   Plug 'jonbri/vim-zargs'
-  Plug 'jonbri/vim-dictionary'
+  Plug 'jonbri/vim-pidgin'
   Plug 'AndrewRadev/discotheque.vim'
   Plug 'jonbri/vim-bpm'
   Plug 'jonbri/vim-sane'
