@@ -62,6 +62,13 @@ MAIN: {
         }
     }
 
+    my $dictionaryDir="$home/dictionary";
+    if (!-d "$dictionaryDir") {
+        `git\@github.com:jonbri/dictionary.git`;
+    } else {
+        `git -C $dictionaryDir fetch`;
+    }
+
     print "\nDone\n";
     welcome();
 }

@@ -1,5 +1,6 @@
 vim.g.mapleader = " "
 vim.g.flash_winswitch = 0
+vim.g.pidgin_dir = "/home/jonbri/dictionary"
 vim.opt.showtabline = 2
 
 if not vim.g.vscode then -- in terminal
@@ -57,7 +58,7 @@ if not vim.g.vscode then -- in terminal
   vim.keymap.set("n", "<leader>cc", GetCC, {})
 
   -- add word under cursor to custom dictionary
-  vim.keymap.set("n", "<leader>zg", "yiw:sp ~/.config/nvim/dictionaries/custom.dictionary<CR>Go<ESC>pzz", {})
+  vim.keymap.set("n", "<leader>zg", "yiw:sp ~/dictionary/custom.dictionary<CR>Go<ESC>pzz", {})
 else -- in vscode
     local Plug = vim.fn['plug#'];
     vim.call('plug#begin', '~/.config/nvim/plugged')
