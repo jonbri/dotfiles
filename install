@@ -44,9 +44,7 @@ MAIN: {
 
     `mkdir -p $toolsDir`;
     `mkdir -p $homeBinDir`;
-    `curl --silent https://raw.githubusercontent.com/jonbri/copybuddy/master/copybuddy > $homeBinDir/copybuddy`;
     `cp bin/bin/* $homeBinDir`;
-    `chmod +x $homeBinDir/copybuddy`;
 
     my ($repo,$folderName);
     foreach(@repos) {
@@ -61,10 +59,6 @@ MAIN: {
             `git -C $fullPath reset --hard origin/$main`;
         } else {
             `git clone $repo $fullPath --depth 1`;
-        }
-
-        if (-e "$fullPath/.cb") {
-            `$homeBinDir/copybuddy $fullPath/.cb`;
         }
     }
 
