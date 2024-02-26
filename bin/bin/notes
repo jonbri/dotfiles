@@ -42,11 +42,12 @@ if (! -d $DESKTOP_SAVE) {
     exit 1;
 }
 
-my $NOTES_DIR="${DESKTOP_SAVE}/_notes";
-my $BACKUP_DIR_NAME="z_backup";
-my $ARCHIVE_DIR_NAME="z_archive";
-my $NOTES_BACKUP_DIR="${NOTES_DIR}/${BACKUP_DIR_NAME}";
-my $NOTES_ARCHIVE_DIR="${NOTES_DIR}/${ARCHIVE_DIR_NAME}";
+my $MARBLE_DIR="${home}/marble";
+my $NOTES_DIR="${MARBLE_DIR}/work";
+my $BACKUP_DIR_NAME="backup";
+my $ARCHIVE_DIR_NAME="archive";
+my $NOTES_BACKUP_DIR="${MARBLE_DIR}/${BACKUP_DIR_NAME}";
+my $NOTES_ARCHIVE_DIR="${MARBLE_DIR}/${ARCHIVE_DIR_NAME}";
 
 sub help() {
     print STDOUT <<'HELP';
