@@ -8,7 +8,7 @@ use Getopt::Long;
 my $a_list;
 my $a_notepad;
 my $a_write;
-my $a_print;
+my $a_show;
 my $a_color;
 my $a_archive;
 my $a_delete;
@@ -61,7 +61,7 @@ Options:
   --list     (-l) List notes files
   --notepad  (-n) Open in notepad
   --write    (-w) Save to desktop
-  --print    (-p) Print to stdout
+  --show     (-s) Print to stdout
   --color    (-c) Vim color scheme
   --archive  (-a) Archive a note file
   --delete   (-d) Delete a note file
@@ -109,7 +109,7 @@ MAIN: {
         'list' => \$a_list,
         'notepad:s' => \$a_notepad,
         'write' => \$a_write,
-        'print' => \$a_print,
+        'show' => \$a_show,
         'color:s' => \$a_color,
         'archive' => \$a_archive,
         'delete' => \$a_delete,
@@ -160,7 +160,7 @@ MAIN: {
         exit 0;
     }
 
-    if (defined $a_print) {
+    if (defined $a_show) {
         if (defined $firstArg && ! -e $path) {
             print "Notes file does not exist\n";
             exit 1;
