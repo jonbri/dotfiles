@@ -16,11 +16,11 @@ my $a_explorer;
 my $a_verbose;
 my $a_help;
 
+my $WIN_DESKTOP=$ENV{"WIN_DESKTOP"};
+my $WIN_DESKTOP_SAVE=$ENV{"WIN_DESKTOP_SAVE"};
 my $DEFAULT_NOTE_NAME="_default";
 my $colorscheme = "blue";
 my $home=$ENV{HOME};
-my $WIN_DESKTOP=$ENV{"WIN_DESKTOP"};
-my $WIN_DESKTOP_SAVE=$ENV{"WIN_DESKTOP_SAVE"};
 
 my $DESKTOP=$WIN_DESKTOP;
 if (! -d $DESKTOP) {
@@ -43,24 +43,24 @@ if (! -d $DESKTOP_SAVE) {
 }
 
 my $MARBLE_DIR="${home}/marble";
-my $NOTES_DIR="${MARBLE_DIR}/work";
 my $PROMOTED_DIR_NAME="promoted";
 my $BACKUP_DIR_NAME="backup";
 my $ARCHIVE_DIR_NAME="archive";
-my $NOTES_PROMOTED_DIR="${MARBLE_DIR}/${PROMOTED_DIR_NAME}";
-my $NOTES_BACKUP_DIR="${MARBLE_DIR}/${BACKUP_DIR_NAME}";
-my $NOTES_ARCHIVE_DIR="${MARBLE_DIR}/${ARCHIVE_DIR_NAME}";
+my $WORK_DIR="${MARBLE_DIR}/work";
+my $PROMOTED_DIR="${MARBLE_DIR}/${PROMOTED_DIR_NAME}";
+my $BACKUP_DIR="${MARBLE_DIR}/${BACKUP_DIR_NAME}";
+my $ARCHIVE_DIR="${MARBLE_DIR}/${ARCHIVE_DIR_NAME}";
 
 sub help() {
     print STDOUT <<'HELP';
 
-notes - take quick notes
+marble - take quick notes
 
 USAGE:
-  >> notes [options]
+  >> marble [options]
 
 Options:
-  --list     (-l) List notes files
+  --list     (-l) List files
   --notepad  (-n) Open in notepad
   --promote  (-p) Move to root
   --write    (-w) Save to desktop
@@ -68,16 +68,16 @@ Options:
   --color    (-c) Vim color scheme
   --archive  (-a) Archive a note file
   --delete   (-d) Delete a note file
-  --explorer (-e) Open notes dir
+  --explorer (-e) Open dir
   --verbose  (-v) Extra logging
   --help     (-h) See this message
 
 EXAMPLES:
-  >> notes        # start taking notes
-  >> notes -w     # create copy of default notes file on desktop
-  >> notes foo    # edit foo notes file
-  >> notes -n     # edit default notes file in notepad
-  >> notes foo -n # edit foo notes file in notepad
+  >> marble        # start taking notes
+  >> marble -w     # create copy of default file on desktop
+  >> marble foo    # edit foo file
+  >> marble -n     # edit default file in notepad
+  >> marble foo -n # edit foo file in notepad
 
 HELP
 }
@@ -129,23 +129,23 @@ MAIN: {
         exit 1;
     }
 
-    `mkdir -p ${NOTES_DIR}`;
-    `mkdir -p ${NOTES_BACKUP_DIR}`;
-    `mkdir -p ${NOTES_ARCHIVE_DIR}`;
+    `mkdir -p ${WORK_DIR}`;
+    `mkdir -p ${BACKUP_DIR}`;
+    `mkdir -p ${ARCHIVE_DIR}`;
 
     if (defined $a_explorer) {
-        system("explorer.exe `wslpath -w ${NOTES_DIR}`");
+        system("explorer.exe `wslpath -w ${WORK_DIR}`");
         exit 0;
     }
 
     if ($a_verbose) {
-        print "NOTES_DIR: ${NOTES_DIR}\n";
-        print "NOTES_BACKUP_DIR: ${NOTES_BACKUP_DIR}\n";
-        print "NOTES_ARCHIVE_DIR: ${NOTES_ARCHIVE_DIR}\n";
+        print "WORK_DIR: ${WORK_DIR}\n";
+        print "BACKUP_DIR: ${BACKUP_DIR}\n";
+        print "ARCHIVE_DIR: ${ARCHIVE_DIR}\n";
     }
 
     if (defined $a_list) {
-        my $lsCommand = "ls ${NOTES_DIR} | grep -v ${ARCHIVE_DIR_NAME} | grep -v ${BACKUP_DIR_NAME}";
+        my $lsCommand = "ls ${WORK_DIR} | grep -v ${ARCHIVE_DIR_NAME} | grep -v ${BACKUP_DIR_NAME}";
         if (defined $firstArg) {
             $lsCommand .= " | grep $firstArg";
         }
@@ -159,9 +159,9 @@ MAIN: {
         $noteName = $firstArg;
     }
 
-    my $path = "${NOTES_DIR}/${noteName}.txt";
-    if (-e "${NOTES_PROMOTED_DIR}/${noteName}.txt") {
-        $path = "${NOTES_PROMOTED_DIR}/${noteName}.txt";
+    my $path = "${WORK_DIR}/${noteName}.txt";
+    if (-e "${PROMOTED_DIR}/${noteName}.txt") {
+        $path = "${PROMOTED_DIR}/${noteName}.txt";
     }
 
     if (defined $a_notepad) {
@@ -186,9 +186,9 @@ MAIN: {
     my $timestamp = "$year\_$mon\_$mday\_$hour\_$min\_$sec";
 
     # make backup
-    my $backupFile = "${NOTES_BACKUP_DIR}/${DEFAULT_NOTE_NAME}";
+    my $backupFile = "${BACKUP_DIR}/${DEFAULT_NOTE_NAME}";
     if (defined $firstArg) {
-        $backupFile = "${NOTES_BACKUP_DIR}/$firstArg";
+        $backupFile = "${BACKUP_DIR}/$firstArg";
     }
     $backupFile = "${backupFile}-${timestamp}.txt";
     if (! -e $path) {
@@ -219,12 +219,12 @@ MAIN: {
         }
 
         # if default note, print error and exit
-        if ($path eq "${NOTES_DIR}/${DEFAULT_NOTE_NAME}.txt") {
+        if ($path eq "${WORK_DIR}/${DEFAULT_NOTE_NAME}.txt") {
             print "Cannot promote default note\n";
             exit 1;
         }
 
-        `mv ${path} ${NOTES_PROMOTED_DIR}/${firstArg}.txt`;
+        `mv ${path} ${PROMOTED_DIR}/${firstArg}.txt`;
         exit 0;
     }
 
@@ -234,9 +234,9 @@ MAIN: {
             exit 1;
         }
 
-        my $archiveFile = "${NOTES_ARCHIVE_DIR}/${DEFAULT_NOTE_NAME}";
+        my $archiveFile = "${ARCHIVE_DIR}/${DEFAULT_NOTE_NAME}";
         if (defined $firstArg) {
-            $archiveFile = "${NOTES_ARCHIVE_DIR}/$firstArg";
+            $archiveFile = "${ARCHIVE_DIR}/$firstArg";
         }
         $archiveFile = "${archiveFile}.txt";
 
