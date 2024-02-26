@@ -9,6 +9,7 @@ my $a_list;
 my $a_notepad;
 my $a_write;
 my $a_show;
+my $a_promote;
 my $a_color;
 my $a_archive;
 my $a_delete;
@@ -44,8 +45,10 @@ if (! -d $DESKTOP_SAVE) {
 
 my $MARBLE_DIR="${home}/marble";
 my $NOTES_DIR="${MARBLE_DIR}/work";
+my $PROMOTED_DIR_NAME="promoted";
 my $BACKUP_DIR_NAME="backup";
 my $ARCHIVE_DIR_NAME="archive";
+my $NOTES_PROMOTED_DIR="${MARBLE_DIR}/${PROMOTED_DIR_NAME}";
 my $NOTES_BACKUP_DIR="${MARBLE_DIR}/${BACKUP_DIR_NAME}";
 my $NOTES_ARCHIVE_DIR="${MARBLE_DIR}/${ARCHIVE_DIR_NAME}";
 
@@ -60,6 +63,7 @@ USAGE:
 Options:
   --list     (-l) List notes files
   --notepad  (-n) Open in notepad
+  --promote  (-p) Move to root
   --write    (-w) Save to desktop
   --show     (-s) Print to stdout
   --color    (-c) Vim color scheme
@@ -110,6 +114,7 @@ MAIN: {
         'notepad:s' => \$a_notepad,
         'write' => \$a_write,
         'show' => \$a_show,
+        'promote' => \$a_promote,
         'color:s' => \$a_color,
         'archive' => \$a_archive,
         'delete' => \$a_delete,
@@ -150,9 +155,14 @@ MAIN: {
         exit 0;
     }
 
-    my $path = "${NOTES_DIR}/${DEFAULT_NOTE_NAME}.txt";
+    my $noteName = $DEFAULT_NOTE_NAME;
     if (defined $firstArg) {
-        $path = "${NOTES_DIR}/$firstArg.txt";
+        $noteName = $firstArg;
+    }
+
+    my $path = "${NOTES_DIR}/${noteName}.txt";
+    if (-e "${NOTES_PROMOTED_DIR}/${noteName}.txt") {
+        $path = "${NOTES_PROMOTED_DIR}/${noteName}.txt";
     }
 
     if (defined $a_notepad) {
@@ -200,6 +210,22 @@ MAIN: {
             exit 1;
         }
         `cp ${path} ${DESKTOP}`;
+        exit 0;
+    }
+
+    if (defined $a_promote) {
+        if (! -e $path) {
+            print "File not found: ${path}\n";
+            exit 1;
+        }
+
+        # if default note, print error and exit
+        if ($path eq "${NOTES_DIR}/${DEFAULT_NOTE_NAME}.txt") {
+            print "Cannot promote default note\n";
+            exit 1;
+        }
+
+        `mv ${path} ${NOTES_PROMOTED_DIR}/${firstArg}.txt`;
         exit 0;
     }
 
