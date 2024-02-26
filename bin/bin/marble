@@ -177,9 +177,17 @@ MAIN: {
         $noteName = $firstArg;
     }
 
-    my $path = "${WORK_DIR}/${noteName}.txt";
-    if (-e "${PROMOTED_DIR}/${noteName}.txt") {
-        $path = "${PROMOTED_DIR}/${noteName}.txt";
+    my $workNoteFilePath = "${WORK_DIR}/${noteName}.txt";
+    my $promotedNoteFilePath = "${PROMOTED_DIR}/${noteName}.txt";
+
+    if (-e "$workNoteFilePath" && -e "$promotedNoteFilePath") {
+        print "Note exists in both work and promoted\n";
+        exit 1;
+    }
+
+    my $path = $workNoteFilePath;
+    if (-e "$promotedNoteFilePath") {
+        $path = $promotedNoteFilePath;
     }
 
     if (defined $a_notepad) {
