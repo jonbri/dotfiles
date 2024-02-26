@@ -69,6 +69,13 @@ MAIN: {
         `git -C $dictionaryDir fetch`;
     }
 
+    my $marbleDir="$home/marble";
+    if (!-d "$marbleDir") {
+        `git clone git\@github.com:jonbri/marble.git $marbleDir`;
+    } else {
+        `git -C $marbleDir fetch`;
+    }
+
     print "\nDone\n";
     welcome();
 }
