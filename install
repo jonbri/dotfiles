@@ -64,7 +64,7 @@ MAIN: {
 
     my $dictionaryDir="$home/dictionary";
     if (!-d "$dictionaryDir") {
-        `git\@github.com:jonbri/dictionary.git`;
+        `git clone git\@github.com:jonbri/dictionary.git $dictionaryDir`;
     } else {
         `git -C $dictionaryDir fetch`;
     }
