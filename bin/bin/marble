@@ -8,7 +8,7 @@ my $a_list;
 my $a_notepad;
 my $a_write;
 my $a_show;
-my $a_promote;
+my $a_move;
 my $a_color;
 my $a_archive;
 my $a_delete;
@@ -62,7 +62,7 @@ USAGE:
 Options:
   --list     (-l) List files
   --notepad  (-n) Open in notepad
-  --promote  (-p) Move to root
+  --move     (-m) Move between work and promoted
   --write    (-w) Save to desktop
   --show     (-s) Print to stdout
   --color    (-c) Vim color scheme
@@ -113,7 +113,7 @@ MAIN: {
         'notepad:s' => \$a_notepad,
         'write' => \$a_write,
         'show' => \$a_show,
-        'promote' => \$a_promote,
+        'move' => \$a_move,
         'color:s' => \$a_color,
         'archive' => \$a_archive,
         'delete' => \$a_delete,
@@ -145,12 +145,30 @@ MAIN: {
     }
 
     if (defined $a_list) {
-        my $lsCommand = "ls ${WORK_DIR} | grep -v ${ARCHIVE_DIR_NAME} | grep -v ${BACKUP_DIR_NAME}";
+        my $lsCommand = "ls ${WORK_DIR}";
         if (defined $firstArg) {
             $lsCommand .= " | grep $firstArg";
         }
         $lsCommand .= " | sed -e 's/.txt\$//g'";
+        print "Work:\n";
         print runCommand($lsCommand);
+        print "\n";
+
+        $lsCommand = "ls ${PROMOTED_DIR}";
+        if (defined $firstArg) {
+            $lsCommand .= " | grep $firstArg";
+        }
+        $lsCommand .= " | sed -e 's/.txt\$//g'";
+
+        # if lsCommand has no results, print error message
+        my $lsOutput = runCommand($lsCommand);
+        if (scalar($lsOutput) == 0) {
+            print "Promoted: (none)\n";
+        } else {
+            print "Promoted:\n";
+            print runCommand($lsCommand);
+        }
+
         exit 0;
     }
 
@@ -212,7 +230,7 @@ MAIN: {
         exit 0;
     }
 
-    if (defined $a_promote) {
+    if (defined $a_move) {
         if (! -e $path) {
             print "File not found: ${path}\n";
             exit 1;
@@ -220,11 +238,18 @@ MAIN: {
 
         # if default note, print error and exit
         if ($path eq "${WORK_DIR}/${DEFAULT_NOTE_NAME}.txt") {
-            print "Cannot promote default note\n";
+            print "Cannot move default note\n";
             exit 1;
         }
 
-        `mv ${path} ${PROMOTED_DIR}/${firstArg}.txt`;
+        # if already in promoted, move to work
+        if (-e "${PROMOTED_DIR}/${noteName}.txt") {
+            `mv ${path} ${WORK_DIR}/${noteName}.txt`;
+            print "Moved back to work\n";
+        } else {
+            `mv ${path} ${PROMOTED_DIR}/${noteName}.txt`;
+            print "Moved to promoted\n";
+        }
         exit 0;
     }
 
