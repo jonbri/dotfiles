@@ -5,7 +5,7 @@ use strict;
 use Getopt::Long;
 
 my $a_list;
-my $a_notepad;
+my $a_gui;
 my $a_write;
 my $a_show;
 my $a_move;
@@ -61,7 +61,7 @@ USAGE:
 
 Options:
   --list     (-l) List files
-  --notepad  (-n) Open in notepad
+  --gui      (-g) Open in graphical editor
   --move     (-m) Move between work and promoted
   --write    (-w) Save to desktop
   --show     (-s) Print to stdout
@@ -73,11 +73,10 @@ Options:
   --help     (-h) See this message
 
 EXAMPLES:
-  >> marble        # start taking notes
-  >> marble -w     # create copy of default file on desktop
-  >> marble foo    # edit foo file
-  >> marble -n     # edit default file in notepad
-  >> marble foo -n # edit foo file in notepad
+  >> marble      # start taking notes
+  >> marble -w   # create copy of default file on desktop
+  >> marble foo  # edit foo file
+  >> marble foo -g "notepad.exe" # edit foo file in notepad
 
 HELP
 }
@@ -110,7 +109,7 @@ sub confirm($) {
 MAIN: {
     GetOptions(
         'list' => \$a_list,
-        'notepad:s' => \$a_notepad,
+        'gui:s' => \$a_gui,
         'write' => \$a_write,
         'show' => \$a_show,
         'move' => \$a_move,
@@ -121,6 +120,10 @@ MAIN: {
         'verbose' => \$a_verbose,
         'help' => \$a_help,
     ) || (help() && exit 1);
+
+    if (defined $a_gui && $a_gui eq "") {
+        $a_gui = "notepad.exe";
+    }
 
     # show help if either arg or option is given
     my $firstArg=getFirstNonOptionArg();
@@ -190,8 +193,8 @@ MAIN: {
         $path = $promotedNoteFilePath;
     }
 
-    if (defined $a_notepad) {
-        `notepad.exe ${path}`;
+    if (defined $a_gui) {
+        `${a_gui} ${path}`;
         exit 0;
     }
 
