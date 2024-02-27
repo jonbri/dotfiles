@@ -172,7 +172,7 @@ alias ie="i && e"
 alias fast="slow -d 0.03"
 alias mostused="most"
 alias dict="$EDITOR -c \"colorscheme sorbet | normal Gzz\" ~/.config/nvim/dictionaries/custom.dictionary"
-alias goals="$EDITOR -c \"colorscheme sorbet | normal Gzz\" ~/goals/README.md"
+alias goals="marble --color sorbet goals"
 
 alias droplet="ssh root@192.81.214.19"
 alias fui="cd $HOME/d*-s*-f*-u* && persona work"
