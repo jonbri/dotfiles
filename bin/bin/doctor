@@ -2,6 +2,7 @@
 
 NODE_VERSION=`node --version`
 GIT_VERSION=`git --version`
+NEOVIM_VERSION=`nvim --version | grep "NVIM v" | awk '{print $2}'`
 
 echo "Checking node..."
 if [ -z "${NODE_VERSION}" ]; then
@@ -17,6 +18,14 @@ if [ -z "${GIT_VERSION}" ]; then
   exit 1
 fi
 echo $GIT_VERSION
+
+echo
+echo "Checking neovim..."
+if [ -z "${NEOVIM_VERSION}" ]; then
+  echo "neovim not found"
+  exit 1
+fi
+echo $NEOVIM_VERSION
 
 echo
 echo "all good"
