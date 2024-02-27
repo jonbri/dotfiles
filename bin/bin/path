@@ -21,8 +21,8 @@ Options:
   --edit    (-e) Edit path entry
 
 EXAMPLES:
-  >> path     # show path
-  >> path foo # show foo entry
+  >> path     # show formatted path
+  >> path foo # filter by foo
 
 HELP
 }
