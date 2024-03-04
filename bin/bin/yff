@@ -39,6 +39,11 @@ MAIN: {
         exit 1;
     }
 
+    if (!-e $prettier) {
+        print "Error: prettier not found at ${prettier}\n";
+        exit 1;
+    }
+
     my @changed_files = `git diff --name-only`;
 
     if (scalar @changed_files == 0) {
