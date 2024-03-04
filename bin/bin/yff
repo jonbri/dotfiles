@@ -1,0 +1,61 @@
+#!/usr/bin/perl -w
+# yff - only format changed files
+
+use strict;
+
+use Getopt::Long;
+
+my $a_dryRun;
+my $a_help;
+
+my $prettier = "./node_modules/.bin/prettier";
+
+sub help() {
+    print STDOUT <<'HELP';
+
+yff - only format changed files
+
+USAGE:
+  >> yff
+
+Options:
+  --dry-run (-d) Only show files that would be updated
+  --help    (-h) See this message
+
+EXAMPLES:
+  >> yff
+
+HELP
+}
+
+MAIN: {
+    GetOptions(
+        'dry-run' => \$a_dryRun,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    if (defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my @changed_files = `git diff --name-only`;
+
+    if (scalar @changed_files == 0) {
+        print "No changed files\n";
+        exit 0;
+    }
+
+    foreach my $file (@changed_files) {
+        chomp $file;
+        if (!defined $a_dryRun) {
+            print "Formatting $file\n";
+            system("$prettier --write $file");
+        } else {
+            print "$file\n";
+        }
+    }
+
+    exit 0;
+}
+
