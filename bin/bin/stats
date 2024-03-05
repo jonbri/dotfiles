@@ -35,6 +35,16 @@ MAIN: {
         exit 1;
     }
 
+    print "Total commits: ";
+    print `git rev-list HEAD --count`;
+
+    print "First: ";
+    print `git log --pretty=format:"%ad [%an]" --date=short | tail -n 1`;
+
+    print "\nLatest: ";
+    print `git log --pretty=format:"%ad [%an]" --date=short | head -n 1`;
+
+    print "Most active contributors: \n";
     my $output = `git shortlog -s -n -e`;
     my @lines = split("\n", $output);
     my $count = 0;
@@ -44,6 +54,7 @@ MAIN: {
       last if $count == 10;
     }
 
+    print "\n\"git count-objects -vH\": \n";
     print `git count-objects -vH`;
 
     exit 0;
