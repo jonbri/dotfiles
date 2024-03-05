@@ -1,5 +1,4 @@
 #!/usr/bin/perl -w
-# yff - only format changed files
 
 use strict;
 
@@ -28,13 +27,22 @@ EXAMPLES:
 HELP
 }
 
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
 MAIN: {
     GetOptions(
         'dry-run' => \$a_dryRun,
         'help' => \$a_help
     ) || (help() && exit 1);
 
-    if (defined $a_help) {
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
         help();
         exit 1;
     }
@@ -42,6 +50,11 @@ MAIN: {
     if (!-e $prettier) {
         print "Error: prettier not found at ${prettier}\n";
         exit 1;
+    }
+
+    if ($firstArg) {
+        system("$prettier \"**/*$firstArg*\" --write");
+        exit 0;
     }
 
     my @changed_files = `git diff --name-only`;
