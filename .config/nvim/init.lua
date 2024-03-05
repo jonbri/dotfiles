@@ -5,7 +5,6 @@ vim.opt.showtabline = 2
 
 if not vim.g.vscode then -- in terminal
   vim.opt.mouse = "";
-  vim.g.flash_winswitch = 1
 
   -- get machine "name"
   local handle = io.popen("name")
