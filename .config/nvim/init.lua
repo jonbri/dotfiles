@@ -43,6 +43,7 @@ if not vim.g.vscode then -- in terminal
   Plug 'AndrewRadev/discotheque.vim'
   Plug 'jonbri/vim-bpm'
   Plug 'jonbri/vim-sane'
+  Plug 'jonbri/vim-colorpulse'
   Plug 'numToStr/Comment.nvim'
   if name == "t14\n" then Plug 'github/copilot.vim' end
   vim.call('plug#end');
