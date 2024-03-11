@@ -13,7 +13,6 @@ if not vim.g.vscode then -- in terminal
 
   local Plug = vim.fn['plug#'];
   vim.call('plug#begin', '~/.config/nvim/plugged')
-  Plug 'junegunn/seoul256.vim'
   Plug 'junegunn/vader.vim'
   Plug 'tpope/vim-projectionist'
   Plug 'tpope/vim-fugitive'
