@@ -4,6 +4,7 @@ use strict;
 
 use Getopt::Long;
 
+my $a_ref;
 my $a_dryRun;
 my $a_help;
 
@@ -18,11 +19,14 @@ USAGE:
   >> yff
 
 Options:
+  --ref     (-r) Format files affected by Git ref
   --dry-run (-d) Only show files that would be updated
   --help    (-h) See this message
 
 EXAMPLES:
   >> yff
+  >> yff Button
+  >> yff --ref HEAD~
 
 HELP
 }
@@ -37,6 +41,7 @@ sub getFirstNonOptionArg {
 
 MAIN: {
     GetOptions(
+        'ref=s' => \$a_ref,
         'dry-run' => \$a_dryRun,
         'help' => \$a_help
     ) || (help() && exit 1);
@@ -57,7 +62,12 @@ MAIN: {
         exit 0;
     }
 
-    my @changed_files = `git diff --name-only`;
+    my @changed_files;
+    if (defined $a_ref) {
+        @changed_files = `git diff-tree --no-commit-id --name-only ${a_ref} -r`;
+    } else {
+        @changed_files = `git diff --name-only`;
+    }
 
     if (scalar @changed_files == 0) {
         print "No changed files\n";
