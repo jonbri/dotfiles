@@ -76,6 +76,9 @@ MAIN: {
 
     foreach my $file (@changed_files) {
         chomp $file;
+        if (!-e $file) {
+            next;
+        }
         if (!defined $a_dryRun) {
             print "Formatting $file\n";
             system("$prettier --write $file");
