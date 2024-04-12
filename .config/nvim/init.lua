@@ -44,7 +44,7 @@ if not vim.g.vscode then -- in terminal
   Plug 'jonbri/vim-sane'
   Plug 'jonbri/vim-colorpulse'
   Plug 'numToStr/Comment.nvim'
-  if name == "t14\n" then Plug 'github/copilot.vim' end
+  if name == "t14\n" or name == "wsl\n" then Plug 'github/copilot.vim' end
   vim.call('plug#end');
 
   vim.keymap.set("n", "<leader>bo", ":BufOnly<CR>", {})
