@@ -89,10 +89,15 @@ MAIN: {
 
             my @whyResults = runCommand("yarn why $arg");
             my $version = join("", grep(/Found/, @whyResults));
-            $version =~ s/.*Found //;
-            $version =~ s/\"//g;
-            $version =~ s/$arg//;
-            $version =~ s/\@//g;
+
+            if ($version eq "") {
+                $version = "ERROR";
+            } else {
+                $version =~ s/.*Found //;
+                $version =~ s/\"//g;
+                $version =~ s/$arg//;
+                $version =~ s/\@//g;
+            }
             chomp $version;
 
             $result .= "$version";
