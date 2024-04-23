@@ -2,9 +2,6 @@
 # nc-set - Manage NC environment variable
 # This file needs to be sourced
 
-# if the input command is something like "nova0",
-# the resulting path will be ~/nova0/nova-commons
-
 # Environment variable needed: NC_CACHE_FILE
 # Set in your .bash_profile
 
@@ -14,7 +11,7 @@ if [ -z $ARG ]; then
     exit 1;
 fi
 
-NC_PATH=${HOME}/${ARG}/nova-commons
+NC_PATH=${HOME}/${ARG}/d*-s*-f*-n*
 if [ -f $NC_PATH ]; then
     echo "Path not found: $NC_PATH"
 else
