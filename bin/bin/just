@@ -1,4 +1,13 @@
 #!/bin/bash
 
+args="$@"
+command="just-args $args --command"
+justArgsResult=`${command}`
+
+# echo $command
+# echo $justArgsResult
+
+echo "running..."
 yarn test --clearCache
-yarn test "_/$1.spec" --watch
+eval $justArgsResult
+

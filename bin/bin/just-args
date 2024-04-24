@@ -1,0 +1,71 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+use Getopt::Long;
+
+my $a_help;
+my $a_command;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+just - Run individual jest tests
+
+USAGE:
+  >> just [args]
+
+Options:
+  --command (-c) only print out command
+  --help    (-h)
+
+EXAMPLES:
+  >> just foo
+  >> just foo bar
+
+HELP
+}
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+sub clearScreen {
+    print "\033[2J";
+    print "\033[0;0H";
+}
+
+MAIN: {
+    GetOptions(
+        'command' => \$a_command,
+        'help' => \$a_help,
+    ) || (help() && exit 1);
+
+    if (defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    $| = 1;
+
+    my @specArgs = map { "\"_/$_.spec\"" } @ARGV;
+    my $arg = join(" ", @specArgs);
+    my $command = "yarn test $arg --watch";
+
+    if (defined $a_command) {
+        print "$command\n";
+        exit 0;
+    }
+
+    clearScreen();
+    print "$command\n";
+    my @results = runCommand($command);
+    print @results;
+
+    exit 0;
+}
+
