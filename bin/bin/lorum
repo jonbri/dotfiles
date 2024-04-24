@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# lorum - text generator
+# lorem - text generator
 
 use strict;
 
@@ -14,10 +14,10 @@ my $a_help;
 sub help() {
     print STDOUT <<'HELP';
 
-lorum - text generator
+lorem - text generator
 
 USAGE:
-  >> lorum [number] [options]
+  >> lorem [number] [options]
 
 Options:
   --width   (-w) Set line-width
@@ -27,10 +27,10 @@ Options:
   --help    (-h) See this message
 
 EXAMPLES:
-  >> lorum               # print one lorum line
-  >> lorum 3             # print 3 lines
-  >> lorum 5 -w 10       # print 5 short lines
-  >> lorum 5 -w 10 -n -r # reversed with line numbers
+  >> lorem               # print one lorem line
+  >> lorem 3             # print 3 lines
+  >> lorem 5 -w 10       # print 5 short lines
+  >> lorem 5 -w 10 -n -r # reversed with line numbers
 
 HELP
 }
