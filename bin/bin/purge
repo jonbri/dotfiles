@@ -97,7 +97,7 @@ sub deleteLocalBranch {
     chomp $message;
     my $answer = '';
     if (!defined $a_force) {
-        $answer = confirm("\n".generatePrefix." LOCAL\n${sha} ${message}\n${command} (y/n/i) ");
+        $answer = confirm("\n".generatePrefix." LOCAL\n${sha} ${message}\n${command} (y/n/i/s) ");
     } else {
         $answer = 'y';
     }
@@ -110,6 +110,10 @@ sub deleteLocalBranch {
     } elsif ($answer =~ /^i/i) {
         print "\n";
         print `git email $branch | nth 0-11`;
+        deleteLocalBranch(@_);
+    } elsif ($answer =~ /^s/i) {
+        print "\n";
+        print `git show $branch | cat`;
         deleteLocalBranch(@_);
     }
 }
@@ -127,7 +131,7 @@ sub deleteRemoteBranch {
     my $message = `git log -1 --pretty=%B $a_remote/$remoteBranch | nth 0`;
     chomp $sha;
     chomp $message;
-    my $answer = confirm("\n".generatePrefix." REMOTE\n${sha} ${message}\n${command} (y/n/i) ");
+    my $answer = confirm("\n".generatePrefix." REMOTE\n${sha} ${message}\n${command} (y/n/i/s) ");
     if ($answer =~ /^y/i) {
         if (index($branch, $a_user) == -1) {
             confirm("\n**Warning**: ${a_user} not found in branch name: ${branch}\nPress enter to proceed...");
@@ -138,6 +142,10 @@ sub deleteRemoteBranch {
     } elsif ($answer =~ /^i/i) {
         print "\n";
         print `git email $a_remote/$remoteBranch | nth 0-11`;
+        deleteRemoteBranch(@_);
+    } elsif ($answer =~ /^s/i) {
+        print "\n";
+        print `git show $a_remote/$remoteBranch | cat`;
         deleteRemoteBranch(@_);
     }
 }
