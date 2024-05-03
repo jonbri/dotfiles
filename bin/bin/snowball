@@ -9,6 +9,7 @@ my $a_working;
 my $a_index;
 my $a_untracked;
 my $a_conflict;
+my $a_release;
 my $a_empty;
 my $a_message;
 my $a_help;
@@ -30,6 +31,7 @@ Options:
   --untracked (-u) create untracked file
   --empty     (-e) create empty commit
   --conflict  (-c) create merge conflict
+  --release   (-r) create release commit
   --message   (-m) commit message to use
 
 EXAMPLES:
@@ -64,6 +66,7 @@ MAIN: {
         'index' => \$a_index,
         'untracked' => \$a_untracked,
         'conflict' => \$a_conflict,
+        'release' => \$a_release,
         'empty' => \$a_empty,
         'message=s' => \$a_message,
         'help' => \$a_help
@@ -125,6 +128,17 @@ MAIN: {
         print `git commit -m 'snowball cause conflict'`;
         print `git checkout -`;
         print `git merge -`;
+        exit 0;
+    }
+
+    if (defined $a_release) {
+        print `echo "snowball-release" >> snowball_commit_log.txt`;
+        print `git add snowball_commit_log.txt`;
+        my $commitMessage = "release: v1.2.3";
+        if (defined $a_message) {
+            $commitMessage = $a_message;
+        }
+        print `git commit -m '$commitMessage'`;
         exit 0;
     }
 
