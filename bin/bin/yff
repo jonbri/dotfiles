@@ -5,6 +5,7 @@ use strict;
 use Getopt::Long;
 
 my $a_ref;
+my $a_exact;
 my $a_dryRun;
 my $a_help;
 
@@ -20,12 +21,14 @@ USAGE:
 
 Options:
   --ref     (-r) Format files affected by Git ref
+  --exact   (-e) Use with argument for exact file name match
   --dry-run (-d) Only show files that would be updated
   --help    (-h) See this message
 
 EXAMPLES:
   >> yff
   >> yff Button
+  >> yff Button.tsx --exact
   >> yff --ref HEAD~
 
 HELP
@@ -42,6 +45,7 @@ sub getFirstNonOptionArg {
 MAIN: {
     GetOptions(
         'ref=s' => \$a_ref,
+        'exact' => \$a_exact,
         'dry-run' => \$a_dryRun,
         'help' => \$a_help
     ) || (help() && exit 1);
@@ -58,7 +62,24 @@ MAIN: {
     }
 
     if ($firstArg) {
-        system("$prettier \"**/*$firstArg*\" --write");
+        if (defined $a_exact) {
+            system("$prettier \"**/*$firstArg\" --write");
+            exit 0;
+        } else {
+            my @files = `find . -iname "*$firstArg*" -not -path "./node_modules/*"`;
+            foreach my $file (@files) {
+                chomp $file;
+                if (!-e $file) {
+                    next;
+                }
+                if (!defined $a_dryRun) {
+                    print "Formatting $file\n";
+                    system("$prettier --write $file");
+                } else {
+                    print "$file\n";
+                }
+            }
+        }
         exit 0;
     }
 
