@@ -4,9 +4,6 @@ args="$@"
 command="just-args $args --command"
 justArgsResult=`${command}`
 
-# echo $command
-# echo $justArgsResult
-
 echo "running..."
 yarn test --clearCache
 eval $justArgsResult

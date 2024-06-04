@@ -4,24 +4,27 @@ use strict;
 
 use Getopt::Long;
 
-my $a_help;
 my $a_command;
+my $a_rootDir;
+my $a_help;
 
 sub help() {
     print STDOUT <<'HELP';
 
-just - Run individual jest tests
+just-args - Run individual jest tests
 
 USAGE:
-  >> just [args]
+  >> just-args [args]
 
 Options:
   --command (-c) only print out command
+  --rootDir (-r) specify root directory
   --help    (-h)
 
 EXAMPLES:
-  >> just foo
-  >> just foo bar
+  >> just-args foo
+  >> just-args foo bar
+  >> just-args foo -r test
 
 HELP
 }
@@ -42,6 +45,7 @@ sub clearScreen {
 MAIN: {
     GetOptions(
         'command' => \$a_command,
+        'rootDir=s' => \$a_rootDir,
         'help' => \$a_help,
     ) || (help() && exit 1);
 
@@ -55,6 +59,10 @@ MAIN: {
     my @specArgs = map { "\"_/$_.spec\"" } @ARGV;
     my $arg = join(" ", @specArgs);
     my $command = "yarn test $arg --watch";
+
+    if (defined $a_rootDir) {
+        $command .= " --rootDir $a_rootDir";
+    }
 
     if (defined $a_command) {
         print "$command\n";
