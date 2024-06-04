@@ -88,6 +88,8 @@ MAIN: {
         @changed_files = `git diff-tree --no-commit-id --name-only ${a_ref} -r`;
     } else {
         @changed_files = `git diff --name-only`;
+        # include untracked files as well
+        push @changed_files, `git ls-files --others --exclude-standard`;
     }
 
     if (scalar @changed_files == 0) {
