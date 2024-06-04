@@ -58,7 +58,7 @@ MAIN: {
 
     my @specArgs = map { "\"_/$_.spec\"" } @ARGV;
     my $arg = join(" ", @specArgs);
-    my $command = "yarn test $arg --watch";
+    my $command = "./node_modules/.bin/jest $arg --watch";
 
     if (defined $a_rootDir) {
         $command .= " --rootDir $a_rootDir";

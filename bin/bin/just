@@ -5,6 +5,6 @@ command="just-args $args --command"
 justArgsResult=`${command}`
 
 echo "running..."
-yarn test --clearCache
+./node_modules/.bin/jest --clearCache
 eval $justArgsResult
 
