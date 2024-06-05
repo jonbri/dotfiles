@@ -13,7 +13,6 @@
   "editor.cursorStyle": "line",
   "editor.insertSpaces": false,
 
-  "editor.lineNumbers": "relative",
   "editor.glyphMargin": false,
   "git.decorations.enabled": false,
   "editor.folding": false,
@@ -47,6 +46,7 @@
   },
   "window.zoomLevel": 1,
 
+  "editor.lineNumbers": "on",
   "settings.cycle": [
     {
       "id": "lineNumbers",
@@ -68,5 +68,7 @@
         }
       ]
     }
-  ]
+  ],
+  "editor.stickyScroll.enabled": true,
+  "github.copilot.editor.enableAutoCompletions": true
 }

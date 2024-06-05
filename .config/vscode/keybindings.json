@@ -20,6 +20,17 @@
     "key": "alt+l",
     "command": "settings.cycle.lineNumbers",
     "when": "editorFocus"
+  },
+  {
+    "key": "alt+e",
+    "command": "settings.cycle.lineNumbers",
+    "when": "editorFocus"
+  },
+  {
+    "key": "ctrl+e",
+    "command": "vscode-neovim.ctrl-e",
+    "when": "editorTextFocus && neovim.ctrlKeysNormal && neovim.init && neovim.mode != 'insert'",
+    "args": "<C-e>"
   }
 ]
 
