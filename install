@@ -45,6 +45,8 @@ MAIN: {
     `mkdir -p $toolsDir`;
     `mkdir -p $homeBinDir`;
     `cp bin/bin/* $homeBinDir`;
+    `cp $toolsDir/killer/killer $homeBinDir`;
+    `cp $toolsDir/persona/persona $homeBinDir`;
 
     my ($repo,$folderName);
     foreach(@repos) {
