@@ -59,6 +59,8 @@ if not vim.g.vscode then -- in terminal
   -- add word under cursor to custom dictionary
   vim.keymap.set("n", "<leader>zg", "yiw:sp ~/dictionary/custom.dictionary<CR>Go<ESC>pzz", {})
 else -- in vscode
+    vim.keymap.set("n", "<leader>c", ":call VSCodeCall('workbench.action.closeEditorsInGroup')<CR>", {})
+
     local Plug = vim.fn['plug#'];
     vim.call('plug#begin', '~/.config/nvim/plugged')
     Plug 'tpope/vim-unimpaired'
@@ -81,4 +83,3 @@ end
 require("Comment").setup();
 
 vim.cmd [[ source /home/jonbri/dotfiles/.config/nvim/vimrc.vim ]]
-
