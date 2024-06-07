@@ -145,6 +145,7 @@ alias site="cd $HOME/d*-s*-s*e && persona work"
 alias siteb="cd $HOME/b/d*-s*-s*e && persona work"
 alias sitec="cd $HOME/c/d*-s*-s*e && persona work"
 alias grape="cd $HOME/icecoldnugrape && persona home"
+alias grapet="grape && t"
 alias seeds="cd $HOME/seeds && persona home && git fetch && $EDITOR -c \"colorscheme morning | normal Gzz\" README.md"
 alias seedst="seeds && tmux"
 alias apps="cd $NC"/../apps
