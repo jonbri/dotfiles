@@ -4,12 +4,8 @@ use strict;
 use Cwd 'cwd';
 
 my $home=$ENV{HOME};
+my $homeBinDir="$home/bin";
 my $cwd = cwd();
-
-my @repos=qw(
-    https://github.com/jonbri/killer|killer
-    https://github.com/jonbri/persona|persona
-);
 
 sub runCommand($) {
     my ($command) = @_;
@@ -37,32 +33,8 @@ MAIN: {
     }
     print join('', runCommand("ln -sfv $cwd/.config/nvim $home/.config"));
 
-    print "\nUpdating tools...\n";
-
-    my $toolsDir="$home/tools";
-    my $homeBinDir="$home/bin";
-
-    `mkdir -p $toolsDir`;
     `mkdir -p $homeBinDir`;
     `cp bin/bin/* $homeBinDir`;
-    `cp $toolsDir/killer/killer $homeBinDir`;
-    `cp $toolsDir/persona/persona $homeBinDir`;
-
-    my ($repo,$folderName);
-    foreach(@repos) {
-        ($repo,$folderName)=split("\Q|",$_,2);
-
-        my $fullPath="$toolsDir/$folderName";
-        my $main = `cd $fullPath && main`;
-        if (-d "$fullPath") {
-            `git -C $fullPath stash -u`;
-            `git -C $fullPath fetch`;
-            `git -C $fullPath checkout $main`;
-            `git -C $fullPath reset --hard origin/$main`;
-        } else {
-            `git clone $repo $fullPath --depth 1`;
-        }
-    }
 
     my $dictionaryDir="$home/dictionary";
     if (!-d "$dictionaryDir") {

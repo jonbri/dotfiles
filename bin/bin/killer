@@ -1,0 +1,192 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+use Getopt::Long;
+
+sub help() {
+    print STDERR <<'HELP';
+killer - Manage processes
+
+USAGE:
+  >> killer pattern [options]
+
+OPTIONS:
+  --list  (-l) Just show matches
+  --watch (-w) Report and watch
+  --yes   (-y) Auto-confirm first match
+  --all   (-a) Auto-confirm all matches
+  --quiet (-q) Don't write to stdout
+
+EXAMPLES:
+  >> killer top         - Match all top instances
+  >> killer "user.*top" - Include user
+  >> killer top -r      - See all matches
+  >> killer top -a      - Kill all top instances
+                           and skip confirmation
+  >> killer help        - See this message
+
+https://github.com/jonbri/killer
+
+HELP
+}
+
+my $a_quiet;
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+sub confirm($) {
+    my ($message)=@_;
+    print $message;
+    my $ok=<>;
+    chomp $ok;
+    return $ok;
+}
+
+sub clearScreen() {
+    print "\033[2J";
+    print "\033[0;0H";
+}
+
+sub _print($) {
+    my ($s)=@_;
+    if (!defined $a_quiet) {
+        print $s;
+    }
+}
+
+MAIN: {
+    my $a_yes;
+    my $a_all;
+    my $a_list;
+    my $a_watch;
+    my $a_help;
+    GetOptions(
+        'yes' => \$a_yes,
+        'all' => \$a_all,
+        'list' => \$a_list,
+        'quiet' => \$a_quiet,
+        'watch' => \$a_watch,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if given as arg or option
+    my $firstArg=getFirstNonOptionArg();
+    if (!$firstArg) {
+        help();
+        exit 1;
+    }
+    if ($firstArg) {
+        if ($firstArg eq "help" || $firstArg =~ /-(-)?h(elp)?/) {
+            help();
+            exit 0;
+        }
+    }
+
+    if (defined $a_help) {
+        help();
+        exit 0;
+    }
+
+
+    if (defined $a_watch) {
+        $a_list = 1
+    }
+
+    if ($a_list) {
+        if ($a_yes || $a_all) {
+            _print "args are incompatible\n";
+            exit 1;
+        }
+    }
+
+    my $i_total = 1;
+    my $i_kills = 0;
+    my $i_skips = 0;
+
+    do {
+        $i_total = 1;
+
+        if (defined $a_watch) {
+            clearScreen();
+        }
+
+        my @pidLineToKill = runCommand("ps aux");
+        @pidLineToKill = grep(/$firstArg/, @pidLineToKill);
+        @pidLineToKill = grep(!/perl.*killer /, @pidLineToKill);
+
+        if (scalar @pidLineToKill == 0) {
+            _print "no matches found\n";
+            if (!defined $a_watch) {
+                exit 0;
+            }
+        } elsif (scalar @pidLineToKill == 1) {
+            _print scalar @pidLineToKill." match found\n";
+        } else {
+            _print scalar @pidLineToKill." matches found\n";
+        }
+
+        foreach (@pidLineToKill) {
+            chomp;
+
+            if (scalar @pidLineToKill > 1) {
+                _print "$i_total) ";
+            }
+
+            if (defined $a_list) {
+                _print "$_\n";
+            } else {
+                my $answer = 'n';
+                if (defined $a_all) {
+                    $answer = 'y';
+                } elsif (defined $a_yes) {
+                    if ($i_total == 1) {
+                        $answer = 'y';
+                    } else {
+                        $answer = 'n';
+                    }
+                } else {
+                    $answer = confirm "$_\nkill? (y/n) ";
+                }
+
+                if ($answer =~ /^y/i) {
+                    my @pidParts = split(/\s+/, $_);
+                    my $pidToKill = $pidParts[1];
+                    runCommand("sudo kill -9 $pidToKill");
+                    _print "killed pid $pidToKill\n";
+                    $i_kills++;
+                } else {
+                    _print "skipped\n";
+                    $i_skips++;
+                }
+            }
+
+            $i_total++;
+        }
+
+        if (defined $a_watch) {
+            sleep(1);
+        }
+    } while(defined $a_watch);
+
+    if (!defined $a_list) {
+        _print "$i_kills processes killed\n";
+        if ($i_skips > 0) {
+            _print "$i_skips processes skipped\n";
+        }
+    }
+}

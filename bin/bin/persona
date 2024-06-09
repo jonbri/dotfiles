@@ -1,0 +1,267 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+use Getopt::Long;
+
+my $home=$ENV{HOME};
+my $configFile="$home/.persona.conf";
+my %places=();
+my $a_add;
+my $a_edit;
+my $a_name;
+my $a_list;
+my $a_quiet;
+my $a_fix;
+my $a_knownFrom;
+my $a_whoami;
+my $a_help;
+
+sub help() {
+    print STDERR <<'HELP';
+
+persona
+
+USAGE:
+  >> persona [<place>] [options]
+
+Options:
+  --add        (-a) Add entry to .persona.conf
+  --fix        (-f) Update HEAD author and committer
+  --edit       (-e) Open config file in editor
+  --name       (-n) Display active place name
+  --list       (-l) Print places
+  --quiet      (-q) Don't write to stdout
+  --whoami     (-w) Print current persona
+  --known-from (-k) Print commits that match
+                    current persona, starting at ref
+  --help  (-h) See this message
+
+EXAMPLES:
+  >> persona         - print current settings
+  >> persona -a work - add "work" persona
+  >> persona work    - switch to "work" persona
+  >> persona -f      - fix HEAD commit
+
+https://github.com/jonbri/persona
+
+HELP
+}
+
+
+sub readConfig {
+    my $place;
+
+    if (! -e $configFile) {
+        open my $FH, ">", $configFile;
+        close $FH;
+        print "created $configFile\n" ;
+        print "now add entries using \"-a\"\n" ;
+        exit 0;
+    }
+
+    open(FH,'<', $configFile) or die("Could not open config file\n");
+    while (<FH>) {
+        chomp;
+
+        if (/^#/) {
+            next;
+        }
+
+        # start of new place
+        if (/^\w/) {
+            $place = $_;
+            $places{$place} = ();
+        }
+
+        # attributes of place
+        if (/^\s\s\w/) {
+            my $line = $_;
+            $line =~ m/^\s\s(\S+)\s(.*)$/;
+            $places{$place}{$1} = $2;
+        }
+    }
+    close FH;
+}
+
+sub applyPlace($) {
+    my ($place)=@_;
+
+    if (!defined $place) {
+      return;
+    }
+
+    if (!defined $places{$place}) {
+        print STDERR "Place \"$place\" not found in configuration ($configFile).\n";
+        exit 1;
+    }
+
+    my $name = $places{$place}{'name'};
+    if (defined $name) {
+        `git config --global user.name "${name}"`;
+    }
+
+    my $email = $places{$place}{'email'};
+    if (defined $email) {
+        `git config --global user.email $email`;
+    }
+
+    my $ssh_dir = "$home/.ssh";
+    my $place_dir = "$home/.esesh/$place";
+    my $esesh_dir = "$place_dir/.ssh";
+    if (-d $esesh_dir) {
+      `cp -R $esesh_dir/id_rsa $ssh_dir/id_rsa`;
+      `cp -R $esesh_dir/id_rsa.pub $ssh_dir/id_rsa.pub`;
+      `cp -R $esesh_dir/config $ssh_dir/config`;
+      `cp -R $place_dir/.npmrc $home`;
+      `echo $place > $home/.ssh/persona`;
+    } else {
+      print ".esesh entry NOT found\n";
+    }
+
+    printSettings();
+}
+
+sub printSettings() {
+    if (!defined $a_quiet) {
+        print `git config --get user.name`;
+        print `git config --get user.email`;
+    }
+}
+
+sub printPlaces() {
+    if (!defined $a_quiet) {
+        for(keys %places){
+            print("$_ $places{$_}{name} $places{$_}{email} \n");
+        }
+    }
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+sub applyUpdate {
+    if (defined $a_fix) {
+        `git update-ref -d refs/heads/z_persona_tmp`;
+        `git branch z_persona_tmp`;
+        `git reset HEAD~`;
+        `git add .`;
+        `git commit --reuse-message=z_persona_tmp --reset-author`;
+        `git branch -D z_persona_tmp`;
+    }
+}
+
+MAIN: {
+    GetOptions(
+        'add=s' => \$a_add,
+        'list' => \$a_list,
+        'name' => \$a_name,
+        'edit' => \$a_edit,
+        'quiet' => \$a_quiet,
+        'fix' => \$a_fix,
+        'whoami' => \$a_whoami,
+        'known-from=s' => \$a_knownFrom,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+    readConfig();
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if (defined $a_list) {
+        if (!defined $a_quiet) {
+            printPlaces();
+        }
+        exit 0;
+    }
+
+    if (defined $a_whoami) {
+        my $email = `git config --get user.email`;
+        chomp $email;
+        my $name = `git config --get user.name`;
+        chomp $name;
+
+        # loop over places and find match with email and name
+        for(keys %places){
+            if ($email eq $places{$_}{email} && $name eq $places{$_}{name}) {
+                print "$_\n";
+                exit 0;
+            }
+        }
+
+        print "not found\n";
+        exit 0;
+    }
+
+
+    if (defined $a_name) {
+        if (!defined $a_quiet) {
+            my $email = `git config --get user.email`;
+            chomp $email;
+            for(keys %places){
+                if ($email eq $places{$_}{email}) {
+                    print "$_\n";
+                    exit 0;
+                }
+            }
+        }
+        exit 0;
+    }
+
+    if (defined $a_edit) {
+        my $editor = $ENV{EDITOR} || 'vim';
+        system $editor => $configFile;
+        exit 0;
+    }
+
+    if (defined $a_knownFrom) {
+        my $email = `git config --get user.email`;
+        chomp($email);
+        my @gitLogAuthor = `git log $a_knownFrom --oneline --author=$email`;
+        if (scalar @gitLogAuthor > 0) {
+            print "${email} matches:\n";
+            foreach (@gitLogAuthor) {
+                print "$_";
+            }
+        } else {
+            print "${email} not found\n";
+        }
+        exit 0;
+    }
+
+    if (defined $a_add) {
+        if (exists($places{$a_add})) {
+            print STDERR "Place \"$a_add\" already exists.\n";
+            exit 1;
+        }
+
+        open(FH, ">>", $configFile) or die "Couldn't open $configFile";
+
+        print "\nEnter $a_add persona name:\n";
+        my $name = <>;
+        chomp $name;
+        print "\nEnter $a_add persona email:\n";
+        my $email = <>;
+        chomp $email;
+
+        print FH "\n$a_add\n  name $name\n  email $email\n\n";
+    }
+
+    # no args, just show active settings
+    if (!defined $firstArg) {
+        printSettings();
+    }
+
+    applyPlace($firstArg);
+
+    applyUpdate();
+}
