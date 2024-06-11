@@ -16,6 +16,7 @@ my @localBranches;
 my @remoteBranches;
 my $count = 1;
 my $totalCount = 0;
+my $user = $ENV{USER};
 
 sub help() {
     print STDOUT <<'HELP';
@@ -190,7 +191,7 @@ MAIN: {
     ) || (help() && exit 1);
 
     if (!defined $a_user) {
-        $a_user = "jonbri";
+        $a_user = ${user};
     }
 
     if (!defined $a_remote) {

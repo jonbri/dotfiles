@@ -43,8 +43,6 @@ EXAMPLES:
   >> persona work    - switch to "work" persona
   >> persona -f      - fix HEAD commit
 
-https://github.com/jonbri/persona
-
 HELP
 }
 

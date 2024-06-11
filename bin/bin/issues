@@ -1,4 +1,0 @@
-#!/bin/bash
-
-open-browser "https://github.com/jonbri/dotfiles/issues"
-
