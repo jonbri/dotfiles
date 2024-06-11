@@ -3,9 +3,12 @@
 ## Install
 
 - `sudo apt install -y vim tmux tree openssh-server openssh-client g++ curl libssl-dev make net-tools`
-- `mkdir -p ~/tools ~/dotfiles/tmp`
+- Install [Neovim](#neovim) and [NodeJS](#nodejs)
+- `mkdir -p ~/dotfiles/tmp`
 - esesh
-- `./install`
+- `name`
+- `i`
+- `:PlugInstall`
 
 ### Neovim
 Stable:
