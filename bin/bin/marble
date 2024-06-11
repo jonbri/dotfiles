@@ -133,6 +133,7 @@ MAIN: {
         exit 1;
     }
 
+    `mkdir -p ${WORK_DIR}`;
     `mkdir -p ${BACKUP_DIR}`;
     `mkdir -p ${ARCHIVE_DIR}`;
 
