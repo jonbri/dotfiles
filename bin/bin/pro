@@ -61,29 +61,29 @@ MAIN: {
 
     if (defined $a_delete) {
         print "deleting projections...\n";
-        `rm -f ${HOME}/design-system-filament-ui/.projections.json`;
-        `rm -f ${HOME}/design-system-site/.projections.json`;
-        `rm -f ${HOME}/b/design-system-filament-ui/.projections.json`;
-        `rm -f ${HOME}/b/design-system-site/.projections.json`;
+        `rm -f ${HOME}/d*-s*-f*-ui/.projections.json`;
+        `rm -f ${HOME}/d*-s*-site/.projections.json`;
+        `rm -f ${HOME}/b/d*-s*-f*-ui/.projections.json`;
+        `rm -f ${HOME}/b/d*-s*-site/.projections.json`;
         print "done\n";
         exit 0;
     }
 
     if (defined $a_status) {
         print "projections:\n";
-        print "  ".`ls ${HOME}/design-system-filament-ui/.projections.json`;
-        print "  ".`ls ${HOME}/design-system-site/.projections.json`;
-        print "  ".`ls ${HOME}/b/design-system-filament-ui/.projections.json`;
-        print "  ".`ls ${HOME}/b/design-system-site/.projections.json`;
+        print "  ".`ls ${HOME}/d*-s*-f*-ui/.projections.json`;
+        print "  ".`ls ${HOME}/d*-s*-site/.projections.json`;
+        print "  ".`ls ${HOME}/b/d*-s*-f*-ui/.projections.json`;
+        print "  ".`ls ${HOME}/b/d*-s*-site/.projections.json`;
         print "done\n";
         exit 0;
     }
 
     print "installing projections...\n";
-    `ln -sf ${PROJECTIONS_DIR}/fui/.projections.json ${HOME}/design-system-filament-ui/.projections.json`;
-    `ln -sf ${PROJECTIONS_DIR}/fui/.projections.json ${HOME}/b/design-system-filament-ui/.projections.json`;
-    `ln -sf ${PROJECTIONS_DIR}/site/.projections.json ${HOME}/design-system-site/.projections.json`;
-    `ln -sf ${PROJECTIONS_DIR}/site/.projections.json ${HOME}/b/design-system-site/.projections.json`;
+    `ln -sf ${PROJECTIONS_DIR}/fui/.projections.json ${HOME}/d*-s*-f*-ui/.projections.json`;
+    `ln -sf ${PROJECTIONS_DIR}/fui/.projections.json ${HOME}/b/d*-s*-f*-ui/.projections.json`;
+    `ln -sf ${PROJECTIONS_DIR}/site/.projections.json ${HOME}/d*-s*-site/.projections.json`;
+    `ln -sf ${PROJECTIONS_DIR}/site/.projections.json ${HOME}/b/d*-s*-site/.projections.json`;
     print "done\n";
     exit 0;
 }

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-SITE="$HOME/design-system-site";
-FUI="$HOME/design-system-filament-ui";
-SITE_DOCGEN="$SITE/node_modules/@sas/filament-ui/docgen"
+SITE="$HOME/d*-s*-site";
+FUI="$HOME/d*-s*-f*-ui";
+SITE_DOCGEN="$SITE/node_modules/@s*s/f*-ui/docgen"
 FUI_DOCGEN="$FUI/build/docgen"
 FUI_COMPONENTS="${FUI_DOCGEN}/components";
 SITE_COMPONENTS="${SITE_DOCGEN}/components";
