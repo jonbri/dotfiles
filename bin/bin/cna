@@ -1,5 +1,5 @@
 #!/bin/bash
-# cna - Run create-nova-app locally
+# cna - create app locally
 
 # usage: pass in name of app to be created
 # Note: $NC should be defined in .bash_profile
@@ -9,4 +9,4 @@ APP_NAME=$1
 mkdir -p $NC/../apps
 cd $NC/../apps
 
-npx cross-env CNA_DEV=true node $NC/tools/create-nova-app/createNovaApp.js $APP_NAME --scripts-version file:$NC/tools/nova-scripts --template file:$NC/tools/templates/base --nova-commons-version file:$NC/build/nova-commons --nova-core-version file:$NC/build/nova-core
+npx cross-env CNA_DEV=true node $NC/tools/create-*-app/create*App.js $APP_NAME --scripts-version file:$NC/tools/*-scripts --template file:$NC/tools/templates/base --nova-commons-version file:$NC/build/*-commons --nova-core-version file:$NC/build/*-core

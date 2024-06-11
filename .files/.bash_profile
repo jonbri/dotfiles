@@ -8,7 +8,7 @@ export NC_CACHE_FILE="${HOME}/.nc"
 if [ -f $NC_CACHE_FILE ]; then
   export NC=`cat $NC_CACHE_FILE`
 else
-  export NC=~/nova-commons
+  export NC=~/n*-commons
   echo $NC > $NC_CACHE_FILE
 fi
 
@@ -135,9 +135,9 @@ alias kj="k java"
 alias kja="k java --yes_all"
 alias kd="k doom"
 alias kda="k doom --yes_all"
-alias nova0="source nc-set nova0"
-alias nova1="source nc-set nova1"
-alias nova2="source nc-set nova2"
+alias n0="source nc-set n0"
+alias n1="source nc-set n1"
+alias n2="source nc-set n2"
 alias pet="cd $HOME/pet-app && persona work"
 alias me="cd $HOME/me && persona home && git fetch"
 alias keep="cd $HOME/keep && ph"
@@ -217,12 +217,12 @@ alias prod-app="cd /root/icecoldnugrape && pull -f && yarn && yarn build && serv
 
 alias htdocs="cd /mnt/c/Apache*/htdocs && persona work"
 
-novafast() {
+nfast() {
   ticker-install
 
   EXCLUDE=$1
-  NC_PATH=/home/${USER}/nova0/nova-commons
-  find ${NC_PATH}/src/nova-commons/src \
+  NC_PATH=/home/${USER}/n*0/n*-commons
+  find ${NC_PATH}/src/n*-commons/src \
     -type d -name "__stories__" \
     -not -ipath "*/*${EXCLUDE}*/*" \
     -not -path "*/src/__stories__" \
