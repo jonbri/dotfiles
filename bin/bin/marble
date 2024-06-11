@@ -36,6 +36,7 @@ my $DESKTOP_SAVE=$WIN_DESKTOP_SAVE;
 if (! -d $DESKTOP_SAVE) {
     $DESKTOP_SAVE="${DESKTOP}/save";
 }
+`mkdir -p ${DESKTOP_SAVE}`;
 if (! -d $DESKTOP_SAVE) {
     print "Cannot find $DESKTOP_SAVE\n";
     print "exiting\n";
@@ -132,7 +133,6 @@ MAIN: {
         exit 1;
     }
 
-    `mkdir -p ${WORK_DIR}`;
     `mkdir -p ${BACKUP_DIR}`;
     `mkdir -p ${ARCHIVE_DIR}`;
 
