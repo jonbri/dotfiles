@@ -50,6 +50,7 @@ sub subHelp() {
 y(es)     -> delete
 n(o)      -> skip
 i(nspect) -> show commits around sha
+f(iles)   -> `git show --name-only`
 s(how)    -> `git show`
 ?         -> help
 
@@ -109,7 +110,7 @@ sub deleteLocalBranch {
     chomp $message;
     my $answer = '';
     if (!defined $a_force) {
-        $answer = confirm("\n".generatePrefix." LOCAL\n${sha} ${message}\n${command} (y/n/i/s/?) ");
+        $answer = confirm("\n".generatePrefix." LOCAL\n${sha} ${message}\n${command} (y/n/i/f/s/?) ");
     } else {
         $answer = 'y';
     }
@@ -126,6 +127,10 @@ sub deleteLocalBranch {
     } elsif ($answer =~ /^s/i) {
         print "\n";
         print `git show $branch | cat`;
+        deleteLocalBranch(@_);
+    } elsif ($answer =~ /^f/i) {
+        print "\n";
+        print `git show $branch --name-only | cat`;
         deleteLocalBranch(@_);
     } elsif ($answer eq "?") {
         subHelp();
@@ -146,7 +151,7 @@ sub deleteRemoteBranch {
     my $message = `git log -1 --pretty=%B $a_remote/$remoteBranch | nth 0`;
     chomp $sha;
     chomp $message;
-    my $answer = confirm("\n".generatePrefix." REMOTE\n${sha} ${message}\n${command} (y/n/i/s/?) ");
+    my $answer = confirm("\n".generatePrefix." REMOTE\n${sha} ${message}\n${command} (y/n/i/f/s/?) ");
     if ($answer =~ /^y/i) {
         if (index($branch, $a_user) == -1) {
             confirm("\n**Warning**: ${a_user} not found in branch name: ${branch}\nPress enter to proceed...");
@@ -161,6 +166,10 @@ sub deleteRemoteBranch {
     } elsif ($answer =~ /^s/i) {
         print "\n";
         print `git show $a_remote/$remoteBranch | cat`;
+        deleteRemoteBranch(@_);
+    } elsif ($answer =~ /^f/i) {
+        print "\n";
+        print `git show $a_remote/$remoteBranch --name-only | cat`;
         deleteRemoteBranch(@_);
     } elsif ($answer eq "?") {
         subHelp();
