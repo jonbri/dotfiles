@@ -100,6 +100,17 @@ MAIN: {
         }
     }
 
+    my $leftright = `leftright`;
+    chomp $leftright;
+    my $left = substr($leftright, 0, index($leftright, '-'));
+    if ($left ne "" && $left > 0) {
+        print "warning: there are $left outstanding commits\n";
+        if (!defined $a_dryRun) {
+            print "ctrl-c to cancel...\n";
+            sleep 2;
+        }
+    }
+
     my $MAIN=`main`;
     chomp $MAIN;
 
