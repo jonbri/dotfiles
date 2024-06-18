@@ -19,10 +19,10 @@ sub help() {
 
 name - name your host
 
-config file: $HOME/name
+config file: $HOME/.config/name
 
 USAGE:
-  >> name [name] [options]
+  >> name [hostname] [options]
 
 Options:
   --report  (-r) Print name (default)
