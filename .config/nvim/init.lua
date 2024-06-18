@@ -82,4 +82,4 @@ end
 
 require("Comment").setup();
 
-vim.cmd [[ source /home/jonbri/dotfiles/.config/nvim/vimrc.vim ]]
+vim.cmd [[ source ~/dotfiles/.config/nvim/vimrc.vim ]]
