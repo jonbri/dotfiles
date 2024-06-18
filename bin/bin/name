@@ -5,8 +5,10 @@ use strict;
 
 use Getopt::Long;
 
-my $a_report;
+my $a_ready;
 my $a_delete;
+my $a_fallback;
+my $a_warning;
 my $a_verbose;
 my $a_help;
 
@@ -25,14 +27,17 @@ USAGE:
   >> name [hostname] [options]
 
 Options:
-  --report  (-r) Print name (default)
-  --delete  (-d) Delete name file
-  --verbose (-v) Print extra debugging information
-  --help    (-h) See this message
+  --delete   (-d) Delete name file
+  --ready    (-r) Check if name is configured and set
+  --fallback (-f) Value to use if name is not set
+  --warning  (-w) Show asterisk if using fallback
+  --verbose  (-v) Print extra debugging information
+  --help     (-h) See this message
 
 EXAMPLES:
   >> name      # show name
   >> name wsl2 # set name
+  >> name -f `hostname` # if name has not been set
 
 HELP
 }
@@ -45,18 +50,12 @@ sub getFirstNonOptionArg {
     return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
 }
 
-sub printName() {
-    if (-e $NAME_FILE) {
-        print `cat $NAME_FILE`;
-    } else {
-        print "\n";
-    }
-}
-
 MAIN: {
     GetOptions(
-        'report' => \$a_report,
         'delete' => \$a_delete,
+        'ready' => \$a_ready,
+        'fallback=s' => \$a_fallback,
+        'warning' => \$a_warning,
         'verbose' => \$a_verbose,
         'help' => \$a_help
     ) || (help() && exit 1);
@@ -68,28 +67,70 @@ MAIN: {
         exit 1;
     }
 
-    if (defined $a_verbose) {
-        print "name file: $NAME_FILE\n";
-    }
-
-
     if (defined $a_delete) {
         `rm $NAME_FILE`;
         print "done\n";
         exit 0;
     }
 
-    if (defined $a_report) {
-        printName();
+    my $nameFileExists = "false";
+    if (-e $NAME_FILE) {
+        $nameFileExists = "true";
+    }
+
+    my $nameFromNameFile = "";
+    if (-e $NAME_FILE) {
+        $nameFromNameFile = `cat $NAME_FILE`;
+        chomp $nameFromNameFile;
+    }
+
+    my $nameIsSet = "true";
+    if (!defined $nameFromNameFile || $nameFromNameFile eq "") {
+        $nameIsSet = "false";
+    }
+
+    my $isReady = "true";
+    if ($nameFileExists eq "false" || $nameIsSet eq "false") {
+        $isReady = "false";
+    }
+
+    if (defined $a_ready) {
+        print "$isReady\n";
         exit 0;
     }
 
     if (defined $firstArg) {
         `echo $firstArg > $NAME_FILE`;
-        print "name updated\n"
+        print "name updated\n";
+        exit 0;
     }
 
-    printName();
+    if (defined $a_verbose) {
+        my $hostname = `hostname`;
+        chomp $hostname;
+        print "ready: ${isReady}\n";
+        if ($isReady eq "false") {
+            print "nameFileExists: ${nameFileExists}\n";
+            print "nameIsSet: ${nameIsSet}\n";
+        }
+        print "`hostname`: ${hostname}\n";
+        print "${config}: ${nameFromNameFile}\n";
+        exit 0;
+    }
+
+    if ($isReady eq "false") {
+        if (defined $a_fallback) {
+            print "${a_fallback}";
+            if (defined $a_warning) {
+                print "*";
+            }
+        }
+        print "\n";
+        exit 0;
+    }
+
+    print $nameFromNameFile;
+    print "\n";
     exit 0;
 }
 
