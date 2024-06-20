@@ -6,6 +6,7 @@ use strict;
 use Getopt::Long;
 
 my $a_ready;
+my $a_edit;
 my $a_delete;
 my $a_fallback;
 my $a_warning;
@@ -15,6 +16,7 @@ my $a_help;
 my $home=$ENV{HOME};
 my $config="${home}/.config";
 my $NAME_FILE="${config}/name";
+my $EDITOR = $ENV{"EDITOR"};
 
 sub help() {
     print STDOUT <<'HELP';
@@ -27,6 +29,7 @@ USAGE:
   >> name [hostname] [options]
 
 Options:
+  --edit     (-e) Open name file in editor
   --delete   (-d) Delete name file
   --ready    (-r) Check if name is configured and set
   --fallback (-f) Value to use if name is not set
@@ -35,8 +38,9 @@ Options:
   --help     (-h) See this message
 
 EXAMPLES:
-  >> name      # show name
-  >> name wsl2 # set name
+  >> name        # show name
+  >> name wsl2   # set name
+  >> name --edit # set name with editor
   >> name -f `hostname` # if name has not been set
 
 HELP
@@ -52,6 +56,7 @@ sub getFirstNonOptionArg {
 
 MAIN: {
     GetOptions(
+        'edit' => \$a_edit,
         'delete' => \$a_delete,
         'ready' => \$a_ready,
         'fallback=s' => \$a_fallback,
@@ -65,6 +70,11 @@ MAIN: {
     if (($firstArg && $firstArg eq "help") || defined $a_help) {
         help();
         exit 1;
+    }
+
+    if (defined $a_edit) {
+        system("$EDITOR $NAME_FILE");
+        exit 0;
     }
 
     if (defined $a_delete) {
