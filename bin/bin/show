@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# show commit that matches the target string
+# Usage: show "tilde"
+
+target=$1
+
+# if target is not set, exit
+if [ -z "$target" ]; then
+  echo "pass in an argument"
+  exit 1
+fi
+
+sha=$(git log --grep="$target" -1 --all-match --regexp-ignore-case --pretty=format:"%H")
+
+git show $sha
+
