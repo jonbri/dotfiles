@@ -76,7 +76,9 @@ MAIN: {
     }
 
     if (defined $firstArg) {
-        runCommand("git update-ref -m \"CRUMB: $firstArg\" HEAD HEAD");
+        my $escapedFirstArg = $firstArg;
+        $escapedFirstArg =~ s/"/\\"/g;
+        runCommand("git update-ref -m \"CRUMB: ${escapedFirstArg}\" HEAD HEAD");
     }
 
     exit 0;
