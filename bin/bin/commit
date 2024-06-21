@@ -1,9 +1,131 @@
-#!/bin/bash
+#!/usr/bin/perl -w
 
-MESSAGE=$1
-if [ ! -z "$MESSAGE" ]; then
-    git commit -m "$MESSAGE"
+use strict;
+
+use Getopt::Long;
+
+my $a_stage;
+my $a_amend;
+my $a_message;
+my $a_quiet;
+my $a_verify;
+my $a_dryRun;
+my $a_help;
+
+my $EDITOR = $ENV{"EDITOR"};
+
+sub help() {
+    print STDOUT <<'HELP';
+
+commit - `git commit` wrapper
+
+USAGE:
+  >> commit [options]
+
+Options:
+  --stage   (-s) stage all changes
+  --amend   (-a) amend to last commit
+  --message (-m) message for commit
+  --quiet   (-q) show no output
+  --verify  (-v) allow pre-commit hooks
+  --dry-run (-d) just show commit command
+  --help    (-h) See this message
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'stage' => \$a_stage,
+        'amend' => \$a_amend,
+        'message=s' => \$a_message,
+        'quiet' => \$a_quiet,
+        'verify' => \$a_verify,
+        'dry-run' => \$a_dryRun,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my $timestamp = `shortdate`;
+    chomp $timestamp;
+
+    if (defined $a_stage) {
+        my $addCommand = "git add .";
+        if (defined $a_dryRun) {
+            if (!defined $a_quiet) {
+                print "$addCommand\n";
+            }
+        } else {
+            `$addCommand`;
+        }
+    }
+
+    my $commitCommand = "git commit";
+    if (defined $a_amend) {
+        $commitCommand .= " --amend";
+    }
+
+    if (defined $a_message) {
+        $commitCommand .= " --message \"${a_message}\"";
+    } else {
+        if (defined $a_amend) {
+            $commitCommand .= " --reuse-message=HEAD";
+        } else {
+            if (defined $EDITOR) {
+
+                my $toplevel = `git rev-parse --show-toplevel`;
+                chomp $toplevel;
+
+                my $commitMessageFile = "${toplevel}/.git/COMMIT_EDITMSG";
+
+                `echo "" > $commitMessageFile`;
+                system("$EDITOR $commitMessageFile");
+                my $userMessage = `cat $commitMessageFile`;
+                chomp $userMessage;
+                if ($userMessage eq "") {
+                    $userMessage = "wip";
+                }
+                $commitCommand .= " --message \"${userMessage}\"";
+            } else {
+                $commitCommand .= " --message wip";
+            }
+        }
+    }
+
+    if (! defined $a_verify) {
+        $commitCommand .= " --no-verify";
+    }
+
+    if (defined $a_quiet) {
+        $commitCommand .= " --quiet";
+    }
+
+    if (defined $a_dryRun) {
+        if (!defined $a_quiet) {
+            print "$commitCommand\n";
+        }
+    } else {
+        my $crumbEntry = "commit($timestamp): ${commitCommand}";
+        $crumbEntry =~ s/"/\\"/g;
+        my $crumbCommand = "crumb \"$crumbEntry\"";
+        `$crumbCommand`;
+        `$commitCommand`;
+    }
+
     exit 0;
-fi
+}
 
-git commit
