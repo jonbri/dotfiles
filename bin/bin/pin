@@ -142,7 +142,7 @@ MAIN: {
         if (! defined $a_force) {
             confirm("amend and continue? ");
         }
-        print `git add . && git commit --quiet --amend --reuse-message=HEAD`;
+        print `commit --stage --quiet --amend`;
     }
 
     # exit early if local option is given
