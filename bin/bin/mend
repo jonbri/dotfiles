@@ -1,9 +1,0 @@
-#!/bin/bash
-# mend - Amend changes to HEAD commit
-
-if [[ ! `isgit` = "true" ]]; then
-    exit 1
-fi
-
-crumb "mend"
-git add . && git commit --amend --reuse-message=HEAD

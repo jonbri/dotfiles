@@ -31,14 +31,6 @@
     dc = "!clear && git diff --cached"
     difff = diff --color-words='[^[:space:]]|([[:alnum:]]|UTF_8_GUARD)+'
     stash-hard = !git stash && git rm --cached -r . && git reset --hard
-    mend = !mend
-    mendr = !mendr
-    revl = !git review -l
-    revd = !revd $1
-    revd-look = !revd-look $1
-
-[gitreview]
-    remote = origin
 
 [diff]
     renameLimit = 800
