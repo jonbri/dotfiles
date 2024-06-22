@@ -87,32 +87,34 @@ MAIN: {
         $commitCommand .= " --amend";
     }
 
-    if (defined $a_message) {
-        $commitCommand .= " --message \"${a_message}\"";
-    } else {
-        if (defined $a_amend) {
-            $commitCommand .= " --reuse-message=HEAD";
-        } else {
-            if (defined $EDITOR) {
+    my $commitMessage = $a_message;
+    if (defined $firstArg) {
+        $commitMessage = $firstArg;
+    } elsif (!defined $commitMessage) {
+      if (defined $a_amend) {
+          $commitMessage = `git log -n 1 --pretty=format:%s HEAD`;
+          chomp $commitMessage;
 
-                my $toplevel = `git rev-parse --show-toplevel`;
-                chomp $toplevel;
+      } else {
+          if (defined $EDITOR) {
+              my $toplevel = `git rev-parse --show-toplevel`;
+              chomp $toplevel;
+              my $commitMessageFile = "${toplevel}/.git/COMMIT_EDITMSG";
 
-                my $commitMessageFile = "${toplevel}/.git/COMMIT_EDITMSG";
-
-                `echo "" > $commitMessageFile`;
-                system("$EDITOR $commitMessageFile");
-                my $userMessage = `cat $commitMessageFile`;
-                chomp $userMessage;
-                if ($userMessage eq "") {
-                    $userMessage = "wip";
-                }
-                $commitCommand .= " --message \"${userMessage}\"";
-            } else {
-                $commitCommand .= " --message wip";
-            }
-        }
+              `echo "" > $commitMessageFile`;
+              system("$EDITOR $commitMessageFile");
+              my $userMessage = `cat $commitMessageFile`;
+              chomp $userMessage;
+              if ($userMessage eq "") {
+                  $userMessage = "wip";
+              }
+              $commitMessage .= "${userMessage}";
+          } else {
+              $commitMessage .= "wip";
+          }
+      }
     }
+    $commitCommand .= " --message \"${commitMessage}\"";
 
     if (! defined $a_verify) {
         $commitCommand .= " --no-verify";
@@ -127,7 +129,7 @@ MAIN: {
             print "$commitCommand\n";
         }
     } else {
-        my $crumbEntry = "commit($timestamp): ${commitCommand}";
+        my $crumbEntry = "($timestamp) ${commitMessage}";
         $crumbEntry =~ s/"/\\"/g;
         my $crumbCommand = "crumb \"$crumbEntry\"";
         `$crumbCommand`;
