@@ -93,7 +93,7 @@ MAIN: {
             if (defined $a_verbose) {
                 print "forcing...\n";
             }
-            `git commit -m 'about to pull'`;
+            `commit --message "about to pull" --stage`;
         } else {
             print "error: outstanding changes\n";
             exit 1;
