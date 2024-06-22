@@ -60,6 +60,14 @@ MAIN: {
         exit 1;
     }
 
+    # exit if not in a git repo
+    my $isGit = `isgit`;
+    chomp $isGit;
+    if ($isGit ne 'true') {
+        print "not a git repo\n";
+        exit 1;
+    }
+
     my $timestamp = `shortdate`;
     chomp $timestamp;
 
