@@ -87,12 +87,15 @@ MAIN: {
     my $EXISTING_FILE2 = $trackedFiles[2];
     chomp $EXISTING_FILE2;
 
+    my $timestamp = `shortdate`;
+    chomp $timestamp;
+
     if (defined $a_working) {
         if (!defined $EXISTING_FILE0) {
             print "repo needs at least one tracked file\n";
             exit 1;
         }
-        print `echo "snowball working" >> $EXISTING_FILE0`;
+        print `echo "snowball working $timestamp" >> $EXISTING_FILE0`;
         exit 0;
     }
 
@@ -101,14 +104,14 @@ MAIN: {
             print "repo needs at least two tracked files\n";
             exit 1;
         }
-        print `echo "snowball index" >> $EXISTING_FILE1`;
+        print `echo "snowball index $timestamp" >> $EXISTING_FILE1`;
         print `git add $EXISTING_FILE1`;
         exit 0;
     }
 
     if (defined $a_untracked) {
         my $random = int(rand(10000));
-        print `echo "snowball" >> snowball_untracked_log$random.txt`;
+        print `echo "snowball $timestamp" >> snowball_untracked_log$random.txt`;
         exit 0;
     }
 
@@ -148,9 +151,9 @@ MAIN: {
     }
 
     # default behavior: create commit
-    print `echo "snowball" >> snowball_commit_log.txt`;
+    print `echo "snowball $timestamp" >> snowball_commit_log.txt`;
     print `git add snowball_commit_log.txt`;
-    my $commitMessage = "snowball";
+    my $commitMessage = "snowball $timestamp";
     if (defined $a_message) {
         $commitMessage = $a_message;
     }

@@ -94,7 +94,6 @@ MAIN: {
       if (defined $a_amend) {
           $commitMessage = `git log -n 1 --pretty=format:%s HEAD`;
           chomp $commitMessage;
-
       } else {
           if (defined $EDITOR) {
               my $toplevel = `git rev-parse --show-toplevel`;
