@@ -1,3 +1,65 @@
-#!/bin/bash
+#!/usr/bin/perl -w
 
-echo $(date '+%Y-%m-%d %Ss')
+use strict;
+
+use Getopt::Long;
+
+my $a_verbose;
+my $a_help;
+
+sub help() {
+    print STDERR <<'HELP';
+
+shortdate
+
+USAGE:
+  >> shortdate
+
+Options:
+  --verbose (-v) Show details
+
+EXAMPLES:
+  >> shortdate
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+
+MAIN: {
+    GetOptions(
+        'verbose' => \$a_verbose,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my $dateCommand = "date ";
+    if (defined $firstArg) {
+        $dateCommand .= "--date \"${firstArg}\" ";
+    }
+    $dateCommand .= "'+%Y-%m-%d %Ss'";
+
+    if (defined $a_verbose) {
+        print "$dateCommand\n";
+    }
+
+    my $output = `${dateCommand}`;
+    chomp $output;
+    print "$output\n";
+
+    exit 0;
+}
+
