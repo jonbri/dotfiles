@@ -1,5 +1,0 @@
-#!/bin/sh
-
-crumb "gmend"
-git add . && git commit --amend --no-verify --reuse-message=HEAD
-
