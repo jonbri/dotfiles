@@ -20,6 +20,7 @@ Options:
 
 EXAMPLES:
   >> shortdate
+  >> shortdate "2015-01-01 12:34:56"
 
 HELP
 }

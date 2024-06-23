@@ -4,27 +4,30 @@ use strict;
 
 use Getopt::Long;
 
-my $a_first;
+my $a_tip;
 my $a_help;
+
+my $crumbPrefix = "CRUMB: ";
 
 sub help() {
     print STDERR <<'HELP';
 
-crumb - an additional cache for refs
+crumb - semantic ref cache
 
-Per-repo. Using the reflog as a database.
+Per-repo. Reflog as database.
 
 USAGE:
   >> crumb       # see crumbs
   >> crumb [arg] # create crumb
 
 Options:
-  --first (-f) Print most recent matching SHA
-  --help  (-h) See this message
+  --tip  (-t) Print most recent crumb's sha
+  --help (-h) See this message
 
 EXAMPLES:
   >> crumb        # list local entries
   >> crumb my-bug # add "my-bug" entry
+  >> crumb -t     # prints: abcsha0
 
 HELP
 }
@@ -48,39 +51,48 @@ sub runCommand($) {
 
 MAIN: {
     GetOptions(
-        'first' => \$a_first,
+        'tip' => \$a_tip,
         'help' => \$a_help
     ) || (help() && exit 1);
 
     # show help if either arg or option is given
-    my $firstArg=getFirstNonOptionArg();
+    my $firstArg = getFirstNonOptionArg();
     if (($firstArg && $firstArg eq "help") || defined $a_help) {
         help();
         exit 1;
     }
 
-    if (defined $a_first) {
-        my $reflogCommand = "git reflog";
-        my $command = "${reflogCommand} | grep \"CRUMB: \" | nth 0 | awk '{ print \$1 }'";
-        my $output = join "", runCommand($command);
-        chomp $output;
-        print "$output\n";
-        exit 0;
-    }
-
-    if (!defined $firstArg) {
-        my $reflogCommand = "git reflog --pretty='%h %cd %gs' --date=format:'%a %b%d %H:%M:%S'";
-        my $command = "${reflogCommand} | grep \"CRUMB: \" | head";
-        my $output = join "", runCommand($command);
-        chomp $output;
-        print "$output\n";
-        exit 0;
-    }
-
+    # add a crumb entry
     if (defined $firstArg) {
         my $escapedFirstArg = $firstArg;
         $escapedFirstArg =~ s/"/\\"/g;
-        runCommand("git update-ref -m \"CRUMB: ${escapedFirstArg}\" HEAD HEAD");
+        runCommand("git update-ref -m \"${crumbPrefix} ${escapedFirstArg}\" HEAD HEAD");
+        exit 0;
+    }
+
+    # show crumbs
+    my $reflogCommand .= "git reflog --pretty='%h %cd %gs' --date=format:'%a %b%d %H:%M:%S'";
+    my $command = "${reflogCommand} | grep \"${crumbPrefix}\" | head";
+    my @output = runCommand($command);
+    foreach my $line (@output) {
+        chomp $line;
+        my @pieces = split / /, $line;
+        my $sha = $pieces[0];
+        my $date = $pieces[1] . " " . $pieces[2] . " " . $pieces[3];
+        my $formattedDate = `shortdate "${date}"`;
+        chomp $formattedDate;
+        my $message = join " ", @pieces[4..$#pieces];
+        $message =~ s/^${crumbPrefix}//;
+        my $formatted = sprintf("%-7s %-14s %s", $sha, $formattedDate, $message);
+
+        if (defined $a_tip) {
+            my $tipSha = $formatted;
+            $tipSha =~ s/ .*//;
+            print "$tipSha\n";
+            exit 0;
+        }
+
+        print "$formatted\n";
     }
 
     exit 0;
