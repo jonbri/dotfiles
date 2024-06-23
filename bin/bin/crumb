@@ -60,18 +60,20 @@ MAIN: {
     }
 
     if (defined $a_first) {
-        my @output = runCommand("git reflog | grep \"CRUMB: \" | nth 0 | awk '{ print \$1 }'");
-        foreach (@output) {
-            print $_;
-        }
+        my $reflogCommand = "git reflog";
+        my $command = "${reflogCommand} | grep \"CRUMB: \" | nth 0 | awk '{ print \$1 }'";
+        my $output = join "", runCommand($command);
+        chomp $output;
+        print "$output\n";
         exit 0;
     }
 
     if (!defined $firstArg) {
-        my @output = runCommand("git reflog --pretty='%h %cd %gs' --date=format:'%a %b%d %H:%M:%S' | grep \"CRUMB: \" | head");
-        foreach (@output) {
-            print $_;
-        }
+        my $reflogCommand = "git reflog --pretty='%h %cd %gs' --date=format:'%a %b%d %H:%M:%S'";
+        my $command = "${reflogCommand} | grep \"CRUMB: \" | head";
+        my $output = join "", runCommand($command);
+        chomp $output;
+        print "$output\n";
         exit 0;
     }
 
