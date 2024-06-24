@@ -78,7 +78,7 @@ MAIN: {
     }
 
     # exit if repo has no remotes
-    my $hasRemote = `hasremote`;
+    my $hasRemote = `status --format "%{hasremote}"`;
     chomp $hasRemote;
     if ($hasRemote ne 'true') {
         print "no remotes defined\n";
