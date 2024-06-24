@@ -68,11 +68,15 @@ MAIN: {
         exit 1;
     }
 
+    my $toplevel = `git rev-parse --show-toplevel`;
+    chomp $toplevel;
+    my $gitCommand = "git -C \"${toplevel}\" ";
+
     my $timestamp = `shortdate`;
     chomp $timestamp;
 
     if (defined $a_stage) {
-        my $addCommand = "git add .";
+        my $addCommand = "${gitCommand} add .";
         if (defined $a_dryRun) {
             if (!defined $a_quiet) {
                 print "$addCommand\n";
@@ -82,7 +86,7 @@ MAIN: {
         }
     }
 
-    my $commitCommand = "git commit";
+    my $commitCommand = "${gitCommand} commit";
     if (defined $a_amend) {
         $commitCommand .= " --amend";
     }
@@ -92,11 +96,11 @@ MAIN: {
         $commitMessage = $firstArg;
     } elsif (!defined $commitMessage) {
       if (defined $a_amend) {
-          $commitMessage = `git log -n 1 --pretty=format:%s HEAD`;
+          $commitMessage = `${gitCommand} log -n 1 --pretty=format:%s HEAD`;
           chomp $commitMessage;
       } else {
           if (defined $EDITOR) {
-              my $toplevel = `git rev-parse --show-toplevel`;
+              my $toplevel = `${gitCommand} rev-parse --show-toplevel`;
               chomp $toplevel;
               my $commitMessageFile = "${toplevel}/.git/COMMIT_EDITMSG";
 
