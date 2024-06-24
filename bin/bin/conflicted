@@ -1,7 +1,68 @@
-#!/bin/bash
+#!/usr/bin/perl -w
 
-CONFLICTS=$(git ls-files -u | wc -l)
-if [ "$CONFLICTS" -gt 0 ] ; then
-   echo "CONFLICT"
-fi
+use strict;
+
+use Getopt::Long;
+
+my $a_shout;
+my $a_help;
+
+my $shoutText = "CONFLICT";
+
+sub help() {
+    print STDOUT <<'HELP';
+
+conflicted - determine if conflicted
+
+USAGE:
+  >> name [options]
+
+Options:
+  --shout (-s) Shout the results
+  --help  (-h) See this message
+
+EXAMPLES:
+  >> name # y
+  >> name # prints "CONFLICT"
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'shout' => \$a_shout,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my $result = "n";
+    my $statusCommand = "status --format '%{conflicted}'";
+    if (`$statusCommand` =~ /true/) {
+        $result = "y";
+    }
+
+    if ($a_shout) {
+        if ($result eq "y") {
+            print "$shoutText\n";
+        }
+    } else {
+        print "$result\n";
+    }
+
+    exit 0;
+}
 

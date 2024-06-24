@@ -64,20 +64,26 @@ MAIN: {
         $a_verbose = '1';
     }
 
+    my $isGit;
     my $path = "";
     if (defined $a_path) {
         $path = $a_path;
     } else {
+        # exit if not in a git repo
+        my $isGit = `isgit ${path}`;
+        chomp $isGit;
+        if ($isGit ne 'true') {
+            exit 0;
+        }
         $path = `git rev-parse --show-toplevel`;
     }
     chomp $path;
 
     # exit if not in a git repo
-    my $isGit = `isgit ${path}`;
+    $isGit = `isgit ${path}`;
     chomp $isGit;
     if ($isGit ne 'true') {
-        print "not a git repo\n";
-        exit 1;
+        exit 0;
     }
 
     my $gitCommand = "git -C \"${path}\" ";
