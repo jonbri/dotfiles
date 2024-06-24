@@ -1,4 +1,0 @@
-#!/bin/bash
-
-nvim $DOTFILES_DIR/.files/$1
-
