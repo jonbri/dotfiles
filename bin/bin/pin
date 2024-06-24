@@ -101,7 +101,7 @@ MAIN: {
         $a_remote = "origin";
     }
 
-    my $BRANCH=`branch`;
+    my $branch = `status --format "%{branch}"`;
     chomp $BRANCH;
     my $GIT_NAME=`persona | nth --first`;
     chomp $GIT_NAME;
