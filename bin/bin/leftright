@@ -1,31 +1,71 @@
-#!/bin/bash
+#!/usr/bin/perl -w
 
-if [[ ! `isgit` = "true" ]]; then
-    exit 1
-fi
+use strict;
 
-git rev-parse HEAD &> /dev/null
-retVal=$?
-if [ $retVal -ne 0 ]; then
-    exit 0;
-fi
+use Getopt::Long;
 
-BRANCH=`git rev-parse --abbrev-ref HEAD`;
+my $a_help;
 
-if [ `git rev-parse --verify origin/$BRANCH 2>/dev/null` ]; then
-    LEFT_RIGHT=`git rev-list --left-right --count HEAD...origin/$BRANCH | awk -e '{ print $1"-"$2 }'`
-    if ! git rev-parse origin/$BRANCH >/dev/null 2>&1; then
-        echo "?";
+sub help() {
+    print STDOUT <<'HELP';
+
+leftright - Git reporting
+
+USAGE:
+  >> leftright [options] [args]
+
+Options:
+  --help    (-h) See this message
+
+EXAMPLES:
+  >> leftright
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    # exit if not in a git repo
+    my $isGit = `isgit`;
+    chomp $isGit;
+    if ($isGit ne 'true') {
+        print "not a git repo\n";
+        exit 1;
+    }
+
+    my $toplevel = `git rev-parse --show-toplevel`;
+    chomp $toplevel;
+    my $gitCommand = "git -C \"${toplevel}\" ";
+    my $BRANCH = `branch`;
+
+    my $revListCommand = "${gitCommand} rev-list --left-right --count HEAD...origin/$BRANCH";
+    my $LEFT_RIGHT = `${revListCommand}`;
+    chomp $LEFT_RIGHT;
+    $LEFT_RIGHT =~ s/^(\d+)[\s+](\d+)$/$1-$2/g;
+
+    if ("$LEFT_RIGHT" eq "0-0") {
         exit 0;
-    fi
-else
-    echo "?";
-    exit 0;
-fi
+    }
 
-if [ "$LEFT_RIGHT" = "0-0" ]; then
+    print "$LEFT_RIGHT\n";
     exit 0;
-fi
-
-echo $LEFT_RIGHT
+}
 
