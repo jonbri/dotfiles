@@ -63,7 +63,7 @@ MAIN: {
     ) || (help() && exit 1);
 
     # show help if either arg or option is given
-    my $firstArg=getFirstNonOptionArg();
+    my $firstArg = getFirstNonOptionArg();
     if (($firstArg && $firstArg eq "help") || defined $a_help) {
         help();
         exit 1;

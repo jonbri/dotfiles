@@ -83,7 +83,7 @@ MAIN: {
     ) || (help() && exit 1);
 
     # show help if given as arg or option
-    my $firstArg=getFirstNonOptionArg();
+    my $firstArg = getFirstNonOptionArg();
     if (!$firstArg) {
         help();
         exit 1;
