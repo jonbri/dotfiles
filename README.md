@@ -2,7 +2,7 @@
 
 ```sh
 sudo apt update
-sudo apt install --yes vim tmux npm tree openssh-server openssh-client g++ curl libssl-dev make net-tools
+sudo apt install --yes vim tmux npm tree jq openssh-server openssh-client g++ curl libssl-dev make net-tools
 sudo npm install --global n yarn conny serve degit buffaloes seolaffub n
 
 # node

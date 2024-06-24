@@ -1,0 +1,106 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+use Getopt::Long;
+
+my $a_targets;
+my $a_root;
+my $a_help;
+
+my @defaultTargets = ("storybook", "dev", "start");
+
+sub help() {
+    print STDOUT <<'HELP';
+
+stand - get default starting npm script
+
+USAGE:
+  >> name [override] [options]
+
+Options:
+  --targets (-t) List of targets
+  --root    (-r) Run from project root
+  --help    (-h) See this message
+
+EXAMPLES:
+  >> stand
+  >> stand -t "go dev" # only search for "go" and "dev"
+  >> stand start # force "start"
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'targets=s' => \$a_targets,
+        'root' => \$a_root,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if ($firstArg) {
+        print "$firstArg\n";
+        exit 0;
+    }
+
+    my @targets = @defaultTargets;
+    if (defined $a_targets) {
+        @targets = split(" ", $a_targets);
+    }
+
+    # function that takes an array and returns true if string found
+    sub doesArrayContain {
+        my $search = shift;
+        my @array = @_;
+        foreach my $item (@array) {
+            if ($item eq $search) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    my $packageJSON = "package.json";
+    if (defined $a_root) {
+        # exit if not in a git repo
+        my $isGit = `isgit`;
+        chomp $isGit;
+        if ($isGit ne 'true') {
+            print "not a git repo\n";
+            exit 1;
+        }
+        my $toplevel = `git rev-parse --show-toplevel`;
+        chomp $toplevel;
+        $packageJSON = "$toplevel/package.json";
+    }
+
+    my $jqCommand = "jq -r '.scripts|to_entries[]|((.key))' $packageJSON";
+    my $jqOutput = `$jqCommand`;
+    chomp $jqOutput;
+    my @scripts = split("\n", $jqOutput);
+    foreach my $target (@targets) {
+        if (doesArrayContain($target, @scripts)) {
+            print "$target\n";
+            exit 0;
+        }
+    }
+
+    print "start script not found\n";
+    exit 1;
+}
+
