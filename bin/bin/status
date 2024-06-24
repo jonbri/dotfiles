@@ -5,6 +5,8 @@ use strict;
 use Getopt::Long;
 
 my $a_verbose;
+my $a_all;
+my $a_path;
 my $a_branch;
 my $a_cleandirty;
 my $a_leftright;
@@ -19,6 +21,8 @@ USAGE:
   >> status [args]
 
 Options:
+  --all        (-b) Show all results
+  --path       (-p) Path to repo
   --branch     (-b) Show branch
   --cleandirty (-c) Show cleandirty results
   --leftright  (-l) Show leftright results
@@ -41,6 +45,8 @@ sub getFirstNonOptionArg {
 
 MAIN: {
     GetOptions(
+        'all' => \$a_all,
+        'path=s' => \$a_path,
         'branch' => \$a_branch,
         'cleandirty' => \$a_cleandirty,
         'leftright' => \$a_leftright,
@@ -55,19 +61,30 @@ MAIN: {
         exit 1;
     }
 
+    if (defined $a_all) {
+        $a_verbose = '1';
+    }
+
+    my $path = "";
+    if (defined $a_path) {
+        $path = $a_path;
+    } else {
+        $path = `git rev-parse --show-toplevel`;
+    }
+    chomp $path;
+
     # exit if not in a git repo
-    my $isGit = `isgit`;
+    my $isGit = `isgit ${path}`;
     chomp $isGit;
     if ($isGit ne 'true') {
         print "not a git repo\n";
         exit 1;
     }
 
-    my $toplevel = `git rev-parse --show-toplevel`;
-    chomp $toplevel;
-    my $gitCommand = "git -C \"${toplevel}\" ";
+    my $gitCommand = "git -C \"${path}\" ";
 
-    my $branch = `branch`;
+    my $branchCommand = "$gitCommand rev-parse --abbrev-ref HEAD";
+    my $branch = `${branchCommand}`;
     chomp $branch;
 
     my $workingChanges = "";
@@ -115,13 +132,41 @@ MAIN: {
         $cleandirtyOutput =~ s/,$//g;
     }
 
+    my $hasRemoteCommand = "${gitCommand} remote --verbose | grep ' (fetch)'";
+    my $hasRemoteResult = `${hasRemoteCommand}`;
+    chomp $hasRemoteResult;
+    my $hasRemote = "false";
+    if ($hasRemoteResult ne "") {
+        $hasRemote = "true";
+    }
+
     my $leftrightOutput = "";
-    my $revListCommand = "${gitCommand} rev-list --left-right --count HEAD...origin/${branch}";
-    my $revListOutput = `${revListCommand}`;
-    chomp $revListOutput;
-    $revListOutput =~ s/^(\d+)[\s+](\d+)$/$1-$2/g;
-    if (defined $a_verbose || $revListOutput ne "0-0") {
-        $leftrightOutput = $revListOutput;
+    if ($hasRemote eq "true") {
+        my $revListCommand = "${gitCommand} rev-list --left-right --count HEAD...origin/${branch}";
+        my $revListOutput = `${revListCommand}`;
+        chomp $revListOutput;
+        $revListOutput =~ s/^(\d+)[\s+](\d+)$/$1-$2/g;
+        if (defined $a_verbose || $revListOutput ne "0-0") {
+            $leftrightOutput = $revListOutput;
+        }
+    }
+
+    if (defined $a_all) {
+        print "branch: $branch\n";
+        print "leftright: $leftrightOutput\n";
+        print "cleandirty: $cleandirtyOutput\n";
+
+        my $confictedOutput = `${gitCommand} ls-files -u | wc -l`;
+        chomp $confictedOutput;
+        my $isConflicted = 'false';
+        if ($confictedOutput gt 0) {
+            $isConflicted = 'true';
+        }
+        print "conflicted: $isConflicted\n";
+
+        print "hasRemote: $hasRemote\n";
+
+        exit 0;
     }
 
     my $output = "";
