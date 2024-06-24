@@ -1,38 +1,115 @@
-#!/bin/bash
+#!/usr/bin/perl -w
 
-if [[ ! `isgit` = "true" ]]; then
-    exit 1
-fi
+use strict;
 
-NUM_OF_CHANGES=`git status --porcelain=v1 2>/dev/null | wc -l`
-if [ "$NUM_OF_CHANGES" = "0" ]; then
-    exit 0
-fi
+use Getopt::Long;
 
-WORKING_DIR_NUM=""
-if ! output=$(git diff --exit-code); then
-    WORKING_DIR_NUM=$(git diff --name-only | wc -l)
-fi
+my $a_verbose;
+my $a_help;
 
-CACHE_NUM=""
-if ! output=$(git diff --cached --exit-code); then
-    CACHE_NUM=$(git diff --cached --name-only | wc -l)
-fi
+sub help() {
+    print STDOUT <<'HELP';
 
-UNTRACKED_NUM=""
-untracked=`git ls-files -z -o --exclude-standard | sed q1 | tr -d '\0'`;
-if [ ! -z "${untracked}" ]; then
-    UNTRACKED_NUM=$(git ls-files . --exclude-standard --others | wc -l)
-fi
+cleandirty - Git reporting
 
+USAGE:
+  >> cleandirty [options] [args]
 
-STRING="${WORKING_DIR_NUM},${CACHE_NUM},${UNTRACKED_NUM}"
-if [ "$CACHE_NUM" == "" ] && [ "$UNTRACKED_NUM" == "" ]; then
-    STRING="${WORKING_DIR_NUM}"
-elif [ "$UNTRACKED_NUM" == "" ]; then
-    STRING="${WORKING_DIR_NUM},${CACHE_NUM}"
-fi
+Options:
+  --verbose (-v) See more details
+  --help    (-h) See this message
 
-echo "*${STRING}"
-exit 0
+EXAMPLES:
+  >> cleandirty
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'verbose' => \$a_verbose,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    # exit if not in a git repo
+    my $isGit = `isgit`;
+    chomp $isGit;
+    if ($isGit ne 'true') {
+        print "not a git repo\n";
+        exit 1;
+    }
+
+    my $toplevel = `git rev-parse --show-toplevel`;
+    chomp $toplevel;
+    my $gitCommand = "git -C \"${toplevel}\" ";
+
+    my $hasChanges = `${gitCommand} status --porcelain=v1 2>/dev/null | wc -l`;
+    chomp $hasChanges;
+    if ($hasChanges eq "0") {
+        exit 0;
+    }
+
+    if (! defined $a_verbose) {
+        print "*\n";
+        exit 0;
+    }
+
+    my $workingChanges = "";
+    my $working = `${gitCommand} diff --exit-code`;
+    chomp $working;
+    if ($working ne "") {
+        $workingChanges = `${gitCommand} diff --name-only | wc -l`;
+        chomp $workingChanges;
+    }
+
+    my $stagedChanges = "";
+    my $staged = `${gitCommand} diff --cached --exit-code`;
+    chomp $staged;
+    if ($staged ne "") {
+        $stagedChanges = `${gitCommand} diff --cached --name-only | wc -l`;
+        chomp $stagedChanges;
+    }
+
+    my $untrackedChanges = "";
+    my $untracked = `${gitCommand} ls-files -z -o --exclude-standard | sed q1 | tr -d '\\0'`;
+    chomp $untracked;
+    if ($untracked ne "") {
+        $untrackedChanges = `${gitCommand} ls-files . --exclude-standard --others | wc -l`;
+        chomp $untrackedChanges;
+    }
+
+    my $report = "*";
+    if ($workingChanges ne "") {
+        $report .= "w${workingChanges} ";
+    }
+    if ($stagedChanges ne "") {
+        $report .= "i${stagedChanges} ";
+    }
+    if ($untrackedChanges ne "") {
+        $report .= "u${untrackedChanges} ";
+    }
+
+    # replace spaces with commas and remove ending comma
+    $report =~ s/ /,/g;
+    $report =~ s/,$//g;
+
+    print "${report}\n";
+
+    exit 0;
+}
 
