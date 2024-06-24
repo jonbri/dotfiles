@@ -5,20 +5,25 @@ use strict;
 
 use Getopt::Long;
 
+my $a_dynamic;
 my $a_help;
-
-my $SPACE="  ";
 
 my $DYNAMIC_STATUS_CONTROL_VALUE="0";
 my $KEY = "DYNAMIC_STATUS_CONTROL";
+my $SPACE="  ";
 
 sub help() {
     print STDOUT <<'HELP';
 
 dynamic-status
 
+Options:
+  --dynamic (-d) use DYANMIC_STATUS_CONTROL
+  --help    (-h) See this message
+
 EXAMPLES:
   >> dynamic-status
+  >> dynamic-status --dynamic
 
 HELP
 }
@@ -34,6 +39,7 @@ sub getFirstNonOptionArg {
 
 MAIN: {
     GetOptions(
+        'dynamic' => \$a_dynamic,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -44,14 +50,24 @@ MAIN: {
         exit 1;
     }
 
+    my $nodeVersionCommand = "node --version | nth -c 1-50";
+    my $neovimVersionCommand = "nvim --version | nth -c 6-50 0";
+    my $gitVersionCommand = "git --version | nth -c 12-50";
+    my @output = (
+      "node@".`$nodeVersionCommand`,
+      "neovim@".`$neovimVersionCommand`,
+      "git@".`$gitVersionCommand`
+    );
+
+    if (!defined $a_dynamic) {
+      foreach(@output) {
+          print "$_\n";
+      }
+      exit 0;
+    }
+
     $DYNAMIC_STATUS_CONTROL_VALUE=`increment $KEY --show`;
     chomp $DYNAMIC_STATUS_CONTROL_VALUE;
-
-    my @output = (
-      "node".`node --version | nth -c 1-50`,
-      "nvim".`nvim --version | nth -c 6-50 0`,
-      "git".`git --version | nth -c 12-50`
-    );
 
     my $mod = scalar (@output) + 1;
     $DYNAMIC_STATUS_CONTROL_VALUE = $DYNAMIC_STATUS_CONTROL_VALUE % $mod;
@@ -65,6 +81,7 @@ MAIN: {
         $OUT=$output[$DYNAMIC_STATUS_CONTROL_VALUE - 1];
     }
 
+    $OUT =~ s/@//g;
     print $OUT;
 
     exit 0;
