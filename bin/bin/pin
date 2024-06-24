@@ -85,29 +85,23 @@ MAIN: {
         exit 1;
     }
 
-    # exit if no outstanding commits
-    my $hasCommits = `hascommits`;
-    chomp $hasCommits;
-    if ($hasCommits ne 'true') {
-        print "no commits\n";
-        exit 1;
-    }
-
     # exit if no outstanding changes
-    my $cleandirty = `cleandirty`;
-    chomp $cleandirty;
-    my $leftright = `leftright`;
-    chomp $leftright;
-    if ($cleandirty eq '' && $leftright eq '') {
+    my $gitStatus = `status --leftright --cleandirty`;
+    chomp $gitStatus;
+    if ($gitStatus eq '') {
         print "nothing to do\n";
         exit 0;
     }
+
+    my $toplevel = `git rev-parse --show-toplevel`;
+    chomp $toplevel;
+    my $gitCommand = "git -C \"${toplevel}\" ";
 
     if (!defined $a_remote) {
         $a_remote = "origin";
     }
 
-    my $BRANCH=`git rev-parse --abbrev-ref HEAD`;
+    my $BRANCH=`branch`;
     chomp $BRANCH;
     my $GIT_NAME=`persona | nth --first`;
     chomp $GIT_NAME;
@@ -129,15 +123,15 @@ MAIN: {
             print "skipping fetch\n";
         }
     } else {
-        `git fetch --quiet`;
+        `${gitCommand} fetch --quiet`;
     }
 
     # handle outstanding non-committed changes
-    if (`git status --porcelain`) {
+    if (`${gitCommand} status --porcelain`) {
         if ($a_verbose) {
             print "outstanding changes\n";
         }
-        print `git status --short`;
+        print `${gitCommand} status --short`;
 
         if (! defined $a_force) {
             confirm("amend and continue? ");
@@ -155,9 +149,11 @@ MAIN: {
     }
 
     # generate push command
-    my $command = "git push --force $REMOTE $BRANCH";
+    my $command = "${gitCommand} push --force $REMOTE $BRANCH";
+    my $leftright = `status --leftright`;
+    chomp $leftright;
     if (!defined $a_force && $leftright =~ /^[\d]+-0$/) {
-      $command = "git push $REMOTE $BRANCH";
+      $command = "${gitCommand} push $REMOTE $BRANCH";
     }
 
     # confirm before push
@@ -166,7 +162,7 @@ MAIN: {
             print "skipping confirmation\n";
         }
     } else {
-        if (! `git rev-parse --verify $REMOTE/$BRANCH 2>/dev/null`) {
+        if (! `${gitCommand} rev-parse --verify $REMOTE/$BRANCH 2>/dev/null`) {
             print "$REMOTE/$BRANCH does not exist\n";
         } else {
             print "$leftright\n";

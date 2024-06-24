@@ -85,8 +85,12 @@ MAIN: {
         exit 1;
     }
 
+    my $toplevel = `git rev-parse --show-toplevel`;
+    chomp $toplevel;
+    my $gitCommand = "git -C \"${toplevel}\" ";
+
     # take care of outstanding changes
-    my $cleanDirty = `cleandirty`;
+    my $cleanDirty = `status --cleandirty`;
     chomp($cleanDirty);
     if ($cleanDirty ne "") {
         if (defined $a_force) {
@@ -100,7 +104,7 @@ MAIN: {
         }
     }
 
-    my $leftright = `leftright`;
+    my $leftright = `status --leftright`;
     chomp $leftright;
     my $left = substr($leftright, 0, index($leftright, '-'));
     if ($left ne "" && $left > 0) {
@@ -126,7 +130,7 @@ MAIN: {
             print "skipping fetch\n";
         }
     } else {
-        `git fetch --all`;
+        `${gitCommand} fetch --all`;
     }
 
     my $FILTER=$firstArg;
@@ -134,14 +138,14 @@ MAIN: {
         my $pr_number = $FILTER;
         my $targetBranch = "pr#$pr_number";
 
-        my @remoteBranches = runCommand("git branch --remote | sed 's/^  //'");
+        my @remoteBranches = runCommand("${gitCommand} branch --remote | sed 's/^  //'");
         @remoteBranches = grep(!/^$REMOTE\/HEAD /, @remoteBranches);
         @remoteBranches = grep(!/^$REMOTE\/master$/, @remoteBranches);
         @remoteBranches = grep(!/^$REMOTE\/main$/, @remoteBranches);
 
-        `git fetch origin pull/$pr_number/head --quiet`;
+        `${gitCommand} fetch origin pull/$pr_number/head --quiet`;
         my $FH = $ENV{FETCH_HEAD};
-        my $targetSha = `git rev-parse FETCH_HEAD`;
+        my $targetSha = `${gitCommand} rev-parse FETCH_HEAD`;
         chomp ($targetSha);
 
         runCommand("crumb pullf $targetSha $targetBranch");
@@ -149,32 +153,32 @@ MAIN: {
         foreach (@remoteBranches) {
             chomp;
             my $branch = $_;
-            my $branchSha = `git rev-parse $branch`;
+            my $branchSha = `${gitCommand} rev-parse $branch`;
             chomp $branchSha;
             if ($branchSha eq $targetSha) {
                 my $foundBranch = $branch;
                 $foundBranch =~ s/$REMOTE\///;
                 `snowball --empty > /dev/null 2>&1`;
-                `git checkout HEAD~ --quiet`;
-                `git branch -D $foundBranch > /dev/null 2>&1`;
-                `git checkout -b $foundBranch --quiet`;
-                `git reset --hard $targetSha`;
+                `${gitCommand} checkout HEAD~ --quiet`;
+                `${gitCommand} branch -D $foundBranch > /dev/null 2>&1`;
+                `${gitCommand} checkout -b $foundBranch --quiet`;
+                `${gitCommand} reset --hard $targetSha`;
                 print "$foundBranch\n";
                 exit 0;
             }
         }
 
-        runCommand("git checkout $MAIN --quiet");
-        `git branch -D $targetBranch 2>/dev/null`;
-        `git checkout -b $targetBranch`;
-        `git reset --hard $targetSha`;
+        runCommand("${gitCommand} checkout $MAIN --quiet");
+        `${gitCommand} branch -D $targetBranch 2>/dev/null`;
+        `${gitCommand} checkout -b $targetBranch`;
+        `${gitCommand} reset --hard $targetSha`;
 
         exit 0;
     }
 
     my $TARGET_BRANCH=$MAIN;
     if (defined $FILTER) {
-        my @results = runCommand("git branch --all | grep -v HEAD");
+        my @results = runCommand("${gitCommand} branch --all | grep -v HEAD");
 
         my @grepResults = grep(/remotes.*${FILTER}/i, @results);
 
@@ -202,14 +206,14 @@ MAIN: {
         exit 0;
     }
 
-    my $CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`;
+    my $CURRENT_BRANCH=`${gitCommand} rev-parse --abbrev-ref HEAD`;
     chomp($CURRENT_BRANCH);
 
     print "$TARGET_BRANCH\n";
     runCommand("crumb \"switch: ${CURRENT_BRANCH} -> ${TARGET_BRANCH}\"");
 
-    `git checkout $TARGET_BRANCH --quiet`;
-    `git reset --hard $REMOTE/$TARGET_BRANCH`;
+    `${gitCommand} checkout $TARGET_BRANCH --quiet`;
+    `${gitCommand} reset --hard $REMOTE/$TARGET_BRANCH`;
 
     exit 0;
 }

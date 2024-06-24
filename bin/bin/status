@@ -1,0 +1,141 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+use Getopt::Long;
+
+my $a_verbose;
+my $a_branch;
+my $a_cleandirty;
+my $a_leftright;
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+status - Git reporting
+
+USAGE:
+  >> status [args]
+
+Options:
+  --branch     (-b) Show branch
+  --cleandirty (-c) Show cleandirty results
+  --leftright  (-l) Show leftright results
+  --verbose    (-v) See more details
+  --help       (-h) See this message
+
+EXAMPLES:
+  >> status
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'branch' => \$a_branch,
+        'cleandirty' => \$a_cleandirty,
+        'leftright' => \$a_leftright,
+        'verbose' => \$a_verbose,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    # exit if not in a git repo
+    my $isGit = `isgit`;
+    chomp $isGit;
+    if ($isGit ne 'true') {
+        print "not a git repo\n";
+        exit 1;
+    }
+
+    my $toplevel = `git rev-parse --show-toplevel`;
+    chomp $toplevel;
+    my $gitCommand = "git -C \"${toplevel}\" ";
+
+    my $branch = `branch`;
+    chomp $branch;
+
+    my $workingChanges = "";
+    my $working = `${gitCommand} diff --exit-code`;
+    chomp $working;
+    if ($working ne "") {
+        $workingChanges = `${gitCommand} diff --name-only | wc -l`;
+        chomp $workingChanges;
+    }
+
+    my $stagedChanges = "";
+    my $staged = `${gitCommand} diff --cached --exit-code`;
+    chomp $staged;
+    if ($staged ne "") {
+        $stagedChanges = `${gitCommand} diff --cached --name-only | wc -l`;
+        chomp $stagedChanges;
+    }
+
+    my $untrackedChanges = "";
+    my $untracked = `${gitCommand} ls-files -z -o --exclude-standard | sed q1 | tr -d '\\0'`;
+    chomp $untracked;
+    if ($untracked ne "") {
+        $untrackedChanges = `${gitCommand} ls-files . --exclude-standard --others | wc -l`;
+        chomp $untrackedChanges;
+    }
+
+    my $cleandirtyOutput = "";
+    my $hasChanges = `${gitCommand} status --porcelain=v1 2>/dev/null | wc -l`;
+    chomp $hasChanges;
+    if ($hasChanges ne "0") {
+        $cleandirtyOutput = "*";
+    }
+    if (defined $a_verbose) {
+        if ($workingChanges ne "") {
+            $cleandirtyOutput .= "w${workingChanges} ";
+        }
+        if ($stagedChanges ne "") {
+            $cleandirtyOutput .= "i${stagedChanges} ";
+        }
+        if ($untrackedChanges ne "") {
+            $cleandirtyOutput .= "u${untrackedChanges} ";
+        }
+        # replace spaces with commas and remove ending comma
+        $cleandirtyOutput =~ s/ /,/g;
+        $cleandirtyOutput =~ s/,$//g;
+    }
+
+    my $leftrightOutput = "";
+    my $revListCommand = "${gitCommand} rev-list --left-right --count HEAD...origin/${branch}";
+    my $revListOutput = `${revListCommand}`;
+    chomp $revListOutput;
+    $revListOutput =~ s/^(\d+)[\s+](\d+)$/$1-$2/g;
+    if (defined $a_verbose || $revListOutput ne "0-0") {
+        $leftrightOutput = $revListOutput;
+    }
+
+    my $output = "";
+    if (defined $a_branch) {
+        $output .= $branch;
+    }
+    if (defined $a_leftright) {
+        $output .= $leftrightOutput;
+    }
+    if (defined $a_cleandirty) {
+        $output .= $cleandirtyOutput;
+    }
+    print "${output}\n";
+
+    exit 0;
+}
+
