@@ -90,7 +90,7 @@ MAIN: {
     my $gitCommand = "git -C \"${toplevel}\" ";
 
     # take care of outstanding changes
-    my $cleanDirty = `status --cleandirty`;
+    my $cleanDirty = `status --format "%{cleandirty}"`;
     chomp($cleanDirty);
     if ($cleanDirty ne "") {
         if (defined $a_force) {
@@ -104,7 +104,7 @@ MAIN: {
         }
     }
 
-    my $leftright = `status --leftright`;
+    my $leftright = `status --format "%{leftright}"`;
     chomp $leftright;
     my $left = substr($leftright, 0, index($leftright, '-'));
     if ($left ne "" && $left > 0) {

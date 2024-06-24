@@ -5,11 +5,8 @@ use strict;
 use Getopt::Long;
 
 my $a_verbose;
-my $a_all;
 my $a_path;
-my $a_branch;
-my $a_cleandirty;
-my $a_leftright;
+my $a_format;
 my $a_help;
 
 sub help() {
@@ -21,16 +18,21 @@ USAGE:
   >> status [args]
 
 Options:
-  --all        (-b) Show all results
   --path       (-p) Path to repo
-  --branch     (-b) Show branch
-  --cleandirty (-c) Show cleandirty results
-  --leftright  (-l) Show leftright results
+  --format     (-f) Formatted output
   --verbose    (-v) See more details
   --help       (-h) See this message
 
+Format options:
+  - branch
+  - cleandirty
+  - leftright
+  - conflicted
+  - hasremote
+
 EXAMPLES:
   >> status
+  >> status -f "%{branch} %{cleandirty}"
 
 HELP
 }
@@ -45,11 +47,8 @@ sub getFirstNonOptionArg {
 
 MAIN: {
     GetOptions(
-        'all' => \$a_all,
         'path=s' => \$a_path,
-        'branch' => \$a_branch,
-        'cleandirty' => \$a_cleandirty,
-        'leftright' => \$a_leftright,
+        'format=s' => \$a_format,
         'verbose' => \$a_verbose,
         'help' => \$a_help
     ) || (help() && exit 1);
@@ -61,7 +60,7 @@ MAIN: {
         exit 1;
     }
 
-    if (defined $a_all) {
+    if (!defined $a_format) {
         $a_verbose = '1';
     }
 
@@ -111,25 +110,25 @@ MAIN: {
         chomp $untrackedChanges;
     }
 
-    my $cleandirtyOutput = "";
+    my $cleandirty = "";
     my $hasChanges = `${gitCommand} status --porcelain=v1 2>/dev/null | wc -l`;
     chomp $hasChanges;
     if ($hasChanges ne "0") {
-        $cleandirtyOutput = "*";
+        $cleandirty = "*";
     }
     if (defined $a_verbose) {
         if ($workingChanges ne "") {
-            $cleandirtyOutput .= "w${workingChanges} ";
+            $cleandirty .= "w${workingChanges} ";
         }
         if ($stagedChanges ne "") {
-            $cleandirtyOutput .= "i${stagedChanges} ";
+            $cleandirty .= "i${stagedChanges} ";
         }
         if ($untrackedChanges ne "") {
-            $cleandirtyOutput .= "u${untrackedChanges} ";
+            $cleandirty .= "u${untrackedChanges} ";
         }
         # replace spaces with commas and remove ending comma
-        $cleandirtyOutput =~ s/ /,/g;
-        $cleandirtyOutput =~ s/,$//g;
+        $cleandirty =~ s/ /,/g;
+        $cleandirty =~ s/,$//g;
     }
 
     my $hasRemoteCommand = "${gitCommand} remote --verbose | grep ' (fetch)'";
@@ -140,47 +139,40 @@ MAIN: {
         $hasRemote = "true";
     }
 
-    my $leftrightOutput = "";
+    my $leftright = "";
     if ($hasRemote eq "true") {
         my $revListCommand = "${gitCommand} rev-list --left-right --count HEAD...origin/${branch}";
         my $revListOutput = `${revListCommand}`;
         chomp $revListOutput;
         $revListOutput =~ s/^(\d+)[\s+](\d+)$/$1-$2/g;
         if (defined $a_verbose || $revListOutput ne "0-0") {
-            $leftrightOutput = $revListOutput;
+            $leftright = $revListOutput;
         }
     }
 
-    if (defined $a_all) {
-        print "branch: $branch\n";
-        print "leftright: $leftrightOutput\n";
-        print "cleandirty: $cleandirtyOutput\n";
+    my $confictedOutput = `${gitCommand} ls-files -u | wc -l`;
+    chomp $confictedOutput;
+    my $isConflicted = 'false';
+    if ($confictedOutput gt 0) {
+        $isConflicted = 'true';
+    }
 
-        my $confictedOutput = `${gitCommand} ls-files -u | wc -l`;
-        chomp $confictedOutput;
-        my $isConflicted = 'false';
-        if ($confictedOutput gt 0) {
-            $isConflicted = 'true';
-        }
-        print "conflicted: $isConflicted\n";
-
-        print "hasRemote: $hasRemote\n";
-
+    if (defined $a_format) {
+        my $output = "${a_format}";
+        $output =~ s/%\{branch\}/${branch}/g;
+        $output =~ s/%\{cleandirty\}/${cleandirty}/g;
+        $output =~ s/%\{leftright\}/${leftright}/g;
+        $output =~ s/%\{conflicted\}/${isConflicted}/g;
+        $output =~ s/%\{hasremote\}/${hasRemote}/g;
+        print "$output\n";
         exit 0;
     }
 
-    my $output = "";
-    if (defined $a_branch) {
-        $output .= $branch;
-    }
-    if (defined $a_leftright) {
-        $output .= $leftrightOutput;
-    }
-    if (defined $a_cleandirty) {
-        $output .= $cleandirtyOutput;
-    }
-    print "${output}\n";
-
+    print "branch: $branch\n";
+    print "leftright: $leftright\n";
+    print "cleandirty: $cleandirty\n";
+    print "conflicted: $isConflicted\n";
+    print "hasRemote: $hasRemote\n";
     exit 0;
 }
 

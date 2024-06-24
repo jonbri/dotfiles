@@ -86,7 +86,7 @@ MAIN: {
     }
 
     # exit if no outstanding changes
-    my $gitStatus = `status --leftright --cleandirty`;
+    my $gitStatus = `status --format "%{cleandirty}%{leftright}"`;
     chomp $gitStatus;
     if ($gitStatus eq '') {
         print "nothing to do\n";
@@ -150,7 +150,7 @@ MAIN: {
 
     # generate push command
     my $command = "${gitCommand} push --force $REMOTE $BRANCH";
-    my $leftright = `status --leftright`;
+    my $leftright = `status --format "%{leftright}"`;
     chomp $leftright;
     if (!defined $a_force && $leftright =~ /^[\d]+-0$/) {
       $command = "${gitCommand} push $REMOTE $BRANCH";
