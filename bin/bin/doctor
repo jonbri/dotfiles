@@ -1,31 +1,94 @@
-#!/bin/sh
+#!/usr/bin/perl -w
 
-NODE_VERSION=`node --version`
-GIT_VERSION=`git --version`
-NEOVIM_VERSION=`nvim --version | grep "NVIM v" | awk '{print $2}'`
+use strict;
 
-echo "Checking node..."
-if [ -z "${NODE_VERSION}" ]; then
-  echo "node not found"
-  exit 1
-fi
-echo $NODE_VERSION
+use Getopt::Long;
 
-echo
-echo "Checking git..."
-if [ -z "${GIT_VERSION}" ]; then
-  echo "git not found"
-  exit 1
-fi
-echo $GIT_VERSION
+my $a_help;
 
-echo
-echo "Checking neovim..."
-if [ -z "${NEOVIM_VERSION}" ]; then
-  echo "neovim not found"
-  exit 1
-fi
-echo $NEOVIM_VERSION
+my @arguments = ('node', 'git', 'neovim');
 
-echo
-echo "all good"
+sub help() {
+    print STDOUT <<'HELP';
+
+doctor
+
+USAGE:
+  >> doctor [argument] [options]
+
+Arguments:
+  - neovim
+  - node
+  - git
+
+Options:
+  --help (-h) See this message
+
+EXAMPLES:
+  >> doctor      # see all
+  >> doctor node # just see node
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if ($firstArg && !grep(/^$firstArg$/, @arguments)) {
+        print "Invalid argument: $firstArg\n";
+        print "Available: " . join(", ", @arguments) . "\n";
+        exit 1;
+    }
+
+    if (!defined $firstArg || $firstArg eq "node") {
+        my $NODE_VERSION = `node --version`;
+        chomp $NODE_VERSION;
+        if ($NODE_VERSION eq "") {
+            print "node not found\n";
+            exit 1;
+        }
+        print "node version: $NODE_VERSION\n";
+    }
+
+    if (!defined $firstArg || $firstArg eq "git") {
+        my $GIT_VERSION = `git --version | awk '{print \$3}'`;
+        chomp $GIT_VERSION;
+        if ($GIT_VERSION eq "") {
+            print "git not found\n";
+            exit 1;
+        }
+        print "git version: $GIT_VERSION\n";
+    }
+
+    if (!defined $firstArg || $firstArg eq "neovim") {
+        my $NEOVIM_VERSION = `nvim --version | grep "NVIM v" | awk '{print \$2}'`;
+        chomp $NEOVIM_VERSION;
+        if ($NEOVIM_VERSION eq "") {
+            print "neovim not found\n";
+            exit 1;
+        }
+        print "neovim version: $NEOVIM_VERSION\n";
+    }
+
+    print "all good\n";
+
+    exit 0;
+}
+
