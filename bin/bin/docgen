@@ -39,3 +39,4 @@ for path in $SITE_COMPONENTS/*; do
 done
 
 echo 'done'
+

@@ -1,5 +1,4 @@
 #!/usr/bin/perl -w
-# pin - wrapper for "git push"
 
 use strict;
 

@@ -1,5 +1,4 @@
 #!/usr/bin/perl -w
-# dump - show tmux copy buffer
 
 use strict;
 use POSIX;

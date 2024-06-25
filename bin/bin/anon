@@ -1,5 +1,4 @@
 #!/usr/bin/perl -w
-# purge - Clean up local stray branches
 
 use strict;
 
@@ -82,3 +81,4 @@ MAIN: {
     print "done\n";
     exit 0;
 }
+

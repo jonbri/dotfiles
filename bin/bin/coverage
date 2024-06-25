@@ -1,4 +1,0 @@
-#!/bin/bash
-
-yarn test:coverage && cd out/coverage/lcov-report && browse 3000 && serve .
-

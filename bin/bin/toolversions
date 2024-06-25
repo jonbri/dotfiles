@@ -1,5 +1,4 @@
 #!/usr/bin/perl -w
-# dynamic-status
 
 use strict;
 
@@ -15,15 +14,15 @@ my $SPACE="  ";
 sub help() {
     print STDOUT <<'HELP';
 
-dynamic-status
+toolversions
 
 Options:
   --dynamic (-d) use DYANMIC_STATUS_CONTROL
   --help    (-h) See this message
 
 EXAMPLES:
-  >> dynamic-status
-  >> dynamic-status --dynamic
+  >> toolversions
+  >> toolversions --dynamic
 
 HELP
 }

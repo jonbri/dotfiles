@@ -1,5 +1,4 @@
 #!/usr/bin/perl -w
-# apache - Start apache
 
 use strict;
 
@@ -10,13 +9,13 @@ my $a_help;
 sub help() {
     print STDOUT <<'HELP';
 
-apache - Start apache
+apache - Start Apache server
 
 USAGE:
   >> apache
 
 Options:
-  --help    (-h) See this message
+  --help (-h) See this message
 
 EXAMPLES:
   >> apache
@@ -47,3 +46,4 @@ MAIN: {
     print "running...";
     `/mnt/c/Apache24/bin/httpd.exe`;
 }
+

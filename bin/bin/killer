@@ -4,8 +4,16 @@ use strict;
 
 use Getopt::Long;
 
+my $a_quiet;
+my $a_yes;
+my $a_all;
+my $a_list;
+my $a_watch;
+my $a_help;
+
 sub help() {
-    print STDERR <<'HELP';
+    print STDOUT <<'HELP';
+
 killer - Manage processes
 
 USAGE:
@@ -28,8 +36,6 @@ EXAMPLES:
 
 HELP
 }
-
-my $a_quiet;
 
 sub runCommand($) {
     my ($command) = @_;
@@ -68,11 +74,6 @@ sub _print($) {
 }
 
 MAIN: {
-    my $a_yes;
-    my $a_all;
-    my $a_list;
-    my $a_watch;
-    my $a_help;
     GetOptions(
         'yes' => \$a_yes,
         'all' => \$a_all,
@@ -188,3 +189,4 @@ MAIN: {
         }
     }
 }
+

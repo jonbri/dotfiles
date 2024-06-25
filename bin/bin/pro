@@ -1,5 +1,4 @@
 #!/usr/bin/perl -w
-# pro - projections management
 
 use strict;
 
@@ -87,3 +86,4 @@ MAIN: {
     print "done\n";
     exit 0;
 }
+

@@ -1,5 +1,4 @@
 #!/usr/bin/perl -w
-# snowball - make fake git changes
 
 use strict;
 

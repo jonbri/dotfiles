@@ -13,3 +13,4 @@ elif [[ "$COMMAND" == "enable" ]]; then
 fi
 
 cat $NPMRC_FILE
+

@@ -1,5 +1,4 @@
 #!/usr/bin/perl -w
-# sand - meant to be called over and over
 
 use strict;
 
@@ -12,6 +11,8 @@ sub help() {
     print STDOUT <<'HELP';
 
 sand - hourglass simulation
+
+Meant to be called over and over
 
 USAGE:
   >> sand [options]

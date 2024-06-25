@@ -1,5 +1,4 @@
 #!/usr/bin/perl -w
-# path - manage PATH environment variable
 
 use strict;
 
@@ -11,7 +10,7 @@ my $a_edit;
 sub help() {
     print STDOUT <<'HELP';
 
-path - manage $PATH
+path - manage $PATH environment variable
 
 USAGE:
   >> path [options]
