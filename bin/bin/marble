@@ -149,29 +149,39 @@ MAIN: {
     }
 
     if (defined $a_list) {
-        my $lsCommand = "ls ${WORK_DIR}";
+        my $workList = `ls -t ${WORK_DIR}`;
+        chomp $workList;
+        my @filteredWorkList = split(/\n/, $workList);
         if (defined $firstArg) {
-            $lsCommand .= " | grep $firstArg";
+            @filteredWorkList = grep { /$firstArg/ } split(/\n/, $workList);
+            @filteredWorkList = map { s/.txt$//g; $_ } @filteredWorkList;
         }
-        $lsCommand .= " | sed -e 's/.txt\$//g'";
-        print "Work:\n";
-        print runCommand($lsCommand);
+        if (scalar(@filteredWorkList) == 0) {
+            print "Work: (none)\n";
+        } else {
+            print "Work:\n";
+            foreach my $line (@filteredWorkList) {
+                print "  $line\n";
+            }
+        }
         print "\n";
 
-        $lsCommand = "ls ${PROMOTED_DIR}";
+        my $promotedList = `ls -t ${PROMOTED_DIR}`;
+        chomp $promotedList;
+        my @filteredPromotedList = split(/\n/, $promotedList);
         if (defined $firstArg) {
-            $lsCommand .= " | grep $firstArg";
+            @filteredPromotedList = grep { /$firstArg/ } split(/\n/, $promotedList);
+            @filteredPromotedList = map { s/.txt$//g; $_ } @filteredPromotedList;
         }
-        $lsCommand .= " | sed -e 's/.txt\$//g'";
-
-        # if lsCommand has no results, print error message
-        my $lsOutput = runCommand($lsCommand);
-        if (scalar($lsOutput) == 0) {
+        if (scalar(@filteredPromotedList) == 0) {
             print "Promoted: (none)\n";
         } else {
-            print "Promoted:\n";
-            print runCommand($lsCommand);
+            print "Promoted\n";
+            foreach my $line (@filteredPromotedList) {
+                print "  $line\n";
+            }
         }
+        print "\n";
 
         exit 0;
     }
