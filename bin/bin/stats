@@ -5,6 +5,7 @@ use warnings;
 
 use Getopt::Long;
 
+my $a_all;
 my $a_help;
 
 sub help() {
@@ -16,7 +17,8 @@ USAGE:
   >> stats [options]
 
 Options:
-  --help     (-h) See this message
+  --all  (-a) See all output
+  --help (-h) See this message
 
 EXAMPLES:
   >> stats
@@ -26,6 +28,7 @@ HELP
 
 MAIN: {
     GetOptions(
+        'all' => \$a_all,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -48,14 +51,20 @@ MAIN: {
     my $output = `git shortlog -s -n -e`;
     my @lines = split("\n", $output);
     my $count = 0;
+    my $contributorLimit = 10;
+    if (defined $a_all) {
+        $contributorLimit = 90000;
+    }
     foreach my $line (@lines) {
       print $line . "\n";
       $count++;
-      last if $count == 10;
+      last if $count == $contributorLimit;
     }
 
-    print "\n\"git count-objects -vH\": \n";
-    print `git count-objects -vH`;
+    if (defined $a_all) {
+      print "\n\"git count-objects -vH\": \n";
+      print `git count-objects -vH`;
+    }
 
     exit 0;
 }
