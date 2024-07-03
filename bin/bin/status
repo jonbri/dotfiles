@@ -145,14 +145,26 @@ MAIN: {
         $hasRemote = "true";
     }
 
+    my $hasRemoteBranchCommand = "git branch --remote | grep ${branch}";
+    my $hasRemoteBranchResult = `${hasRemoteBranchCommand}`;
+    chomp $hasRemoteBranchResult;
+    my $hasRemoteBranch = "false";
+    if ($hasRemoteBranchResult ne "") {
+        $hasRemoteBranch = "true";
+    }
+
     my $leftright = "";
     if ($hasRemote eq "true") {
-        my $revListCommand = "${gitCommand} rev-list --left-right --count HEAD...origin/${branch}";
-        my $revListOutput = `${revListCommand}`;
-        chomp $revListOutput;
-        $revListOutput =~ s/^(\d+)[\s+](\d+)$/$1-$2/g;
-        if (defined $a_verbose || $revListOutput ne "0-0") {
-            $leftright = $revListOutput;
+        if ($hasRemoteBranch eq "true") {
+            my $revListCommand = "${gitCommand} rev-list --left-right --count HEAD...origin/${branch}";
+            my $revListOutput = `${revListCommand}`;
+            chomp $revListOutput;
+            $revListOutput =~ s/^(\d+)[\s+](\d+)$/$1-$2/g;
+            if (defined $a_verbose || $revListOutput ne "0-0") {
+                $leftright = $revListOutput;
+            }
+        } else {
+            $leftright = "1-.";
         }
     }
 
