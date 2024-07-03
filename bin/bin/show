@@ -1,17 +1,67 @@
-#!/bin/bash
+#!/usr/bin/perl -w
 
-# show commit that matches the target string
-# Usage: show "tilde"
+use strict;
 
-target=$1
+use Getopt::Long;
 
-# if target is not set, exit
-if [ -z "$target" ]; then
-  echo "pass in an argument"
-  exit 1
-fi
+my $a_nameOnly;
+my $a_help;
 
-sha=$(git log --grep="$target" -1 --all-match --regexp-ignore-case --pretty=format:"%H")
+sub help() {
+    print STDOUT <<'HELP';
 
-git show $sha
+show - `git show` wrapper
 
+USAGE:
+  >> show
+
+Options:
+  --nameonly (-n) --name-only
+  --help     (-h) See this message
+
+EXAMPLES:
+  >> show tilde
+  >> show tilde -n # show only the file names
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'nameOnly' => \$a_nameOnly,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if (!defined $firstArg) {
+        system("git show");
+        exit 0;
+    }
+
+    my $shaCommand = "git log --grep=\"$firstArg\" -1 --all-match --regexp-ignore-case --pretty=format:\"%H\"";
+    my $sha = `$shaCommand`;
+    chomp $sha;
+
+    if (defined $a_nameOnly) {
+        system("git show --name-only $sha");
+        exit 0;
+    }
+    system("git show $sha");
+
+    print "\n";
+    exit 0;
+}
