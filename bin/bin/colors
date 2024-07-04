@@ -15,10 +15,23 @@ USAGE:
   >> colors [options]
 
 Options:
-  --help     (-h) See this message
+  --help (-h) See this message
+
+Colors:
+  red
+  green
+  yellow
+  blue
+  magenta
+  cyan
+  white
+  black
+  orange
 
 EXAMPLES:
   >> colors
+  >> colors red
+  >> colors 100
 
 HELP
 }
@@ -43,8 +56,37 @@ MAIN: {
         exit 1;
     }
 
-    for (my $i = 0; $i < 256; $i++) {
-        printf "\x1b[38;5;${i}mcolour${i}\n";
+
+    if (!defined $firstArg) {
+        for (my $i = 0; $i < 256; $i++) {
+            printf "\x1b[38;5;${i}mcolour${i}\n";
+        }
+    }
+
+    if ($firstArg) {
+        my $color = $firstArg;
+        if ($color eq "red") {
+            $color = 1;
+        } elsif ($color eq "green") {
+            $color = 2;
+        } elsif ($color eq "yellow") {
+            $color = 3;
+        } elsif ($color eq "blue") {
+            $color = 4;
+        } elsif ($color eq "magenta") {
+            $color = 5;
+        } elsif ($color eq "cyan") {
+            $color = 6;
+        } elsif ($color eq "white") {
+            $color = 7;
+        } elsif ($color eq "black") {
+            $color = 8;
+        } elsif ($color eq "orange") {
+            $color = 9;
+        }
+        if ($color =~ /^\d+$/) {
+            printf "\x1b[38;5;${color}mcolour${color}\n";
+        }
     }
 
     exit 0;
