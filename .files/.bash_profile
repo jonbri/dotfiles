@@ -235,6 +235,7 @@ alias b8="browse 8000"
 alias b88="browse 8080"
 alias b9="browse 9000"
 
+alias prod="ssh root@192.81.214.19"
 alias prod-media="cd /root/media && ws --port 3001"
 alias prod-app="cd /root/icecoldnugrape && pull -f && yarn && yarn build && serve out -l 3000"
 
