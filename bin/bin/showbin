@@ -1,4 +1,0 @@
-#!/bin/bash
-
-ls -l $DOTFILES_DIR/bin/bin | sed '1d' | awk -e '{ print $9 }'
-
