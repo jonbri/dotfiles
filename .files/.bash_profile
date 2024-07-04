@@ -194,6 +194,7 @@ alias dict="$EDITOR -c \"colorscheme sorbet | normal Gzz\" ~/.config/nvim/dictio
 alias goals="m --color sorbet goals"
 alias sepp="sep 80"
 alias jest="y test --watch"
+alias vforce="./node_modules/.bin/vite --force"
 
 alias droplet="ssh root@192.81.214.19"
 alias fui="cd $HOME/d*-s*-f*-u* && pw"
