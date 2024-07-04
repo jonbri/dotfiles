@@ -1,14 +1,62 @@
-#!/bin/sh
+#!/usr/bin/perl -w
 
-DIR=$1
-if [ -z $DIR ]; then
-    DIR=`pwd`
-fi
+use strict;
 
-if git -C "$DIR" rev-parse --git-dir > /dev/null 2>&1; then
-  echo "true";
-  exit 0;
-fi
-echo "false";
-exit 1;
+use Getopt::Long;
+
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+isgit - Check if a directory is a git repo
+
+USAGE:
+  >> isgit /path/to/dir [args]
+
+Options:
+  --help (-h) See this message
+
+EXAMPLES:
+  >> isgit ~/my-project
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my $dir = $firstArg;
+    if (!defined $dir) {
+        $dir = `pwd`;
+        chomp $dir;
+    }
+
+    my $gitCommand = "git -C \"${dir}\" rev-parse --git-dir > /dev/null 2>&1";
+    my $result = `$gitCommand`;
+
+    if ($? == 0) {
+      print "true\n";
+    } else {
+      print "false\n";
+    }
+    exit 0;
+}
 
