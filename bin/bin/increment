@@ -5,6 +5,7 @@ use strict;
 use Getopt::Long;
 
 my $a_help;
+my $a_list;
 my $a_show;
 my $a_delete;
 my $a_verbose;
@@ -23,6 +24,7 @@ USAGE:
   >> increment [key] [options]
 
 Options:
+  --list    (-l) print keys
   --show    (-s) just print value
   --delete  (-d) remove counter file
   --verbose (-v) print extra info
@@ -62,6 +64,7 @@ sub render($) {
 MAIN: {
     GetOptions(
         'help' => \$a_help,
+        'list' => \$a_list,
         'show' => \$a_show,
         'delete' => \$a_delete,
         'verbose' => \$a_verbose
@@ -80,6 +83,17 @@ MAIN: {
 
     if (defined $a_verbose) {
         print "files: ${tmp_dir}\n";
+    }
+
+    if (defined $a_list) {
+      my @files = runCommand("ls ${tmp_dir}");
+      foreach my $file (@files) {
+        chomp $file;
+        my $contents = `cat $tmp_dir/$file`;
+        chomp $contents;
+        print "$file: $contents\n";
+      }
+      exit 0;
     }
 
     $KEY = $firstArg;
