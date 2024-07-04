@@ -1,15 +1,116 @@
-#!/bin/bash
+#!/usr/bin/perl -w
 
-DISTANCE=`distance`
-if [ "$DISTANCE" = "x" ]; then
-    echo "`main` is not reachable"
+use strict;
+
+use Getopt::Long;
+
+my $a_message;
+my $a_path;
+my $a_remote;
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+rollup
+
+USAGE:
+  >> rollup [args]
+
+Options:
+  --message (-m) Commit message to use
+  --path    (-p) Path to repo
+  --remote  (-r) The remote to check against
+  --help    (-h) See this message
+
+EXAMPLES:
+  >> rollup
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'message=s' => \$a_message,
+        'path=s' => \$a_path,
+        'remote=s' => \$a_remote,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my $remote = "origin";
+    if (defined $a_remote) {
+        $remote = $a_remote;
+    }
+
+    my $isGit;
+    my $path = "";
+    if (defined $a_path) {
+        $path = $a_path;
+    } else {
+        # exit if not in a git repo
+        my $isGit = `isgit ${path}`;
+        chomp $isGit;
+        if ($isGit ne 'true') {
+            exit 0;
+        }
+        $path = `git rev-parse --show-toplevel`;
+    }
+    chomp $path;
+
+    # exit if not in a git repo
+    $isGit = `isgit ${path}`;
+    chomp $isGit;
+    if ($isGit ne 'true') {
+        exit 0;
+    }
+
+    my $gitCommand = "git -C \"${path}\" ";
+
+    my $distance = `distance`;
+    chomp $distance;
+
+    my $main = `main`;
+    chomp $main;
+
+    if ($distance eq "x") {
+        print "$main is not reachable\n";
+        exit 0;
+    }
+
+    if ($distance eq "1") {
+        print "already up to date\n";
+        exit 0;
+    }
+
+    `gwip`;
+    `crumb "rollup"`;
+
+    my $HEAD = `git rev-parse HEAD`;
+    chomp $HEAD;
+
+    `git reset HEAD~$distance`;
+
+    my $message = "Rollup $distance commits";
+    if (defined $a_message) {
+        $message = $a_message;
+    }
+
+    `commit --stage --message "$message"`;
+
     exit 0;
-fi
-
-gwip
-crumb "rollup"
-HEAD=`git rev-parse HEAD`
-git reset HEAD~$DISTANCE
-git add .
-git commit --reuse-message=$HEAD
-
+}
