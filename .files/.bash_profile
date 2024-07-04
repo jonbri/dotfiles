@@ -193,6 +193,7 @@ alias fast="slow -d 0.03"
 alias dict="$EDITOR -c \"colorscheme sorbet | normal Gzz\" ~/.config/nvim/dictionaries/custom.dictionary"
 alias goals="m --color sorbet goals"
 alias sepp="sep 80"
+alias jest="y test --watch"
 
 alias droplet="ssh root@192.81.214.19"
 alias fui="cd $HOME/d*-s*-f*-u* && pw"

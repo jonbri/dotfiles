@@ -1,4 +1,0 @@
-#!/bin/bash
-
-yarn test "$1" --watch
-
