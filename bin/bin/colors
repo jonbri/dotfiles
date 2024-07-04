@@ -1,6 +1,52 @@
-#!/bin/bash
+#!/usr/bin/perl -w
 
-for i in {0..255}; do
-  printf "\x1b[38;5;${i}mcolour${i}\n"
-done
+use strict;
+
+use Getopt::Long;
+
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+colors
+
+USAGE:
+  >> colors [options]
+
+Options:
+  --help     (-h) See this message
+
+EXAMPLES:
+  >> colors
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    for (my $i = 0; $i < 256; $i++) {
+        printf "\x1b[38;5;${i}mcolour${i}\n";
+    }
+
+    exit 0;
+}
 
