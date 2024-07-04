@@ -4,6 +4,9 @@ use strict;
 
 use Getopt::Long;
 
+my $a_date;
+my $a_time;
+my $a_separator;
 my $a_verbose;
 my $a_help;
 
@@ -16,7 +19,11 @@ USAGE:
   >> shortdate
 
 Options:
-  --verbose (-v) Show details
+  --date      (-d) Show date
+  --time      (-t) Show time
+  --separator (-s) Character between date and time
+  --verbose   (-v) Show details
+  --help      (-h) Show this message
 
 EXAMPLES:
   >> shortdate
@@ -36,6 +43,9 @@ sub getFirstNonOptionArg {
 
 MAIN: {
     GetOptions(
+        'date' => \$a_date,
+        'time' => \$a_time,
+        'separator=s' => \$a_separator,
         'verbose' => \$a_verbose,
         'help' => \$a_help
     ) || (help() && exit 1);
@@ -51,7 +61,28 @@ MAIN: {
     if (defined $firstArg) {
         $dateCommand .= "--date \"${firstArg}\" ";
     }
-    $dateCommand .= "'+%Y-%m-%d %Ss'";
+
+    my $separator = " ";
+    if (defined $a_separator) {
+        $separator = $a_separator;
+    }
+
+    my $dateFormat = "%Y-%m-%d";
+    my $timeFormat = "%I:%M:%S";
+    my $formatString = "${dateFormat}${separator}${timeFormat}";
+    if (defined $a_date || defined $a_time) {
+        $formatString = "";
+        if (defined $a_date) {
+            $formatString .= "${dateFormat}${separator}";
+        }
+        if (defined $a_time) {
+            $formatString .= $timeFormat;
+        }
+        $formatString =~ s/${separator}$//;
+        $formatString =~ s/-$//;
+    }
+
+    $dateCommand .= "'+${formatString}'";
 
     if (defined $a_verbose) {
         print "$dateCommand\n";
