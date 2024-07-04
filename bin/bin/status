@@ -6,6 +6,7 @@ use Getopt::Long;
 
 my $a_verbose;
 my $a_path;
+my $a_remote;
 my $a_format;
 my $a_help;
 
@@ -18,10 +19,11 @@ USAGE:
   >> status [args]
 
 Options:
-  --path       (-p) Path to repo
-  --format     (-f) Formatted output
-  --verbose    (-v) See more details
-  --help       (-h) See this message
+  --path    (-p) Path to repo
+  --format  (-f) Formatted output
+  --remote  (-r) The remote to check against
+  --verbose (-v) See more details
+  --help    (-h) See this message
 
 Format options:
   - branch
@@ -49,6 +51,7 @@ MAIN: {
     GetOptions(
         'path=s' => \$a_path,
         'format=s' => \$a_format,
+        'remote=s' => \$a_remote,
         'verbose' => \$a_verbose,
         'help' => \$a_help
     ) || (help() && exit 1);
@@ -62,6 +65,11 @@ MAIN: {
 
     if (!defined $a_format) {
         $a_verbose = '1';
+    }
+
+    my $remote = "origin";
+    if (defined $a_remote) {
+        $remote = $a_remote;
     }
 
     my $isGit;
@@ -156,7 +164,7 @@ MAIN: {
     my $leftright = "";
     if ($hasRemote eq "true") {
         if ($hasRemoteBranch eq "true") {
-            my $revListCommand = "${gitCommand} rev-list --left-right --count HEAD...origin/${branch}";
+            my $revListCommand = "${gitCommand} rev-list --left-right --count HEAD...${remote}/${branch}";
             my $revListOutput = `${revListCommand}`;
             chomp $revListOutput;
             $revListOutput =~ s/^(\d+)[\s+](\d+)$/$1-$2/g;
