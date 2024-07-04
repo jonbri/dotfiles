@@ -7,6 +7,7 @@ use Getopt::Long;
 my $a_dryRun;
 my $a_user;
 my $a_force;
+my $a_path;
 my $a_remote;
 my $a_only;
 my $a_everyone;
@@ -16,6 +17,8 @@ my @remoteBranches;
 my $count = 1;
 my $totalCount = 0;
 my $user = $ENV{USER};
+
+my $gitCommand = "git ";
 
 sub help() {
     print STDOUT <<'HELP';
@@ -27,6 +30,7 @@ USAGE:
 
 Options:
   --dry-run  (-d) Just show branch matches
+  --path     (-p) Path to repo
   --remote   (-r) Specify a remote
   --only     (-o) Only show "local" or "remote"
   --force    (-f) Skip confirmation
@@ -95,22 +99,28 @@ sub generatePrefix {
 
 sub fetchAndPrune() {
     print "fetching and pruning...";
-    `git fetch $a_remote --quiet`;
-    `git remote prune $a_remote`;
+    `${gitCommand} fetch $a_remote --quiet`;
+    `${gitCommand} remote prune $a_remote`;
     sleep 1;
     print "done\n";
 }
 
 sub deleteLocalBranch {
     my ($branch) = @_;
-    my $command = "git branch -D $branch";
-    my $sha = `git rev-parse --short $branch`;
+    my $command = "${gitCommand} branch -D $branch";
+    my $sha = `${gitCommand} rev-parse --short $branch`;
     chomp $sha;
-    my $message = `git log -1 --pretty=%B $branch | nth 0`;
+    my $message = `${gitCommand} log -1 --pretty=%B $branch | nth 0`;
     chomp $message;
+
+    my $formattedCommand = $command;
+    $formattedCommand =~ s/-C \"[^\"]*\"//g;
+    $formattedCommand =~ s/  / /g;
+    $formattedCommand =~ s/  / /g;
+
     my $answer = '';
     if (!defined $a_force) {
-        $answer = confirm("\n".generatePrefix." LOCAL\n${sha} ${message}\n${command} (y/n/i/f/s/?) ");
+        $answer = confirm("\n".generatePrefix." LOCAL\n${sha} ${message}\n${formattedCommand} (y/n/i/f/s/?) ");
     } else {
         $answer = 'y';
     }
@@ -122,15 +132,15 @@ sub deleteLocalBranch {
         }
     } elsif ($answer =~ /^i/i) {
         print "\n";
-        print `git email $branch | nth 0-11`;
+        print `${gitCommand} email $branch | nth 0-11`;
         deleteLocalBranch(@_);
     } elsif ($answer =~ /^s/i) {
         print "\n";
-        print `git show $branch | cat`;
+        print `${gitCommand} show $branch | cat`;
         deleteLocalBranch(@_);
     } elsif ($answer =~ /^f/i) {
         print "\n";
-        print `git show $branch --name-only | cat`;
+        print `${gitCommand} show $branch --name-only | cat`;
         deleteLocalBranch(@_);
     } elsif ($answer eq "?") {
         subHelp();
@@ -146,12 +156,16 @@ sub deleteRemoteBranch {
     my ($branch) = @_;
     my $remoteBranch = $branch;
     $remoteBranch =~ tr/\// /;
-    my $command = "git push --delete $a_remote $remoteBranch";
-    my $sha = `git rev-parse --short $a_remote/$remoteBranch`;
-    my $message = `git log -1 --pretty=%B $a_remote/$remoteBranch | nth 0`;
+    my $command = "${gitCommand} push --delete $a_remote $remoteBranch";
+    my $sha = `${gitCommand} rev-parse --short $a_remote/$remoteBranch`;
+    my $message = `${gitCommand} log -1 --pretty=%B $a_remote/$remoteBranch | nth 0`;
     chomp $sha;
     chomp $message;
-    my $answer = confirm("\n".generatePrefix." REMOTE\n${sha} ${message}\n${command} (y/n/i/f/s/?) ");
+    my $formattedCommand = $command;
+    $formattedCommand =~ s/-C \"[^\"]*\"//g;
+    $formattedCommand =~ s/  / /g;
+    $formattedCommand =~ s/  / /g;
+    my $answer = confirm("\n".generatePrefix." REMOTE\n${sha} ${message}\n${formattedCommand} (y/n/i/f/s/?) ");
     if ($answer =~ /^y/i) {
         if (index($branch, $a_user) == -1) {
             confirm("\n**Warning**: ${a_user} not found in branch name: ${branch}\nPress enter to proceed...");
@@ -161,15 +175,15 @@ sub deleteRemoteBranch {
         reportDone();
     } elsif ($answer =~ /^i/i) {
         print "\n";
-        print `git email $a_remote/$remoteBranch | nth 0-11`;
+        print `${gitCommand} email $a_remote/$remoteBranch | nth 0-11`;
         deleteRemoteBranch(@_);
     } elsif ($answer =~ /^s/i) {
         print "\n";
-        print `git show $a_remote/$remoteBranch | cat`;
+        print `${gitCommand} show $a_remote/$remoteBranch | cat`;
         deleteRemoteBranch(@_);
     } elsif ($answer =~ /^f/i) {
         print "\n";
-        print `git show $a_remote/$remoteBranch --name-only | cat`;
+        print `${gitCommand} show $a_remote/$remoteBranch --name-only | cat`;
         deleteRemoteBranch(@_);
     } elsif ($answer eq "?") {
         subHelp();
@@ -208,6 +222,30 @@ MAIN: {
         exit 1;
     }
 
+    my $isGit;
+    my $path = "";
+    if (defined $a_path) {
+        $path = $a_path;
+    } else {
+        # exit if not in a git repo
+        my $isGit = `isgit ${path}`;
+        chomp $isGit;
+        if ($isGit ne 'true') {
+            exit 0;
+        }
+        $path = `${gitCommand} rev-parse --show-toplevel`;
+    }
+    chomp $path;
+
+    # exit if not in a git repo
+    $isGit = `isgit ${path}`;
+    chomp $isGit;
+    if ($isGit ne 'true') {
+        exit 0;
+    }
+
+    $gitCommand = "${gitCommand} -C \"${path}\" ";
+
     if (!defined $a_dryRun) {
         if (defined $a_force) {
             print "When --force is used only local branches are deleted\n";
@@ -217,11 +255,11 @@ MAIN: {
         }
     }
 
-    my $currentBranch = join('', runCommand("git rev-parse --abbrev-ref HEAD"));
+    my $currentBranch = join('', runCommand("${gitCommand} rev-parse --abbrev-ref HEAD"));
     chomp($currentBranch);
 
     # exclude main and the current branch
-    @localBranches = runCommand("git for-each-ref --format='%(refname:short)' refs/heads/");
+    @localBranches = runCommand("${gitCommand} for-each-ref --format='%(refname:short)' refs/heads/");
     @localBranches = grep(!/^master$/, @localBranches);
     @localBranches = grep(!/^main$/, @localBranches);
     @localBranches = grep(!/^create-pull-request\/patch$/, @localBranches);
@@ -233,7 +271,7 @@ MAIN: {
         @localBranches = ();
     }
 
-    @remoteBranches = runCommand("git branch -r | sed 's/^  //'");
+    @remoteBranches = runCommand("${gitCommand} branch -r | sed 's/^  //'");
     @remoteBranches = grep(!/^$a_remote\/master$/, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/main$/, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/create-pull-request\/patch$/, @remoteBranches);
@@ -276,7 +314,7 @@ MAIN: {
         }
     }
 
-    @remoteBranches = runCommand("git branch --remote | sed 's/^  //'");
+    @remoteBranches = runCommand("${gitCommand} branch --remote | sed 's/^  //'");
     @remoteBranches = grep(!/^$a_remote\/HEAD /, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/master$/, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/main$/, @remoteBranches);
