@@ -1,18 +1,94 @@
-#!/bin/bash
+#!/usr/bin/perl -w
 
-MAIN=`main`
-git-is-ancestor() (
-  if git merge-base --is-ancestor "$1" "$2"; then
-    return 0
-  else
-    return 1
-  fi
-)
-DISTANCE="x"
-git-is-ancestor "origin/${MAIN}" "HEAD";
-if [[ $? == 0 ]]; then
-  DISTANCE=$(git rev-list --count origin/$MAIN..HEAD)
-fi
+use strict;
 
-echo $DISTANCE
+use Getopt::Long;
 
+my $a_path;
+my $a_remote;
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+distance
+
+USAGE:
+  >> distance [args]
+
+Options:
+  --path   (-p) Path to repo
+  --remote (-r) The remote to check against
+  --help   (-h) See this message
+
+EXAMPLES:
+  >> distance
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'path=s' => \$a_path,
+        'remote=s' => \$a_remote,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my $remote = "origin";
+    if (defined $a_remote) {
+        $remote = $a_remote;
+    }
+
+    my $isGit;
+    my $path = "";
+    if (defined $a_path) {
+        $path = $a_path;
+    } else {
+        # exit if not in a git repo
+        my $isGit = `isgit ${path}`;
+        chomp $isGit;
+        if ($isGit ne 'true') {
+            exit 0;
+        }
+        $path = `git rev-parse --show-toplevel`;
+    }
+    chomp $path;
+
+    # exit if not in a git repo
+    $isGit = `isgit ${path}`;
+    chomp $isGit;
+    if ($isGit ne 'true') {
+        exit 0;
+    }
+
+    my $gitCommand = "git -C \"${path}\" ";
+
+    my $main = `main`;
+    chomp $main;
+
+    my $distance = "x";
+    `$gitCommand merge-base --is-ancestor "${remote}/${main}" HEAD`;
+    if ($? == 0) {
+        $distance = `$gitCommand rev-list --count "${remote}/${main}..HEAD"`;
+        chomp $distance;
+    }
+
+    print "$distance\n";
+
+    exit 0;
+}
