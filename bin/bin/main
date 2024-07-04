@@ -1,18 +1,95 @@
-#!/bin/bash
+#!/usr/bin/perl -w
 
-if [[ ! `isgit` = "true" ]]; then
-    exit 1
-fi
+use strict;
 
-IS_MAIN=`git br | grep -e " main$" | tr -d " *"`
-IS_MASTER=`git br | grep -e " master$" | tr -d " *"`
-if [ "$IS_MAIN" = "main" ]; then
-  MAIN=main
-elif [ "$IS_MASTER" = "master" ]; then
-  MAIN=master
-else
-  MAIN=release
-fi
+use Getopt::Long;
 
-echo $MAIN
+my $a_path;
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+main - Determine the main branch of a git repo
+
+USAGE:
+  >> main [args]
+
+Options:
+  --path (-p) Path to the git repo
+  --help (-h) See this message
+
+EXAMPLES:
+  >> main
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'path=s' => \$a_path,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my $isGit;
+    my $path = "";
+    if (defined $a_path) {
+        $path = $a_path;
+    } else {
+        # exit if not in a git repo
+        my $isGit = `isgit ${path}`;
+        chomp $isGit;
+        if ($isGit ne 'true') {
+            exit 0;
+        }
+        $path = `git rev-parse --show-toplevel`;
+    }
+    chomp $path;
+
+    # exit if not in a git repo
+    $isGit = `isgit ${path}`;
+    chomp $isGit;
+    if ($isGit ne 'true') {
+        exit 0;
+    }
+
+    my $gitCommand = "git -C \"${path}\" ";
+
+    my $isMainCommand = "${gitCommand} branch | grep -e \" main\$\" | tr -d \" *\"";
+    my $isMain = `${isMainCommand}`;
+    chomp $isMain;
+
+    my $isMasterCommand = "${gitCommand} branch | grep -e \" master\$\" | tr -d \" *\"";
+    my $isMaster = `${isMasterCommand}`;
+    chomp $isMaster;
+
+    my $result;
+    if ($isMain eq "main") {
+      $result = "main";
+    } elsif ($isMaster eq "master") {
+      $result = "master";
+    } else {
+      $result = "release";
+    }
+
+    print "$result\n";
+
+    exit 0;
+}
+
 
