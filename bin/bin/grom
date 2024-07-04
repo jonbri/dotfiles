@@ -1,13 +1,90 @@
-#!/bin/bash
-# grom - git rebase origin main
+#!/usr/bin/perl -w
 
-if [[ ! `isgit` = "true" ]]; then
-    exit 1
-fi
+use strict;
 
-MAIN=`main`
-REMOTE="origin"
+use Getopt::Long;
 
-crumb "grom"
-git rebase $REMOTE/$MAIN
+my $a_path;
+my $a_remote;
+my $a_help;
 
+sub help() {
+    print STDOUT <<'HELP';
+
+grom - git rebase origin main
+
+USAGE:
+  >> grom [options]
+
+Options:
+  --path   (-p) Path to repo
+  --remote (-r) The remote to rebase from
+  --help   (-h) See this message
+
+EXAMPLES:
+  >> grom
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'path=s' => \$a_path,
+        'remote=s' => \$a_remote,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my $isGit;
+    my $path = "";
+    if (defined $a_path) {
+        $path = $a_path;
+    } else {
+        # exit if not in a git repo
+        my $isGit = `isgit ${path}`;
+        chomp $isGit;
+        if ($isGit ne 'true') {
+            exit 0;
+        }
+        $path = `git rev-parse --show-toplevel`;
+    }
+    chomp $path;
+
+    # exit if not in a git repo
+    $isGit = `isgit ${path}`;
+    chomp $isGit;
+    if ($isGit ne 'true') {
+        exit 0;
+    }
+
+    my $gitCommand = "git -C \"${path}\" ";
+
+    my $MAIN=`main`;
+    chomp $MAIN;
+
+    my $REMOTE="origin";
+    if (defined $a_remote) {
+        $REMOTE=$a_remote;
+        print "remote: $REMOTE\n";
+    }
+
+    `crumb "grom"`;
+
+    `${gitCommand} rebase ${REMOTE}/${MAIN}`;
+
+    exit 0;
+}
