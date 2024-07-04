@@ -1,9 +1,57 @@
-#!/bin/bash
-echo
-for i in {1..40}
-do
-    echo -n "-"
-done
-echo
-echo
+#!/usr/bin/perl -w
 
+use strict;
+
+use Getopt::Long;
+
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+sep - show lines
+
+USAGE:
+  >> sep [options]
+
+Options:
+  --help (-h) See this message
+
+EXAMPLES:
+  >> sep
+  >> sep 10 # show 10 lines
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    print "\n";
+
+    my $lines = $firstArg || 40;
+    for (my $i = 0; $i < $lines; $i++) {
+        print "-";
+    }
+
+    print "\n\n";
+
+    exit 0;
+}
