@@ -164,10 +164,10 @@ MAIN: {
             foreach my $line (@filteredWorkList) {
                 my $timestamp = `stat -c %y ${WORK_DIR}/${line}`;
                 chomp $timestamp;
-                my $formattedTimestamp = `shortdate "${timestamp}"`;
+                my $formattedTimestamp = `shortdate "${timestamp}" --date`;
                 chomp $formattedTimestamp;
                 $line =~ s/.txt$//g;
-                print "$formattedTimestamp: $line\n";
+                print "  $formattedTimestamp: $line\n";
             }
         }
         print "\n";
@@ -186,10 +186,10 @@ MAIN: {
             foreach my $line (@filteredPromotedList) {
                 my $timestamp = `stat -c %y ${PROMOTED_DIR}/${line}`;
                 chomp $timestamp;
-                my $formattedTimestamp = `shortdate "${timestamp}"`;
+                my $formattedTimestamp = `shortdate "${timestamp}" --date`;
                 chomp $formattedTimestamp;
                 $line =~ s/.txt$//g;
-                print "$formattedTimestamp: $line\n";
+                print "  $formattedTimestamp: $line\n";
             }
         }
         print "\n";
