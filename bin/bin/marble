@@ -162,7 +162,12 @@ MAIN: {
         } else {
             print "Work:\n";
             foreach my $line (@filteredWorkList) {
-                print "  $line\n";
+                my $timestamp = `stat -c %y ${WORK_DIR}/${line}`;
+                chomp $timestamp;
+                my $formattedTimestamp = `shortdate "${timestamp}"`;
+                chomp $formattedTimestamp;
+                $line =~ s/.txt$//g;
+                print "$formattedTimestamp: $line\n";
             }
         }
         print "\n";
@@ -179,7 +184,12 @@ MAIN: {
         } else {
             print "Promoted\n";
             foreach my $line (@filteredPromotedList) {
-                print "  $line\n";
+                my $timestamp = `stat -c %y ${PROMOTED_DIR}/${line}`;
+                chomp $timestamp;
+                my $formattedTimestamp = `shortdate "${timestamp}"`;
+                chomp $formattedTimestamp;
+                $line =~ s/.txt$//g;
+                print "$formattedTimestamp: $line\n";
             }
         }
         print "\n";
