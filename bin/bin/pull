@@ -88,9 +88,18 @@ MAIN: {
     chomp $toplevel;
     my $gitCommand = "git -C \"${toplevel}\" ";
 
-    # take care of outstanding changes
     my $cleanDirty = `status --format "%{cleandirty}"`;
     chomp($cleanDirty);
+
+    my $leftright = `status --format "%{leftright}"`;
+    chomp $leftright;
+
+    my $left = substr($leftright, 0, index($leftright, '-'));
+    my $hasOutstandingCommits = "false";
+    if ($left ne "" && $left > 0) {
+        $hasOutstandingCommits = "true";
+    }
+
     if ($cleanDirty ne "") {
         if (defined $a_force) {
             if (defined $a_verbose) {
@@ -103,10 +112,7 @@ MAIN: {
         }
     }
 
-    my $leftright = `status --format "%{leftright}"`;
-    chomp $leftright;
-    my $left = substr($leftright, 0, index($leftright, '-'));
-    if ($left ne "" && $left > 0) {
+    if ($hasOutstandingCommits eq "true") {
         print "warning: there are $left outstanding commits\n";
         if (!defined $a_dryRun) {
             print "ctrl-c to cancel...\n";
