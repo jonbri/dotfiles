@@ -94,10 +94,12 @@ MAIN: {
     my $commitMessage = $a_message;
     if (defined $firstArg) {
         $commitMessage = $firstArg;
+        $commitCommand .= " --message \"${commitMessage}\"";
     } elsif (!defined $commitMessage) {
       if (defined $a_amend) {
           $commitMessage = `${gitCommand} log -n 1 --pretty=format:%s HEAD`;
           chomp $commitMessage;
+          $commitCommand .= " --reuse-message=HEAD";
       } else {
           if (defined $EDITOR) {
               my $toplevel = `${gitCommand} rev-parse --show-toplevel`;
@@ -115,9 +117,9 @@ MAIN: {
           } else {
               $commitMessage .= "wip";
           }
+          $commitCommand .= " --message \"${commitMessage}\"";
       }
     }
-    $commitCommand .= " --message \"${commitMessage}\"";
 
     if (! defined $a_verify) {
         $commitCommand .= " --no-verify";
