@@ -146,6 +146,13 @@ MAIN: {
             }
             print `commit --stage --amend --quiet`;
         }
+
+        my $doubleCheck = `status --format '%{cleandirty}' -v`;
+        chomp $doubleCheck;
+        if ($doubleCheck =~ /\*/) {
+            print "commit failed\n";
+            exit 1;
+        }
     }
 
     # exit early if local option is given
