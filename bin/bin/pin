@@ -7,6 +7,7 @@ use Getopt::Long;
 my $a_force;
 my $a_dryRun;
 my $a_local;
+my $a_message;
 my $a_verbose;
 my $a_remote;
 my $a_help;
@@ -23,6 +24,7 @@ Options:
   --force   (-f) Skip confirmations
   --dry-run (-d) Just print command
   --local   (-l) Just stage and amend
+  --message (-m) Commit message
   --remote  (-r) Specify remote
   --verbose (-v) extra logging
   --help    (-h) See this message
@@ -66,6 +68,7 @@ MAIN: {
         'force' => \$a_force,
         'remote:s' => \$a_remote,
         'local' => \$a_local,
+        'message=s' => \$a_message,
         'verbose' => \$a_verbose,
     ) || (help() && exit 1);
 
@@ -132,10 +135,17 @@ MAIN: {
         }
         print `${gitCommand} status --short`;
 
-        if (! defined $a_force) {
-            confirm("amend and continue? ");
+        if (defined $a_message) {
+            if (! defined $a_force) {
+                confirm("commit and continue? ");
+            }
+            print `commit --stage --message "${a_message}" --quiet`;
+        } else {
+            if (! defined $a_force) {
+                confirm("amend and continue? ");
+            }
+            print `commit --stage --amend --quiet`;
         }
-        print `commit --stage --quiet --amend`;
     }
 
     # exit early if local option is given
@@ -167,7 +177,7 @@ MAIN: {
             print "$leftright\n";
         }
         if (! defined $a_dryRun) {
-            confirm("$command (press enter) ");
+            confirm("$command # press enter ");
         }
     }
 
