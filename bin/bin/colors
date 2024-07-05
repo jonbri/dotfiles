@@ -18,6 +18,7 @@ Options:
   --help (-h) See this message
 
 Colors:
+  random
   red
   green
   yellow
@@ -65,7 +66,9 @@ MAIN: {
 
     if ($firstArg) {
         my $color = $firstArg;
-        if ($color eq "red") {
+        if ($color eq "random") {
+            $color = int(rand(256));
+        } elsif ($color eq "red") {
             $color = 1;
         } elsif ($color eq "green") {
             $color = 2;
