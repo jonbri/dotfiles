@@ -11,6 +11,7 @@ my $a_conflict;
 my $a_release;
 my $a_empty;
 my $a_message;
+my $a_destroy;
 my $a_help;
 
 my $MAIN=`main`;
@@ -31,6 +32,7 @@ Options:
   --empty     (-e) create empty commit
   --conflict  (-c) create merge conflict
   --release   (-r) create release commit
+  --destroy   (-d) reset back to main
   --message   (-m) commit message to use
 
 EXAMPLES:
@@ -68,6 +70,7 @@ MAIN: {
         'release' => \$a_release,
         'empty' => \$a_empty,
         'message=s' => \$a_message,
+        'destroy' => \$a_destroy,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -88,6 +91,13 @@ MAIN: {
 
     my $timestamp = `shortdate`;
     chomp $timestamp;
+
+    if (defined $a_destroy) {
+        print `git reset .`;
+        print `git checkout .`;
+        print `git reset --hard origin/$MAIN`;
+        exit 0;
+    }
 
     if (defined $a_working) {
         if (!defined $EXISTING_FILE0) {
