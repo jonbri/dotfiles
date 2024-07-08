@@ -311,7 +311,7 @@ MAIN: {
             exit 1;
         }
 
-        confirm("rm ${path} ?");
+        confirm("rm ${path}? (press enter)");
         if (defined $a_verbose) {
             print "Removing ${path}...\n";
         }
