@@ -8,7 +8,7 @@ my $a_list;
 my $a_gui;
 my $a_write;
 my $a_show;
-my $a_move;
+my $a_promote;
 my $a_color;
 my $a_archive;
 my $a_delete;
@@ -63,7 +63,7 @@ USAGE:
 Options:
   --list     (-l) List files
   --gui      (-g) Open in graphical editor
-  --move     (-m) Move between work and promoted
+  --promote  (-p) Move between work and promoted
   --write    (-w) Save to desktop
   --show     (-s) Print to stdout
   --color    (-c) Vim color scheme
@@ -113,7 +113,7 @@ MAIN: {
         'gui:s' => \$a_gui,
         'write' => \$a_write,
         'show' => \$a_show,
-        'move' => \$a_move,
+        'promote' => \$a_promote,
         'color:s' => \$a_color,
         'archive' => \$a_archive,
         'delete' => \$a_delete,
@@ -263,7 +263,7 @@ MAIN: {
         exit 0;
     }
 
-    if (defined $a_move) {
+    if (defined $a_promote) {
         if (! -e $path) {
             print "File not found: ${path}\n";
             exit 1;
