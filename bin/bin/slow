@@ -18,11 +18,13 @@ USAGE:
   >> slow
 
 Options:
-  --delay (-d)
+  --delay (-d) # default speed based on input length
 
 EXAMPLES:
   >> slow foobar
-  >> slow foobar -d 0.5
+  >> slow foobar -d 1   # very slow
+  >> slow foobar -d 0.5 # slow
+  >> slow foobar -d 0.1 # fast
 
 HELP
 }

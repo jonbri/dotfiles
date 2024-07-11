@@ -25,9 +25,6 @@ mkdir -p $N_PREFIX
 export PATH=$N_PREFIX/bin:$PATH
 export PATH=/usr/local/go/bin:$PATH
 
-alias welcome="colors \"`buffaloes 1` \" --inline --color red && \
-    colors \"`buffaloes 1` \" --inline --color white && \
-    colors \"`buffaloes 1`\" --color blue --reset"
 alias beep="echo -e '\a'"
 alias c="clear"
 alias ll="ls -la"

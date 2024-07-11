@@ -1,0 +1,60 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+use Getopt::Long;
+
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+welcome - show welcome message
+
+USAGE:
+  >> welcome [options]
+
+Options:
+  --help    (-h) See this message
+
+EXAMPLES:
+  >> welcome
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help,
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my $welcomeWord = "buffalo";
+    my $red = `colors "${welcomeWord}" --inline --color red`;
+    chomp $red;
+    my $white = `colors "${welcomeWord}" --color white --reset --inline`;
+    chomp $white;
+    my $blue = `colors "${welcomeWord}" --color blue --reset --inline`;
+    chomp $blue;
+    my $welcomeText = "$red $white $blue";
+    chomp $welcomeText;
+
+    system("echo", $welcomeText);
+
+    exit 0;
+}
+
