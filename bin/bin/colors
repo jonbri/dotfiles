@@ -4,6 +4,10 @@ use strict;
 
 use Getopt::Long;
 
+my $a_all;
+my $a_color;
+my $a_reset;
+my $a_inline;
 my $a_help;
 
 sub help() {
@@ -12,10 +16,14 @@ sub help() {
 colors
 
 USAGE:
-  >> colors [options]
+  >> colors <text> [options]
 
 Options:
-  --help (-h) See this message
+  --all    (-a) Show all colors
+  --color  (-c) Color to show
+  --reset  (-r) Reset back to white
+  --inline (-i) No carriage-return
+  --help   (-h) See this message
 
 Colors:
   random
@@ -47,6 +55,10 @@ sub getFirstNonOptionArg {
 
 MAIN: {
     GetOptions(
+        'all' => \$a_all,
+        'color=s' => \$a_color,
+        'inline' => \$a_inline,
+        'reset' => \$a_reset,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -57,39 +69,55 @@ MAIN: {
         exit 1;
     }
 
+    my $escapeSequence = "\x1b[38;5;";
 
+    my $text = $firstArg;
     if (!defined $firstArg) {
-        for (my $i = 0; $i < 256; $i++) {
-            printf "\x1b[38;5;${i}mcolour${i}\n";
-        }
+        $text = "colour";
     }
 
-    if ($firstArg) {
-        my $color = $firstArg;
-        if ($color eq "random") {
-            $color = int(rand(256));
-        } elsif ($color eq "red") {
-            $color = 1;
-        } elsif ($color eq "green") {
-            $color = 2;
-        } elsif ($color eq "yellow") {
-            $color = 3;
-        } elsif ($color eq "blue") {
-            $color = 4;
-        } elsif ($color eq "magenta") {
-            $color = 5;
-        } elsif ($color eq "cyan") {
-            $color = 6;
-        } elsif ($color eq "white") {
-            $color = 7;
-        } elsif ($color eq "black") {
-            $color = 8;
-        } elsif ($color eq "orange") {
-            $color = 9;
+    if (defined $a_all) {
+        for (my $i = 0; $i < 256; $i++) {
+            printf "${escapeSequence}${i}m${text}${i}\n";
         }
-        if ($color =~ /^\d+$/) {
-            printf "\x1b[38;5;${color}mcolour${color}\n";
+        exit 0;
+    }
+
+    my $color = $a_color;
+    if (!defined $color) {
+        $color = int(rand(256));
+    } elsif ($color eq "red") {
+        $color = 1;
+    } elsif ($color eq "green") {
+        $color = 2;
+    } elsif ($color eq "yellow") {
+        $color = 3;
+    } elsif ($color eq "blue") {
+        $color = 4;
+    } elsif ($color eq "magenta") {
+        $color = 5;
+    } elsif ($color eq "cyan") {
+        $color = 6;
+    } elsif ($color eq "white") {
+        $color = 7;
+    } elsif ($color eq "black") {
+        $color = 8;
+    } elsif ($color eq "orange") {
+        $color = 9;
+    }
+    if ($color =~ /^\d+$/) {
+        printf "${escapeSequence}${color}m${text}";
+        if ($text eq "colour") {
+            print "${color}";
         }
+        if (!defined $a_inline) {
+            printf "\n";
+        }
+
+    }
+
+    if (defined $a_reset) {
+        printf "${escapeSequence}7m";
     }
 
     exit 0;
