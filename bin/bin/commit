@@ -94,8 +94,11 @@ MAIN: {
     my $commitMessage = $a_message;
     if (defined $firstArg) {
         $commitMessage = $firstArg;
+    }
+
+    if (defined $commitMessage) {
         $commitCommand .= " --message \"${commitMessage}\"";
-    } elsif (!defined $commitMessage) {
+    } else {
       if (defined $a_amend) {
           $commitMessage = `${gitCommand} log -n 1 --pretty=format:%s HEAD`;
           chomp $commitMessage;
