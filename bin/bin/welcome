@@ -15,7 +15,7 @@ USAGE:
   >> welcome [options]
 
 Options:
-  --help    (-h) See this message
+  --help (-h) See this message
 
 EXAMPLES:
   >> welcome
@@ -43,17 +43,9 @@ MAIN: {
         exit 1;
     }
 
-    my $welcomeWord = "buffalo";
-    my $red = `colors "${welcomeWord}" --inline --color red`;
-    chomp $red;
-    my $white = `colors "${welcomeWord}" --color white --reset --inline`;
-    chomp $white;
-    my $blue = `colors "${welcomeWord}" --color blue --reset --inline`;
-    chomp $blue;
-    my $welcomeText = "$red $white $blue";
-    chomp $welcomeText;
-
-    system("echo", $welcomeText);
+    my $text = `colors "the |buffalo |bills" --color "red|white|blue" --reset --inline`;
+    chomp $text;
+    system("echo", $text);
 
     exit 0;
 }

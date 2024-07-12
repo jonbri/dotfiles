@@ -10,37 +10,37 @@ my $a_reset;
 my $a_inline;
 my $a_help;
 
+my $escapeSequence = "\x1b[38;5;";
+my $defaultText = "colour";
+
 sub help() {
     print STDOUT <<'HELP';
 
 colors
 
 USAGE:
-  >> colors <text> [options]
+  >> colors [<text>] [options]
 
-Options:
+OPTIONS:
   --all    (-a) Show all colors
-  --color  (-c) Color to show
+  --color  (-c) Color(s) to use ("|" delimited)
   --reset  (-r) Reset back to white
   --inline (-i) No carriage-return
   --help   (-h) See this message
 
-Colors:
-  random
-  red
-  green
-  yellow
-  blue
-  magenta
-  cyan
-  white
-  black
-  orange
-
 EXAMPLES:
-  >> colors
-  >> colors red
-  >> colors 100
+  >> colors       # show available semantic colors
+  >> colors --all # see all colors
+  >>
+  >> # when printing text, by default a random color will be used
+  >> colors "buffalo"
+  >> colors "buffalo" --reset     # reset back to white
+  >> colors "the |buffalo |bills" # random color for each word
+  >>
+  >> # use --color to specify "|" delimited colors
+  >> colors "buffalo" --color red
+  >> colors "buffalo" --color 100 # specific color (see --all)
+  >> colors "the |buffalo |bills" --color "red|white|blue"
 
 HELP
 }
@@ -53,38 +53,9 @@ sub getFirstNonOptionArg {
     return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
 }
 
-MAIN: {
-    GetOptions(
-        'all' => \$a_all,
-        'color=s' => \$a_color,
-        'inline' => \$a_inline,
-        'reset' => \$a_reset,
-        'help' => \$a_help
-    ) || (help() && exit 1);
-
-    # show help if either arg or option is given
-    my $firstArg = getFirstNonOptionArg();
-    if (($firstArg && $firstArg eq "help") || defined $a_help) {
-        help();
-        exit 1;
-    }
-
-    my $escapeSequence = "\x1b[38;5;";
-
-    my $text = $firstArg;
-    if (!defined $firstArg) {
-        $text = "colour";
-    }
-
-    if (defined $a_all) {
-        for (my $i = 0; $i < 256; $i++) {
-            printf "${escapeSequence}${i}m${text}${i}\n";
-        }
-        exit 0;
-    }
-
-    my $color = $a_color;
-    if (!defined $color) {
+sub getColor  {
+    my $color = $_[0];
+    if (!defined $color || $color eq "random") {
         $color = int(rand(256));
     } elsif ($color eq "red") {
         $color = 1;
@@ -105,15 +76,82 @@ MAIN: {
     } elsif ($color eq "orange") {
         $color = 9;
     }
-    if ($color =~ /^\d+$/) {
+    return $color;
+}
+
+
+MAIN: {
+    GetOptions(
+        'all' => \$a_all,
+        'color=s' => \$a_color,
+        'inline' => \$a_inline,
+        'reset' => \$a_reset,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if (defined $a_all) {
+        for (my $i = 0; $i < 256; $i++) {
+            printf "${escapeSequence}${i}mcolour${i}\n";
+        }
+        exit 0;
+    }
+
+    if (!defined $firstArg && !defined $a_color) {
+        printf "${escapeSequence}1mred (1)\n";
+        printf "${escapeSequence}2mgreen (2)\n";
+        printf "${escapeSequence}3myellow (3)\n";
+        printf "${escapeSequence}4mblue (4)\n";
+        printf "${escapeSequence}5mmagenta (5)\n";
+        printf "${escapeSequence}6mcyan (6)\n";
+        printf "${escapeSequence}7mwhite (7)\n";
+        printf "${escapeSequence}8mblack (8)\n";
+        printf "${escapeSequence}9morange (9)\n";
+
+        # reset
+        printf "${escapeSequence}7m"; # TODO: function
+        my $random_color = int(rand(256));
+        printf "random: ${escapeSequence}${random_color}m${random_color}\n";
+
+        # reset
+        printf "${escapeSequence}7m"; # TODO: function
+        exit 0;
+    }
+
+    my $text = $firstArg;
+    if (!defined $text) {
+        $text = $defaultText;
+    }
+
+    if ($text =~ /\|/) {
+        my @texts = split(/\|/, $text);
+        my $count = 0;
+        my $color_input = $a_color;
+        if (!defined $color_input) {
+            $color_input = "random";
+        }
+        foreach my $t (@texts) {
+            my @colors = split(/\|/, $color_input);
+            my $color = getColor($colors[$count]);
+            printf "${escapeSequence}${color}m${t}";
+            $count++;
+        }
+    } else {
+        my $color = getColor($a_color);
         printf "${escapeSequence}${color}m${text}";
         if ($text eq "colour") {
             print "${color}";
         }
-        if (!defined $a_inline) {
-            printf "\n";
-        }
+    }
 
+    if (!defined $a_inline) {
+        print "\n";
     }
 
     if (defined $a_reset) {
