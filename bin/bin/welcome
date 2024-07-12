@@ -43,7 +43,7 @@ MAIN: {
         exit 1;
     }
 
-    my $text = `colors "the |buffalo |bills" --color "red|white|blue" --reset --inline`;
+    my $text = `colors "the |buffalo |bills" --color "red|white|blue" --inline`;
     chomp $text;
     system("echo", $text);
 

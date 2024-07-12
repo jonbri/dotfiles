@@ -6,7 +6,7 @@ use Getopt::Long;
 
 my $a_all;
 my $a_color;
-my $a_reset;
+my $a_keep;
 my $a_inline;
 my $a_help;
 
@@ -24,7 +24,7 @@ USAGE:
 OPTIONS:
   --all    (-a) Show all colors
   --color  (-c) Color(s) to use ("|" delimited)
-  --reset  (-r) Reset back to white
+  --keep   (-k) Do not reset back to white
   --inline (-i) No carriage-return
   --help   (-h) See this message
 
@@ -34,7 +34,7 @@ EXAMPLES:
   >>
   >> # when printing text, by default a random color will be used
   >> colors "buffalo"
-  >> colors "buffalo" --reset     # reset back to white
+  >> colors "buffalo" --keep      # terminal will remain in color
   >> colors "the |buffalo |bills" # random color for each word
   >>
   >> # use --color to specify "|" delimited colors
@@ -51,6 +51,10 @@ sub getFirstNonOptionArg {
         return;
     }
     return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+sub resetColor {
+    printf "${escapeSequence}7m";
 }
 
 sub getColor  {
@@ -85,7 +89,7 @@ MAIN: {
         'all' => \$a_all,
         'color=s' => \$a_color,
         'inline' => \$a_inline,
-        'reset' => \$a_reset,
+        'keep' => \$a_keep,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -114,13 +118,11 @@ MAIN: {
         printf "${escapeSequence}8mblack (8)\n";
         printf "${escapeSequence}9morange (9)\n";
 
-        # reset
-        printf "${escapeSequence}7m"; # TODO: function
+        resetColor();
         my $random_color = int(rand(256));
         printf "random: ${escapeSequence}${random_color}m${random_color}\n";
 
-        # reset
-        printf "${escapeSequence}7m"; # TODO: function
+        resetColor();
         exit 0;
     }
 
@@ -154,8 +156,8 @@ MAIN: {
         print "\n";
     }
 
-    if (defined $a_reset) {
-        printf "${escapeSequence}7m";
+    if (!defined $a_keep) {
+        resetColor();
     }
 
     exit 0;
