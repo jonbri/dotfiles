@@ -6,6 +6,7 @@ use Getopt::Long;
 
 my $a_all;
 my $a_color;
+my $a_every;
 my $a_keep;
 my $a_inline;
 my $a_help;
@@ -25,6 +26,7 @@ OPTIONS:
   --all    (-a) Show all colors
   --color  (-c) Color(s) to use ("|" delimited)
   --keep   (-k) Do not reset back to white
+  --every  (-e) Switch color after every character
   --inline (-i) No carriage-return
   --help   (-h) See this message
 
@@ -89,6 +91,7 @@ MAIN: {
         'all' => \$a_all,
         'color=s' => \$a_color,
         'inline' => \$a_inline,
+        'every' => \$a_every,
         'keep' => \$a_keep,
         'help' => \$a_help
     ) || (help() && exit 1);
@@ -129,6 +132,10 @@ MAIN: {
     my $text = $firstArg;
     if (!defined $text) {
         $text = $defaultText;
+    }
+
+    if (defined $a_every) {
+        $text = join("|", split(//, $text));
     }
 
     if ($text =~ /\|/) {
