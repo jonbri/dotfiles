@@ -14,6 +14,7 @@ fi
 
 export DOTFILES_DIR=${HOME}/dotfiles
 export BINBIN=${DOTFILES_DIR}/bin/bin
+export LCL=${BINBIN}
 export DOTFILES_TMP=${DOTFILES_DIR}/tmp
 export TMUX_BUFFER=/tmp/_tmux-buffer.txt
 export WIN_HOME="/mnt/c/Users/${USER}"
