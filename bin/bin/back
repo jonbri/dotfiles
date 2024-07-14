@@ -1,0 +1,83 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+$| = 1;
+
+use Getopt::Long;
+
+my $a_inline;
+my $a_delay;
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+back - go back characters in the terminal output
+
+USAGE:
+  >> back [options]
+
+Options:
+  --inline (-i) No carriage return at the end of the output
+  --delay  (-d) Delay in ms between each backspace
+  --help   (-h) See this message
+
+EXAMPLES:
+  >> back 3 # go back 3 characters
+  >> echo -n "disappear" | back 9
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'inline' => \$a_inline,
+        'delay=s' => \$a_delay,
+        'help' => \$a_help,
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    # if $firstArg is not a number, set to 0
+    if (!defined $firstArg || $firstArg !~ /^\d+$/) {
+        $firstArg = 0;
+    }
+
+    if (defined $a_delay) {
+        $a_delay = $a_delay / 1000;
+    }
+
+    # print backspaces and spaces
+    for (my $i = 0; $i < $firstArg; $i++) {
+        if (defined $a_delay) {
+           select(undef, undef, undef, $a_delay);
+        }
+        for (my $j = 0; $j < $i + 1; $j++) {
+            print "\b";
+        }
+        for (my $j = 0; $j < $i + 1; $j++) {
+            print " ";
+        }
+    }
+
+    if (!defined $a_inline) {
+        print "\n";
+    }
+
+    exit 0;
+}
+
