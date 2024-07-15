@@ -68,7 +68,7 @@ MAIN: {
     }
 
     my $dateFormat = "%Y-%m-%d";
-    my $timeFormat = "%I:%M:%S";
+    my $timeFormat = "%R:%S";
     my $formatString = "${dateFormat}${separator}${timeFormat}";
     if (defined $a_date || defined $a_time) {
         $formatString = "";
