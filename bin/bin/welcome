@@ -43,7 +43,23 @@ MAIN: {
         exit 1;
     }
 
-    my $text = `colors "the |buffalo |bills" --color "red|white|blue" --inline`;
+    my $date = `shortdate`;
+    chomp $date;
+    my $text = `colors "$date" --color yellow --inline`;
+    chomp $text;
+    system("echo", $text);
+
+    my $football =  <<'END';
+   _.-=""=-._
+ .'\\-++++-//'.
+(  ||      ||  )
+ './/      \\.'
+   `'-=..=-'`
+END
+
+    print $football;
+
+    $text = `colors "the |buffalo |bills" --color "red|white|blue" --inline`;
     chomp $text;
     system("echo", $text);
 
