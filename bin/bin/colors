@@ -26,7 +26,7 @@ OPTIONS:
   --all    (-a) Show all colors
   --color  (-c) Color(s) to use ("|" delimited)
   --keep   (-k) Do not reset back to white
-  --every  (-e) Switch color after every character
+  --every  (-e) Switch color after every w(word), c(char)
   --inline (-i) No carriage-return
   --help   (-h) See this message
 
@@ -43,6 +43,7 @@ EXAMPLES:
   >> colors "buffalo" --color red
   >> colors "buffalo" --color 100 # specific color (see --all)
   >> colors "the |buffalo |bills" --color "red|white|blue"
+  >> colors "the |buffalo |bills" --every w # random colors per-word
 
 HELP
 }
@@ -91,7 +92,7 @@ MAIN: {
         'all' => \$a_all,
         'color=s' => \$a_color,
         'inline' => \$a_inline,
-        'every' => \$a_every,
+        'every:s' => \$a_every,
         'keep' => \$a_keep,
         'help' => \$a_help
     ) || (help() && exit 1);
@@ -135,7 +136,11 @@ MAIN: {
     }
 
     if (defined $a_every) {
-        $text = join("|", split(//, $text));
+        if ($a_every eq "w") {
+            $text = join("| ", split(/\s+/, $text));
+        } else {
+            $text = join("|", split(//, $text));
+        }
     }
 
     if ($text =~ /\|/) {

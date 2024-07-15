@@ -15,7 +15,6 @@ my $ascii =  <<'END';
    `'-=..=-'`
 END
 
-
 sub help() {
     print STDOUT <<'HELP';
 
@@ -65,7 +64,7 @@ MAIN: {
         print $ascii;
     }
 
-    my $text = `colors "the |buffalo |bills" --color "red|white|blue" --inline`;
+    my $text = `colors "the buffalo bills" --color "red|white|blue" --every w --inline`;
     chomp $text;
     system("echo", $text);
 
