@@ -4,7 +4,17 @@ use strict;
 
 use Getopt::Long;
 
+my $a_long;
 my $a_help;
+
+my $ascii =  <<'END';
+   _.-=""=-._
+ .'\\-++++-//'.
+(  ||      ||  )
+ './/      \\.'
+   `'-=..=-'`
+END
+
 
 sub help() {
     print STDOUT <<'HELP';
@@ -15,10 +25,12 @@ USAGE:
   >> welcome [options]
 
 Options:
+  --long (-l) Show a longer welcome message
   --help (-h) See this message
 
 EXAMPLES:
   >> welcome
+  >> welcome --long
 
 HELP
 }
@@ -33,6 +45,7 @@ sub getFirstNonOptionArg {
 
 MAIN: {
     GetOptions(
+        'long' => \$a_long,
         'help' => \$a_help,
     ) || (help() && exit 1);
 
@@ -43,23 +56,16 @@ MAIN: {
         exit 1;
     }
 
-    my $date = `shortdate`;
-    chomp $date;
-    my $text = `colors "$date" --color yellow --inline`;
-    chomp $text;
-    system("echo", $text);
+    if ($a_long) {
+        my $date = `shortdate`;
+        chomp $date;
+        my $dateText = `colors "$date" --color yellow --inline`;
+        chomp $dateText;
+        system("echo", $dateText);
+        print $ascii;
+    }
 
-    my $football =  <<'END';
-   _.-=""=-._
- .'\\-++++-//'.
-(  ||      ||  )
- './/      \\.'
-   `'-=..=-'`
-END
-
-    print $football;
-
-    $text = `colors "the |buffalo |bills" --color "red|white|blue" --inline`;
+    my $text = `colors "the |buffalo |bills" --color "red|white|blue" --inline`;
     chomp $text;
     system("echo", $text);
 
