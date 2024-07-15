@@ -124,7 +124,7 @@ MAIN: {
 
         resetColor();
         my $random_color = int(rand(256));
-        printf "random: ${escapeSequence}${random_color}m${random_color}\n";
+        printf "${escapeSequence}${random_color}mrandom (${random_color})\n";
 
         resetColor();
         exit 0;
