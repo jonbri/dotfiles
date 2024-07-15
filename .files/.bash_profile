@@ -270,5 +270,5 @@ export LIBGL_ALWAYS_INDIRECT=1
 export BUN_INSTALL="$HOME/.bun"
 export PATH=$BUN_INSTALL/bin:$PATH
 
-welcome
+welcome --quiet
 

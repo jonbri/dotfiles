@@ -4,6 +4,7 @@ use strict;
 
 use Getopt::Long;
 
+my $a_quiet;
 my $a_long;
 my $a_help;
 
@@ -24,8 +25,9 @@ USAGE:
   >> welcome [options]
 
 Options:
-  --long (-l) Show a longer welcome message
-  --help (-h) See this message
+  --long  (-l) Show a longer welcome message
+  --quiet (-q) Don't show the welcome message
+  --help  (-h) See this message
 
 EXAMPLES:
   >> welcome
@@ -44,6 +46,7 @@ sub getFirstNonOptionArg {
 
 MAIN: {
     GetOptions(
+        'quiet' => \$a_quiet,
         'long' => \$a_long,
         'help' => \$a_help,
     ) || (help() && exit 1);
@@ -53,6 +56,10 @@ MAIN: {
     if (($firstArg && $firstArg eq "help") || defined $a_help) {
         help();
         exit 1;
+    }
+
+    if ($a_quiet) {
+        exit 0;
     }
 
     if ($a_long) {

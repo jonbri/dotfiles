@@ -50,6 +50,6 @@ MAIN: {
     }
 
     print "\nDone\n";
-    print join('', runCommand("welcome"));
+    print join('', runCommand("welcome --quiet"));
 }
 
