@@ -247,7 +247,7 @@ alias prod-app="cd /root/icecoldnugrape && pull -f && yarn && yarn build && serv
 
 alias htdocs="cd /mnt/c/Apache*/htdocs && persona work"
 
-alias zed="export DISPLAY=:0 && WAYLAND_DISPLAY='' ~/.local/zed.app/bin/zed --foreground"
+alias zed="export DISPLAY=:0 && WAYLAND_DISPLAY='' ~/.local/zed.app/bin/zed . --foreground &"
 
 nfast() {
   ticker-install
