@@ -249,6 +249,8 @@ alias htdocs="cd /mnt/c/Apache*/htdocs && persona work"
 
 alias zed="export DISPLAY=:0 && WAYLAND_DISPLAY='' ~/.local/zed.app/bin/zed . --foreground &"
 alias z="zed"
+alias chrome="export DISPLAY=:0 && WAYLAND_DISPLAY='' chromium-browser"
+alias grapewww="chrome 'https://www.icecoldnugrape.com'"
 
 nfast() {
   ticker-install
