@@ -21,7 +21,6 @@ if not vim.g.vscode then -- in terminal
   Plug 'tpope/vim-scriptease'
   Plug 'tpope/vim-repeat'
   Plug 'tpope/vim-surround'
-  Plug 'monaqa/dial.nvim'
   Plug 'tpope/vim-eunuch'
   Plug 'tpope/vim-dispatch'
   Plug 'tpope/vim-abolish'
