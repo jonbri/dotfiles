@@ -167,7 +167,7 @@ MAIN: {
                 my $formattedTimestamp = `shortdate "${timestamp}" --date`;
                 chomp $formattedTimestamp;
                 $line =~ s/.txt$//g;
-                print "  $formattedTimestamp: $line\n";
+                print "  $formattedTimestamp $line\n";
             }
         }
         print "\n";
@@ -189,7 +189,7 @@ MAIN: {
                 my $formattedTimestamp = `shortdate "${timestamp}" --date`;
                 chomp $formattedTimestamp;
                 $line =~ s/.txt$//g;
-                print "  $formattedTimestamp: $line\n";
+                print "  $formattedTimestamp $line\n";
             }
         }
         print "\n";
