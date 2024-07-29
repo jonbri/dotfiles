@@ -49,10 +49,12 @@ MAIN: {
         exit 1;
     }
 
+    my $gitStatusCommand = "status --format '%{branch} %{leftright}%{cleandirty}'";
     my $nodeVersionCommand = "node --version | nth -c 1-50";
     my $neovimVersionCommand = "nvim --version | nth -c 6-50 0";
     my $gitVersionCommand = "git --version | nth -c 12-50";
     my @output = (
+      `$gitStatusCommand`,
       "node@".`$nodeVersionCommand`,
       "neovim@".`$neovimVersionCommand`,
       "git@".`$gitVersionCommand`
@@ -60,6 +62,7 @@ MAIN: {
 
     if (!defined $a_dynamic) {
       foreach(@output) {
+          chomp;
           print "$_\n";
       }
       exit 0;
