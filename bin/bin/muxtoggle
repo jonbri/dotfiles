@@ -7,8 +7,8 @@ use Getopt::Long;
 my $a_dynamic;
 my $a_help;
 
-my $DYNAMIC_STATUS_CONTROL_VALUE="0";
-my $KEY = "DYNAMIC_STATUS_CONTROL";
+my $MUX_TOGGLE="0";
+my $KEY = "MUX_TOGGLE";
 my $SPACE="  ";
 
 sub help() {
@@ -17,7 +17,7 @@ sub help() {
 toolversions
 
 Options:
-  --dynamic (-d) use DYANMIC_STATUS_CONTROL
+  --dynamic (-d) use MUX_TOGGLE
   --help    (-h) See this message
 
 EXAMPLES:
@@ -52,12 +52,10 @@ MAIN: {
     my $gitStatusCommand = "status --format '%{branch} %{leftright}%{cleandirty}'";
     my $nodeVersionCommand = "node --version | nth -c 1-50";
     my $neovimVersionCommand = "nvim --version | nth -c 6-50 0";
-    my $gitVersionCommand = "git --version | nth -c 12-50";
     my @output = (
       `$gitStatusCommand`,
       "node@".`$nodeVersionCommand`,
-      "neovim@".`$neovimVersionCommand`,
-      "git@".`$gitVersionCommand`
+      "neovim@".`$neovimVersionCommand`
     );
 
     if (!defined $a_dynamic) {
@@ -68,19 +66,19 @@ MAIN: {
       exit 0;
     }
 
-    $DYNAMIC_STATUS_CONTROL_VALUE=`increment $KEY --show`;
-    chomp $DYNAMIC_STATUS_CONTROL_VALUE;
+    $MUX_TOGGLE=`increment $KEY --show`;
+    chomp $MUX_TOGGLE;
 
     my $mod = scalar (@output) + 1;
-    $DYNAMIC_STATUS_CONTROL_VALUE = $DYNAMIC_STATUS_CONTROL_VALUE % $mod;
+    $MUX_TOGGLE = $MUX_TOGGLE % $mod;
 
     my $OUT="";
-    if ($DYNAMIC_STATUS_CONTROL_VALUE eq "0" ) {
+    if ($MUX_TOGGLE eq "0" ) {
       foreach(@output) {
           $OUT="${OUT}$_${SPACE}";
       }
     } else {
-        $OUT=$output[$DYNAMIC_STATUS_CONTROL_VALUE - 1];
+        $OUT=$output[$MUX_TOGGLE - 1];
     }
 
     $OUT =~ s/@//g;
