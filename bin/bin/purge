@@ -303,6 +303,7 @@ MAIN: {
         exit 0;
     }
 
+    my @alreadyAskedAbout = ();
     foreach (@localBranches) {
         chomp;
         my $branch = $_;
@@ -310,6 +311,7 @@ MAIN: {
         incrementCount();
         if (! defined $a_force && grep(/^$a_remote\/$branch$/, @remoteBranches)) {
             deleteRemoteBranch("$branch", generatePrefix());
+            push(@alreadyAskedAbout, "$a_remote/$branch");
             incrementCount();
         }
     }
@@ -320,6 +322,11 @@ MAIN: {
     @remoteBranches = grep(!/^$a_remote\/main$/, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/create-pull-request\/patch$/, @remoteBranches);
     @remoteBranches = grep(!/^$a_remote\/$currentBranch$/, @remoteBranches);
+
+    foreach (@alreadyAskedAbout) {
+        my $branchToExclude = $_;
+        @remoteBranches = grep(!/^$branchToExclude$/, @remoteBranches);
+    }
 
     if (!defined $a_everyone) {
         @remoteBranches = grep(/$a_user/, @remoteBranches);
