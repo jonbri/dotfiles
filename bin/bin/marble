@@ -160,14 +160,14 @@ MAIN: {
         if (scalar(@filteredWorkList) == 0) {
             print "Work: (none)\n";
         } else {
-            print "Work:\n";
+            print "\nWork:\n";
             foreach my $line (@filteredWorkList) {
                 my $timestamp = `stat -c %y ${WORK_DIR}/${line}`;
                 chomp $timestamp;
                 my $formattedTimestamp = `shortdate "${timestamp}" --date`;
                 chomp $formattedTimestamp;
                 $line =~ s/.txt$//g;
-                print "  $formattedTimestamp $line\n";
+                print "$formattedTimestamp $line\n";
             }
         }
         print "\n";
@@ -182,14 +182,14 @@ MAIN: {
         if (scalar(@filteredPromotedList) == 0) {
             print "Promoted: (none)\n";
         } else {
-            print "Promoted\n";
+            print "Promoted:\n";
             foreach my $line (@filteredPromotedList) {
                 my $timestamp = `stat -c %y ${PROMOTED_DIR}/${line}`;
                 chomp $timestamp;
                 my $formattedTimestamp = `shortdate "${timestamp}" --date`;
                 chomp $formattedTimestamp;
                 $line =~ s/.txt$//g;
-                print "  $formattedTimestamp $line\n";
+                print "$formattedTimestamp $line\n";
             }
         }
         print "\n";
