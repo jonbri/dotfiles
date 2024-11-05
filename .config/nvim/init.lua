@@ -46,6 +46,7 @@ if not vim.g.vscode then -- in terminal
   if name == "t14\n" or name == "t480s\n" or name == "wsl\n" then Plug 'github/copilot.vim' end
   vim.call('plug#end');
 
+  vim.keymap.set("n", "<leader>c", ":quit<CR>", {})
   vim.keymap.set("n", "<leader>bo", ":BufOnly<CR>", {})
   vim.keymap.set("n", "<leader>e", ":windo edit<CR>", {})
   vim.keymap.set("n", "gb", ":ls<CR>:b<Space>", {})
