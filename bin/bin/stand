@@ -6,6 +6,7 @@ use Getopt::Long;
 
 my $a_targets;
 my $a_root;
+my $a_port;
 my $a_help;
 
 my @defaultTargets = ("storybook", "dev", "start");
@@ -21,6 +22,7 @@ USAGE:
 Options:
   --targets (-t) List of targets
   --root    (-r) Run from project root
+  --port    (-p) Specify port
   --help    (-h) See this message
 
 EXAMPLES:
@@ -43,6 +45,7 @@ MAIN: {
     GetOptions(
         'targets=s' => \$a_targets,
         'root' => \$a_root,
+        'port=s' => \$a_port,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -95,7 +98,11 @@ MAIN: {
     my @scripts = split("\n", $jqOutput);
     foreach my $target (@targets) {
         if (doesArrayContain($target, @scripts)) {
-            print "$target\n";
+            if (defined $a_port) {
+              print "$target --port ${a_port}\n";
+            } else {
+              print "$target\n";
+            }
             exit 0;
         }
     }
