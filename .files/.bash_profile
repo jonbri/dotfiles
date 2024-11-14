@@ -257,6 +257,8 @@ alias z="zed"
 alias chrome="export DISPLAY=:0 && WAYLAND_DISPLAY='' chromium-browser"
 alias grapewww="chrome 'https://www.icecoldnugrape.com'"
 
+alias ysp="ys --port=5179"
+
 nfast() {
   ticker-install
 
