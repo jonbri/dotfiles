@@ -1,0 +1,78 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+use Getopt::Long;
+
+my $a_command;
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+njust-args - Run individual jest tests
+
+USAGE:
+  >> njust-args [args]
+
+Options:
+  --command (-c) only print out command
+  --help    (-h)
+
+EXAMPLES:
+  >> njust-args foo
+  >> njust-args foo bar
+
+HELP
+}
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+sub clearScreen {
+    print "\033[2J";
+    print "\033[0;0H";
+}
+
+MAIN: {
+    GetOptions(
+        'command' => \$a_command,
+        'help' => \$a_help,
+    ) || (help() && exit 1);
+
+    if (defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    $| = 1;
+
+    my @specArgs = map { "\"_/$_.spec\"" } @ARGV;
+    my $arg = join(" ", @specArgs);
+
+    # extract all scripts in package.json using `jq`
+    my $packageJson = `cat package.json`;
+    chomp $packageJson;
+    my @scripts = `echo '$packageJson' | jq -r '.scripts | keys[]'`;
+    my $script = `echo '$packageJson' | jq -r '.scripts | keys[]' | grep -E 'test:.*n.*com.*ns\$'`;
+    chomp $script;
+    my $command = "DEBUG_PRINT_LIMIT=100000 yarn $script $arg --watch";
+
+    if (defined $a_command) {
+        print "$command\n";
+        exit 0;
+    }
+
+    clearScreen();
+    print "$command\n";
+    my @results = runCommand($command);
+    print @results;
+
+    exit 0;
+}
+
