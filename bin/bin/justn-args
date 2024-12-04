@@ -10,18 +10,18 @@ my $a_help;
 sub help() {
     print STDOUT <<'HELP';
 
-njust-args - Run individual jest tests
+justn-args - Run individual jest tests
 
 USAGE:
-  >> njust-args [args]
+  >> justn-args [args]
 
 Options:
   --command (-c) only print out command
   --help    (-h)
 
 EXAMPLES:
-  >> njust-args foo
-  >> njust-args foo bar
+  >> justn-args foo
+  >> justn-args foo bar
 
 HELP
 }
