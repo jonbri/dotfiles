@@ -191,6 +191,7 @@ MAIN: {
             print "no match\n";
             exit 1;
         } elsif (scalar @grepResults > 1) {
+            print "multiple matches found:\n";
             foreach (@grepResults) {
                 my @s = split('/', $_);
                 print "$s[2]";
