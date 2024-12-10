@@ -8,6 +8,7 @@ use Getopt::Long;
 my $a_full;
 my $a_short;
 my $a_poll;
+my $a_dir;
 my $a_help;
 
 my $count = 0;
@@ -24,12 +25,14 @@ Options:
   --full  (-f) show full "yarn why" output
   --short (-s) only show version number
   --poll  (-p) doesn't work with --full
+  --dir   (-d) specify directory
   --help  (-h)
 
 EXAMPLES:
   >> why react
   >> why react react-dom
   >> why react -s # -> 18.2.0
+  >> why react typescript -d ~/project
 
 HELP
 }
@@ -53,6 +56,7 @@ MAIN: {
         'full' => \$a_full,
         'short' => \$a_short,
         'poll' => \$a_poll,
+        'dir=s' => \$a_dir,
     ) || (help() && exit 1);
 
     if (defined $a_help) {
@@ -62,12 +66,17 @@ MAIN: {
 
     my @args = @ARGV;
 
+    my $dir = $a_dir;
+    if (!defined $dir) {
+        $dir = "./";
+    }
+
     if (defined $a_full) {
         foreach my $arg (@args) {
             if (scalar @args > 1) {
                 print "$arg\n";
             }
-            my @whyResults = runCommand("yarn why $arg");
+            my @whyResults = runCommand("yarn --cwd $dir why $arg");
             print(@whyResults);
             if (scalar @args > 1 && $arg ne $args[-1]) {
                 print "\n";
@@ -86,7 +95,7 @@ MAIN: {
                 $result .= "@";
             }
 
-            my @whyResults = runCommand("yarn why $arg");
+            my @whyResults = runCommand("yarn --cwd $dir why $arg");
             my $version = join("", grep(/Found/, @whyResults));
 
             if ($version eq "") {
