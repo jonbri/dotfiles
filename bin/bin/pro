@@ -79,8 +79,8 @@ MAIN: {
     }
 
     print "installing projections...\n";
-    `ln -sf ${PROJECTIONS_DIR}/fui/.projections.json ${HOME}/d*-s*-f*-ui/.projections.json`;
-    `ln -sf ${PROJECTIONS_DIR}/fui/.projections.json ${HOME}/b/d*-s*-f*-ui/.projections.json`;
+    `ln -sf ${PROJECTIONS_DIR}/f*i/.projections.json ${HOME}/d*-s*-f*-ui/.projections.json`;
+    `ln -sf ${PROJECTIONS_DIR}/f*i/.projections.json ${HOME}/b/d*-s*-f*-ui/.projections.json`;
     `ln -sf ${PROJECTIONS_DIR}/site/.projections.json ${HOME}/d*-s*-site/.projections.json`;
     `ln -sf ${PROJECTIONS_DIR}/site/.projections.json ${HOME}/b/d*-s*-site/.projections.json`;
     print "done\n";

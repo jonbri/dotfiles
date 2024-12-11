@@ -1,27 +1,27 @@
 #!/bin/bash
 
 SITE="$HOME/d*-s*-site";
-FUI="$HOME/d*-s*-f*-ui";
+UI="$HOME/d*-s*-f*-ui";
 SITE_DOCGEN="$SITE/node_modules/@s*s/f*-ui/docgen"
-FUI_DOCGEN="$FUI/build/docgen"
-FUI_COMPONENTS="${FUI_DOCGEN}/components";
+UI_DOCGEN="$UI/build/docgen"
+UI_COMPONENTS="${UI_DOCGEN}/components";
 SITE_COMPONENTS="${SITE_DOCGEN}/components";
 
-cd $FUI
+cd $UI
 yarn build
 yarn docgen
 
-# copy FUI docgen to site
+# copy UI docgen to site
 rm -Rf $SITE_DOCGEN
-cp -R $FUI_DOCGEN $SITE_DOCGEN
+cp -R $UI_DOCGEN $SITE_DOCGEN
 rm -Rf $SITE/.next
 
-# format FUI docgen
-for path in $FUI_COMPONENTS/*; do
+# format UI docgen
+for path in $UI_COMPONENTS/*; do
   filename=$(basename $path)
   echo "formatting $filename..."
-  FILE="${FUI_COMPONENTS}/${filename}";
-  FILE_FORMATTED="${FUI_COMPONENTS}/${filename}.formatted";
+  FILE="${UI_COMPONENTS}/${filename}";
+  FILE_FORMATTED="${UI_COMPONENTS}/${filename}.formatted";
   python -m json.tool "$FILE" > "$FILE_FORMATTED"
   cat "$FILE_FORMATTED" > "$FILE"
   rm "$FILE_FORMATTED"
