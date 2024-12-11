@@ -49,11 +49,9 @@ MAIN: {
         exit 1;
     }
 
-    my $gitStatusCommand = "status --format '%{branch} %{leftright}%{cleandirty}'";
     my $nodeVersionCommand = "node --version | nth -c 1-50";
     my $neovimVersionCommand = "nvim --version | nth -c 6-50 0";
     my @output = (
-      `$gitStatusCommand`,
       "node@".`$nodeVersionCommand`,
       "neovim@".`$neovimVersionCommand`
     );
