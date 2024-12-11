@@ -315,6 +315,7 @@ MAIN: {
         if (defined $a_verbose) {
             print "Removing ${path}...\n";
         }
+        sleep 2;
         `rm ${path}`;
         print "Removed\n";
         exit 0;
