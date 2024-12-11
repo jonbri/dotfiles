@@ -4,6 +4,11 @@ export GIT_EDITOR=$EDITOR
 export PATH=~/bin:$PATH
 export HISTFILESIZE=5000
 
+export NODE_OPTIONS="--max-old-space-size=5120" # 5 GB
+# export NODE_OPTIONS="--max-old-space-size=6144" # 6 GB
+# export NODE_OPTIONS="--max-old-space-size=7168" # 7 GB
+# export NODE_OPTIONS="--max-old-space-size=8192" # 8 GB
+
 export NC_CACHE_FILE="${HOME}/.nc"
 if [ -f $NC_CACHE_FILE ]; then
   export NC=`cat $NC_CACHE_FILE`
