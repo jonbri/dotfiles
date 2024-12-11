@@ -10,6 +10,7 @@ my %places=();
 my $a_add;
 my $a_edit;
 my $a_name;
+my $a_sand;
 my $a_list;
 my $a_quiet;
 my $a_fix;
@@ -159,6 +160,7 @@ MAIN: {
         'add=s' => \$a_add,
         'list' => \$a_list,
         'name' => \$a_name,
+        'sand' => \$a_sand,
         'edit' => \$a_edit,
         'quiet' => \$a_quiet,
         'fix' => \$a_fix,
@@ -207,7 +209,17 @@ MAIN: {
             chomp $email;
             for(keys %places){
                 if ($email eq $places{$_}{email}) {
-                    print "$_\n";
+                    if (defined $a_sand) {
+                        if ($_ eq "work") {
+                            print "pw\n";
+                        } elsif ($_ eq "home")  {
+                            print "ph\n";
+                        } else {
+                            print "$_\n";
+                        }
+                    } else {
+                        print "$_\n";
+                    }
                     exit 0;
                 }
             }
