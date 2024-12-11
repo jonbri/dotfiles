@@ -260,6 +260,7 @@ alias grapewww="chrome 'https://www.icecoldnugrape.com'"
 
 alias ysp="ys --port=5179"
 alias ystorybookp="y storybook --port=5178"
+alias ysbp="ystorybookp"
 
 nfast() {
   ticker-install
