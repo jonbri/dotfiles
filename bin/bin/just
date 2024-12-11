@@ -7,7 +7,7 @@ echo "running..."
 command=""
 if [[ $version > "47.0.0" ]]; then
   ./node_modules/.bin/jest --clearCache > /dev/null 2>&1
-  ./src/nova-commons/node_modules/.bin/jest --clearCache > /dev/null 2>&1
+  ./src/n*-c*s/node_modules/.bin/jest --clearCache > /dev/null 2>&1
   command="justn-args $args --command"
 else
   ./node_modules/.bin/jest --clearCache

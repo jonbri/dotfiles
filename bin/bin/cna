@@ -9,5 +9,5 @@ APP_NAME=$1
 mkdir -p $NC/../apps
 cd $NC/../apps
 
-npx cross-env CNA_DEV=true node $NC/tools/create-*-app/create*App.js $APP_NAME --scripts-version file:$NC/tools/*-scripts --template file:$NC/tools/templates/base --nova-commons-version file:$NC/build/*-commons --nova-core-version file:$NC/build/*-core
+npx cross-env CNA_DEV=true node $NC/tools/create-*-app/create*App.js $APP_NAME --scripts-version file:$NC/tools/*-scripts --template file:$NC/tools/templates/base --n-commons-version file:$NC/build/*-commons --n-core-version file:$NC/build/*-core
 
