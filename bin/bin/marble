@@ -324,7 +324,28 @@ MAIN: {
     if (defined $a_color) {
         $colorscheme = $a_color;
     }
-    system("nvim -c \"colorscheme $colorscheme | normal Gzz\" \"${path}\"");
+
+    my $marker = "marblehere";
+    my $markerLine = 1;
+    if (-e $path) {
+        my $fileContents = `cat ${path}`;
+        chomp $fileContents;
+        if ($fileContents =~ /$marker/) {
+            # determine which line the marker was found at
+            my @lines = split(/\n/, $fileContents);
+            for (my $i = 0; $i < scalar(@lines); $i++) {
+                if ($lines[$i] =~ /$marker/) {
+                    $markerLine = $i + 1;
+                    last;
+                }
+            }
+        } else {
+            # last line
+            $markerLine = `wc -l ${path} | awk '{print \$1}'`;
+        }
+    }
+
+    system("nvim -c \"colorscheme $colorscheme | normal ${markerLine}Gzz\" \"${path}\"");
     exit 0;
 }
 
