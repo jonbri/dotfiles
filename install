@@ -33,6 +33,10 @@ MAIN: {
     `mkdir -p $homeBinDir/save`;
     `cp bin/bin/* $homeBinDir`;
 
+    `mkdir -p $home/a`;
+    `mkdir -p $home/b`;
+    `mkdir -p $home/c`;
+
     my $dictionaryDir="$home/dictionary";
     print "\nupdating dictionary...\n";
     if (!-d "$dictionaryDir") {
