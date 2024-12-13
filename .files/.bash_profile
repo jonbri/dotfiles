@@ -273,6 +273,8 @@ alias ydp="yd --port=5179"
 alias ysp="ys --port=5179"
 alias ysbp="y storybook --port=5178"
 
+alias cs="cd $HOME/Col*St*io && pw"
+
 nfast() {
   ticker-install
 
