@@ -1,0 +1,79 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+use Getopt::Long;
+
+my $a_dryRun;
+my $a_path;
+my $a_except;
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+story - Trim stories
+
+USAGE:
+  >> trim [args]
+
+Options:
+  --dry-run (-d) stories to not delete
+  --path    (-p) path to search for stories (relative to cwd)
+  --except  (-e) stories to not delete
+  --help    (-h)
+
+EXAMPLES:
+  >> story button
+
+HELP
+}
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+sub clearScreen {
+    print "\033[2J";
+    print "\033[0;0H";
+}
+
+MAIN: {
+    GetOptions(
+        'dry-run' => \$a_dryRun,
+        'except=s' => \$a_except,
+        'path=s' => \$a_path,
+        'help' => \$a_help,
+    ) || (help() && exit 1);
+
+    if (defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if (! defined $a_path) {
+        $a_path = ".";
+    }
+
+    my @stories = runCommand("find ${a_path} -type d -name __stories__");
+    foreach my $story (@stories) {
+        chomp $story;
+        if (defined $a_except && $story =~ /$a_except/i) {
+            print "Skipping $story\n";
+            next;
+        }
+        my $deleteCommand = "rm -rf $story";
+        if (defined $a_dryRun) {
+            print "dry-run: ${deleteCommand}\n";
+        } else {
+            runCommand($deleteCommand);
+        }
+    }
+
+    exit 0;
+}
+
