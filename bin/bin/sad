@@ -1,0 +1,190 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+use Getopt::Long;
+
+my $a_dryRun;
+my $a_path;
+my $a_type;
+my @a_include;
+my @a_exclude;
+my $a_output;
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+sad - Search And Destroy (`find` wrapper)
+
+USAGE:
+  >> sad [args]
+
+Options:
+  --dry-run (-d) no deletions, just print what would be deleted
+  --path    (-p) path to search for deletions (relative to cwd, default: ".")
+  --type    (-t) "f" for files, "d" for directories (default: "d")
+  --include (-i) pattern to delete
+  --exclude (-e) pattern to not delete
+  --output  (-o) control how much is printed to console
+  --help    (-h) see this message
+  
+Output format:
+  "a" - show all output (default)
+  "e" - show all excluded files
+  "i" - show all included files
+  "s" - show summary
+  "x" - show deleted files
+  "se" - show summary and excluded files
+
+EXAMPLES:
+  >> sad button --dry-run
+  >> sad --path src --include "__tmp__" --exclude "link/|locale/_"
+  # multiple includes
+  >> sad --path src --include "__tmp__" --include "__work__"
+
+HELP
+}
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+sub clearScreen {
+    print "\033[2J";
+    print "\033[0;0H";
+}
+
+sub confirm($) {
+    my ($message)=@_;
+    print $message;
+    my $ok=<>;
+    chomp $ok;
+    return $ok;
+}
+
+MAIN: {
+    GetOptions(
+        'dry-run' => \$a_dryRun,
+        'path=s' => \$a_path,
+        'type=s' => \$a_type,
+        'include=s' => \@a_include,
+        'exclude=s' => \@a_exclude,
+        'output=s' => \$a_output,
+        'help' => \$a_help,
+    ) || (help() && exit 1);
+
+    if (defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if (!defined $a_output || $a_output eq "a") {
+        $a_output = "eisx";
+    }
+
+    if (! defined $a_path) {
+        $a_path = ".";
+    }
+
+    if (! defined $a_type) {
+        $a_type = "d";
+    }
+    
+    if ($a_type ne "d" && $a_type ne "f") {
+        print "Invalid type: $a_type\n";
+        print "Type must be 'f' (file) or 'd' (directory)\n";
+        exit 1;
+    }
+
+    my $findCommand = "find ${a_path} -type ${a_type}";
+
+    if (scalar @a_include > 0) {
+        $findCommand .= " -iname \"" . join("\" -o -iname \"", @a_include) . "\"";
+    }
+
+    my @targetItems = runCommand($findCommand);
+    
+    my @excluded = ();
+    if (scalar @a_exclude > 0) {
+        foreach my $excludePattern (@a_exclude) {
+            my @newTargetItems = ();
+            foreach my $item (@targetItems) {
+                if ($item !~ /$excludePattern/i) {
+                    push @newTargetItems, $item;
+                } else {
+                    push @excluded, $item;
+                }
+            }
+            @targetItems = @newTargetItems;
+        }
+    }
+    
+    if ($a_output =~ /e/i) {
+        if (scalar @excluded > 0) {
+            print "Excluded " . scalar @excluded . " items:\n";
+            foreach my $item (@excluded) {
+                print "  $item";
+            }
+        }
+    }
+    if ($a_output =~ /i/i) {
+        if (scalar @targetItems > 0) {
+            print "\nIncluded " . scalar @targetItems . " items:\n";
+            foreach my $item (@targetItems) {
+                print "  $item";
+            }
+        }
+    }
+    
+    if ($a_output =~ /s/i) {
+        if ($a_output =~ /i/i || $a_output =~ /o/i) {
+            print "\n";
+        }
+        if ($a_dryRun) {
+            print "Dry run\n";
+        }
+        print "${findCommand}\n";
+        print "Included: " . scalar @targetItems . "\n";
+        print "Excluded: " . scalar @excluded . "\n";
+        print "Found " . scalar @targetItems . " items to delete\n";
+    }
+
+    if (scalar @targetItems == 0) {
+        print "done\n";
+        exit 0;
+    }
+
+
+    if (scalar @targetItems > 0 && !defined $a_dryRun) {
+        print "starting deletions in 2 seconds...\n";
+        sleep 3;
+    }
+    
+    foreach my $item (@targetItems) {
+        chomp $item;
+        my $deleteCommand = "rm -rf $item";
+        if ($a_type eq "f") {
+            $deleteCommand = "rm $item";
+        }
+
+        if (defined $a_dryRun) {
+            if ($a_output =~ /x/i) {
+                print "# ${deleteCommand}\n";
+            }
+        } else {
+            runCommand($deleteCommand);
+        }
+    }
+
+    if ($a_output =~ /x/i) {
+        print "Total deletions: " . scalar @targetItems . "\n";
+    }
+
+    exit 0;
+}
+
