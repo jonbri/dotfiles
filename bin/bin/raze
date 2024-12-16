@@ -1,0 +1,128 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+use Getopt::Long;
+
+my $a_dryRun;
+my $a_path;
+my $a_type;
+my $a_include;
+my $a_exclude;
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+raze - `find` wrapper
+
+USAGE:
+  >> raze [args]
+
+Options:
+  --dry-run (-d) no deletions, just print what would be deleted
+  --path    (-p) path to search for deletions (relative to cwd, default: ".")
+  --type    (-t) 'f' for files, 'd' for directories (default: "d")
+  --include (-e) pattern to delete
+  --exclude (-e) pattern to not delete
+  --help    (-h) see this message
+
+EXAMPLES:
+  >> raze button --dry-run
+  >> raze --path src --include "__tmp__" --exclude "link/|locale/_"
+
+HELP
+}
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+sub clearScreen {
+    print "\033[2J";
+    print "\033[0;0H";
+}
+
+sub confirm($) {
+    my ($message)=@_;
+    print $message;
+    my $ok=<>;
+    chomp $ok;
+    return $ok;
+}
+
+MAIN: {
+    GetOptions(
+        'dry-run' => \$a_dryRun,
+        'path=s' => \$a_path,
+        'type=s' => \$a_type,
+        'include=s' => \$a_include,
+        'except=s' => \$a_exclude,
+        'help' => \$a_help,
+    ) || (help() && exit 1);
+
+    if (defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if (! defined $a_path) {
+        $a_path = ".";
+    }
+
+    if (! defined $a_type) {
+        $a_type = "d";
+    }
+    
+    if ($a_type ne "d" && $a_type ne "f") {
+        print "Invalid type: $a_type\n";
+        print "Type must be 'f' (file) or 'd' (directory)\n";
+        exit 1;
+    }
+
+    my $findCommand = "find ${a_path} -type ${a_type}";
+    if (defined $a_include) {
+        $findCommand .= " -name \"${a_include}\"";
+    }
+
+    print "${findCommand}\n";
+    my @targetItems = runCommand($findCommand);
+    
+    if (defined $a_exclude) {
+        @targetItems = grep { $_ !~ /$a_exclude/i } @targetItems;
+    }
+
+    if (scalar @targetItems == 0) {
+        print "No items found\n";
+        exit 0;
+    }
+
+    print "Found " . scalar @targetItems . " items to delete\n";
+
+    if (scalar @targetItems > 0 && !defined $a_dryRun) {
+        print "starting deletions in 2 seconds...\n";
+        sleep 3;
+    }
+
+    foreach my $item (@targetItems) {
+        chomp $item;
+        my $deleteCommand = "rm -rf $item";
+        if ($a_type eq "f") {
+            $deleteCommand = "rm $item";
+        }
+
+        if (defined $a_dryRun) {
+            print "# ${deleteCommand}\n";
+        } else {
+            runCommand($deleteCommand);
+        }
+    }
+    print "Total: " . scalar @targetItems . "\n";
+
+    exit 0;
+}
+
