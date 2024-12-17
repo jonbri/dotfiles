@@ -222,6 +222,12 @@ alias fa="fua"
 alias fb="fub"
 alias fc="fuc"
 alias fu="fua"
+alias vitefa="cd $HOME/a/vi*-f*i && pw"
+alias vitefb="cd $HOME/b/vi*-f*i && pw"
+alias vitefc="cd $HOME/c/vi*-f*i && pw"
+alias nextfa="cd $HOME/a/Co*S*o && pw"
+alias nextfb="cd $HOME/b/Co*S*o && pw"
+alias nextfc="cd $HOME/c/Co*S*o && pw"
 alias pinf="pin --force"
 alias pullf="pull --force"
 alias pf="pullf"
@@ -278,8 +284,6 @@ alias ypp="yp --port=5179"
 alias ydp="yd --port=5179"
 alias ysp="ys --port=5179"
 alias ysbp="y storybook --port=5178"
-
-alias cs="cd $HOME/Col*St*io && pw"
 
 nfast() {
   ticker-install
