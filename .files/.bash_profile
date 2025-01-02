@@ -9,14 +9,6 @@ export NODE_OPTIONS="--max-old-space-size=5120" # 5 GB
 # export NODE_OPTIONS="--max-old-space-size=7168" # 7 GB
 # export NODE_OPTIONS="--max-old-space-size=8192" # 8 GB
 
-export NC_CACHE_FILE="${HOME}/.nc"
-if [ -f $NC_CACHE_FILE ]; then
-  export NC=`cat $NC_CACHE_FILE`
-else
-  export NC=~/n*-commons
-  echo $NC > $NC_CACHE_FILE
-fi
-
 export DOTFILES_DIR=${HOME}/dotfiles
 export BINBIN=${DOTFILES_DIR}/bin/bin
 export LCL=${BINBIN}
@@ -167,7 +159,6 @@ alias grape="cd $HOME/icecoldnugrape && ph"
 alias grapet="grape && t"
 alias seeds="cd $HOME/seeds && ph && git fetch && $EDITOR -c \"colorscheme morning | normal Gzz\" README.md"
 alias seedst="seeds && t"
-alias apps="cd $NC"/../apps
 alias capture="t capture-pane && sb"
 alias capture+="t capture-pane && sb+"
 alias capture++="t capture-pane && sb++"
@@ -284,19 +275,6 @@ alias ypp="yp --port=5179"
 alias ydp="yd --port=5179"
 alias ysp="ys --port=5179"
 alias ysbp="y storybook --port=5178"
-
-nfast() {
-  ticker-install
-
-  EXCLUDE=$1
-  NC_PATH=/home/${USER}/n*0/n*-commons
-  find ${NC_PATH}/src/n*-commons/src \
-    -type d -name "__stories__" \
-    -not -ipath "*/*${EXCLUDE}*/*" \
-    -not -path "*/src/__stories__" \
-    -not -path "*/locale/*" \
-    -exec rm -rf {} +
-}
 
 [ -z "$TMUX" ] && export TERM=xterm-256color
 

@@ -7,17 +7,5 @@ mkdir -p $ZARGS_LOC
 # dotfiles
 find $DOTFILES_DIR -type f -not -path "*.git/*" -not -path "*/standard.dictionary" > $ZARGS_LOC/dotfiles
 
-# npackage.json
-find $NC -type f -iname "*package.json*" -not -path "*/node_modules/*" > $ZARGS_LOC/npackagejson
-cat << EOF >> $ZARGS_LOC/npackagejson
-${NC}/tools/create-*-app/create*App.js
-EOF
-
-# tsconfig
-find $NC -type f -iname "*tsconfig.json*" -not -path "*/node_modules/*" > $ZARGS_LOC/tsconfig
-
-# babel
-find $NC -type f -iname "*babel.*config*" -not -path "*/node_modules/*" > $ZARGS_LOC/babel
-
 echo "zargs updated"
 
