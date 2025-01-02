@@ -14,6 +14,7 @@ my $a_archive;
 my $a_delete;
 my $a_explorer;
 my $a_verbose;
+my $a_zip;
 my $a_help;
 
 my $WIN_DESKTOP=$ENV{"WIN_DESKTOP"};
@@ -71,6 +72,7 @@ Options:
   --delete   (-d) Delete a note file
   --explorer (-e) Open dir
   --verbose  (-v) Extra logging
+  --zip      (-z) Create zip of notes in "zip" dir 
   --help     (-h) See this message
 
 EXAMPLES:
@@ -78,6 +80,8 @@ EXAMPLES:
   >> marble -w   # create copy of default file on desktop
   >> marble foo  # edit foo file
   >> marble foo -g "notepad.exe" # edit foo file in notepad
+  >> marble -l   # show list of notes (with indicies)
+  >> marble 10   # edit note at index 10
 
 HELP
 }
@@ -119,6 +123,7 @@ MAIN: {
         'delete' => \$a_delete,
         'explorer' => \$a_explorer,
         'verbose' => \$a_verbose,
+        'zip' => \$a_zip,
         'help' => \$a_help,
     ) || (help() && exit 1);
 
@@ -338,6 +343,19 @@ MAIN: {
         sleep 2;
         `rm ${path}`;
         print "Removed\n";
+        exit 0;
+    }
+
+    if (defined $a_zip) {
+        my $zipDir = "${MARBLE_DIR}/zip";
+        `mkdir -p ${zipDir}`;
+        my $zipFile = "${zipDir}/notes-${timestamp}.zip";
+        my $zipCommand = "zip -r ${zipFile} ${WORK_DIR} ${PROMOTED_DIR} ${ARCHIVE_DIR}";
+        if (defined $a_verbose) {
+            print "Running: ${zipCommand}\n";
+        }
+        `$zipCommand`;
+        print "Zip saved to: ${zipFile}\n";
         exit 0;
     }
 
