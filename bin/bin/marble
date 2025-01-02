@@ -149,36 +149,61 @@ MAIN: {
         print "ARCHIVE_DIR: ${ARCHIVE_DIR}\n";
     }
 
-    if (defined $a_list) {
-        my $workList = `ls -t ${WORK_DIR}`;
-        chomp $workList;
-        my @filteredWorkList = split(/\n/, $workList);
-        if (defined $firstArg) {
-            @filteredWorkList = grep { /$firstArg/ } split(/\n/, $workList);
-            @filteredWorkList = map { s/.txt$//g; $_ } @filteredWorkList;
+    my $workList = `ls -t ${WORK_DIR}`;
+    chomp $workList;
+    my @filteredWorkList = split(/\n/, $workList);
+    if (defined $firstArg && $firstArg !~ /^\d+$/) {
+        @filteredWorkList = grep { /$firstArg/ } split(/\n/, $workList);
+        @filteredWorkList = map { s/.txt$//g; $_ } @filteredWorkList;
+    }
+
+    my $promotedList = `ls -t ${PROMOTED_DIR}`;
+    chomp $promotedList;
+    my @filteredPromotedList = split(/\n/, $promotedList);
+    if (defined $firstArg) {
+        @filteredPromotedList = grep { /$firstArg/ } split(/\n/, $promotedList);
+        @filteredPromotedList = map { s/.txt$//g; $_ } @filteredPromotedList;
+    }
+
+    my $noteName = $DEFAULT_NOTE_NAME;
+    if (defined $firstArg) {
+        if ($firstArg =~ /^\d+$/) {
+            my $index = $firstArg;
+            if ($index < scalar(@filteredWorkList)) {
+                print "index: $index\n";
+                my $count = 0;
+                foreach my $line (@filteredWorkList) {
+                    if ($count == $index) {
+                        $noteName = $line;
+                        $noteName =~ s/.txt$//g;
+                        last;
+                    }
+                    $count++;
+                }
+            }
+        } else {
+            $noteName = $firstArg;
         }
+    }
+
+    if (defined $a_list) {
         if (scalar(@filteredWorkList) == 0) {
             print "Work: (none)\n";
         } else {
             print "\nWork:\n";
+            my $count = 0;
             foreach my $line (@filteredWorkList) {
                 my $timestamp = `stat -c %y ${WORK_DIR}/${line}`;
                 chomp $timestamp;
                 my $formattedTimestamp = `shortdate "${timestamp}" --date`;
                 chomp $formattedTimestamp;
                 $line =~ s/.txt$//g;
-                print "$formattedTimestamp $line\n";
+                printf "%2d %s %s\n", $count, $formattedTimestamp, $line;
+                $count++;
             }
         }
         print "\n";
 
-        my $promotedList = `ls -t ${PROMOTED_DIR}`;
-        chomp $promotedList;
-        my @filteredPromotedList = split(/\n/, $promotedList);
-        if (defined $firstArg) {
-            @filteredPromotedList = grep { /$firstArg/ } split(/\n/, $promotedList);
-            @filteredPromotedList = map { s/.txt$//g; $_ } @filteredPromotedList;
-        }
         if (scalar(@filteredPromotedList) == 0) {
             print "Promoted: (none)\n";
         } else {
@@ -195,11 +220,6 @@ MAIN: {
         print "\n";
 
         exit 0;
-    }
-
-    my $noteName = $DEFAULT_NOTE_NAME;
-    if (defined $firstArg) {
-        $noteName = $firstArg;
     }
 
     my $workNoteFilePath = "${WORK_DIR}/${noteName}.txt";
@@ -221,7 +241,7 @@ MAIN: {
     }
 
     if (defined $a_show) {
-        if (defined $firstArg && ! -e $path) {
+        if (defined $noteName && ! -e $path) {
             print "Notes file does not exist\n";
             exit 1;
         }
@@ -238,8 +258,8 @@ MAIN: {
 
     # make backup
     my $backupFile = "${BACKUP_DIR}/${DEFAULT_NOTE_NAME}";
-    if (defined $firstArg) {
-        $backupFile = "${BACKUP_DIR}/$firstArg";
+    if (defined $noteName) {
+        $backupFile = "${BACKUP_DIR}/$noteName";
     }
     $backupFile = "${backupFile}-${timestamp}.txt";
     if (! -e $path) {
@@ -254,7 +274,7 @@ MAIN: {
     }
 
     if (defined $a_write) {
-        # if (defined $firstArg && ! -e $path) {
+        # if (defined $noteName && ! -e $path) {
         if (! -e $path) {
             print "File not found: ${path}\n";
             exit 1;
@@ -293,8 +313,8 @@ MAIN: {
         }
 
         my $archiveFile = "${ARCHIVE_DIR}/${DEFAULT_NOTE_NAME}";
-        if (defined $firstArg) {
-            $archiveFile = "${ARCHIVE_DIR}/$firstArg";
+        if (defined $noteName) {
+            $archiveFile = "${ARCHIVE_DIR}/$noteName";
         }
         $archiveFile = "${archiveFile}.txt";
 
