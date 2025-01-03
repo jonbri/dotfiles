@@ -17,6 +17,7 @@ my $a_verbose;
 my $a_zip;
 my $a_help;
 
+my $EDITOR = $ENV{EDITOR};
 my $WIN_DESKTOP=$ENV{"WIN_DESKTOP"};
 my $WIN_DESKTOP_SAVE=$ENV{"WIN_DESKTOP_SAVE"};
 my $DEFAULT_NOTE_NAME="_default";
@@ -383,7 +384,7 @@ MAIN: {
         }
     }
 
-    system("nvim -c \"colorscheme $colorscheme | normal ${markerLine}Gzz\" \"${path}\"");
+    system("$EDITOR -c \"colorscheme $colorscheme | normal ${markerLine}Gzz\" \"${path}\"");
     exit 0;
 }
 

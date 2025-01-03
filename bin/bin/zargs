@@ -4,6 +4,7 @@ use strict;
 
 use Getopt::Long;
 
+my $EDITOR = $ENV{EDITOR};
 my $home=$ENV{HOME};
 my $dotConfig="$home/.config";
 my $zargsConfig="$dotConfig/zargs";
@@ -72,7 +73,7 @@ MAIN: {
     }
 
     if (defined $a_edit) {
-        system("nvim", "$zargsPopulate");
+        system($EDITOR, "$zargsPopulate");
         exit 0;
     }
 
@@ -83,6 +84,6 @@ MAIN: {
     }
 
     my $files = `cat $zargsConfig/$firstArg | xargs`;
-    system("nvim $files");
+    system("$EDITOR $files");
 }
 

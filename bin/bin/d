@@ -18,9 +18,9 @@ if [ -z $ARG ]; then
     echo
 else
     if [[ "$ARG" = "bash" ]]; then
-        nvim $DOTFILES_DIR/.files/.bash_profile
+        $EDITOR $DOTFILES_DIR/.files/.bash_profile
     else
-        nvim $DOTFILES_DIR/bin/bin/$1
+        $EDITOR $DOTFILES_DIR/bin/bin/$1
     fi
 fi
 

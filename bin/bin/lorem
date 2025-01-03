@@ -11,8 +11,9 @@ my $a_integer;
 my $a_predefined;
 my $a_help;
 
+my $EDITOR = $ENV{EDITOR};
 my $DOTFILES_DIR=$ENV{HOME};
-my $PLUGGED_DIR = "$DOTFILES_DIR/.config/nvim/plugged";
+my $PLUGGED_DIR = "$DOTFILES_DIR/.config/$EDITOR/plugged";
 my $VIM_LOREM_DIR = "$PLUGGED_DIR/vim-lorem";
 
 
