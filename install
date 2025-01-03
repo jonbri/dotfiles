@@ -20,6 +20,8 @@ MAIN: {
     opendir(DH, "$cwd/.files");
     my @files = readdir(DH);
     closedir(DH);
+
+    # create symlinks for dotfiles
     foreach (@files) {
         # skip . and ..
         next if($_ =~ /^\.$/);
@@ -27,6 +29,8 @@ MAIN: {
 
         print join('', runCommand("ln -sfv $cwd/.files/$_ $home"));
     }
+
+    # create symlinks for nvim config
     print join('', runCommand("ln -sfv $cwd/.config/nvim $home/.config"));
 
     `mkdir -p $homeBinDir`;
