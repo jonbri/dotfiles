@@ -2,39 +2,29 @@
 
 use strict;
 
-use Getopt::Long;
-
 STDOUT->autoflush(1);
 
-my $a_latest;
-my $a_poll;
-my $a_json;
 my $a_help;
-
-my $DELIMITER = "%";
-my $longest = 0;
-my $count = 0;
 
 sub help() {
     print STDOUT <<'HELP';
 
-version - see NPM package versions
+version - delegates to either `version-remote` or `version-local`.
+
+If --remote is specified, it will run `version-remote`, otherwise `version-local`.
 
 USAGE:
   >> version [args]
 
-Options:
-  --latest (-l) See latest versions
-  --poll   (-p) Only works with --latest
-  --json   (-j) Pass --json to yarn command
-
-EXAMPLES:
-  >> version react # see all versions
-  >> version react -l # just the latest
-  >> version react lodash serve --poll
-  >> version . # use cwd for package
-
 HELP
+}
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
 }
 
 sub clearScreen {
@@ -42,119 +32,24 @@ sub clearScreen {
     print "\033[0;0H";
 }
 
-sub printResults {
-    my $arg = shift @_;
-    my @result = split($DELIMITER, $arg);
-    my $package = $result[0];
-    my $version = $result[1];
-    if (! defined $version) {
-        $version = "not found";
-    } else {
-        $version = "v${version}";
-    }
-    printf "%-${longest}s: %s", $package, $version;
-    print "\n";
-}
-
 MAIN: {
-    GetOptions(
-        'latest' => \$a_latest,
-        'poll' => \$a_poll,
-        'json' => \$a_json,
-        'help' => \$a_help
-    ) || (help() && exit 1);
-
-    # show help if either arg or option is given
-    if (defined $a_help) {
-        help();
-        exit 1;
-    }
-
     my @args = @ARGV;
 
-    if (! @args) {
-        print "Error: Argument required\n";
+    if (scalar @args == 0) {
         help();
         exit 1;
     }
 
-    if (defined $a_poll) {
-        print "starting...\n";
+    my $hasRemote = grep { $_ eq "--remote" || $_ eq "-r" } @args;
+    # strip --remote and -r from args since target programs won't have those
+    @args = grep { $_ ne "--remote" && $_ ne "-r" } @args;
+
+    my $program = "version-local";
+    if ($hasRemote) {
+        $program = "version-remote";
     }
 
-    my $json = "";
-    if (defined $a_json) {
-        $json = "--json";
-    }
-
-    if (!defined $a_poll && !defined $a_latest) {
-        foreach my $arg (@args) {
-            my $package = $arg;
-            chomp $package;
-            my $versionCommand = "npm view $package versions $json 2> /dev/null";
-            my $output = `$versionCommand`;
-            chomp $output;
-            # if @args has length of 1, don't print the package name
-            if (@args > 1) {
-                print "${package}\n${output}\n";
-            } else {
-                print "${output}\n";
-            }
-            my $tagsCommand = "npm dist-tags $package 2> /dev/null";
-            my $tagsOutput = `$tagsCommand`;
-            chomp $tagsOutput;
-            print "${tagsOutput}\n";
-
-            if ($arg ne $args[-1]) {
-                print "\n";
-            }
-        }
-        exit 0;
-    }
-
-    do {
-        my @results = ();
-        foreach my $arg (@args) {
-            my $package = $arg;
-            my $packageNameLength = length $package;
-            if ($packageNameLength > $longest) {
-                $longest = $packageNameLength;
-            }
-            my $output = `npm view $package versions --json 2> /dev/null | tac | nth 1`;
-            if ($output ne "") {
-                $output =~ s/^\s+|\s+$//g;
-                $output = substr $output, 1, -1;
-                chomp $output;
-                push(@results, "${package}${DELIMITER}${output}");
-            } else {
-                my $output = `npm view $package versions --json 2> /dev/null`;
-                chomp $output;
-                $output =~ s/\"//g;
-                push(@results, "${package}${DELIMITER}${output}");
-            }
-        }
-
-        foreach(@results) {
-            printResults($_);
-        }
-
-        if (! defined $a_poll) {
-            exit 0;
-        }
-
-        clearScreen();
-        my $sd = `shortdate`;
-        chomp $sd;
-        print "$sd ($count)\n\n";
-        $count = $count + 1;
-        foreach(@results) {
-            printResults($_);
-        }
-
-        print "\npolling...";
-        sleep 1;
-    } while (1);
-
+    exec("$program @args");
     exit 0;
 }
 

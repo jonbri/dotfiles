@@ -16,10 +16,10 @@ my $count = 0;
 sub help() {
     print STDOUT <<'HELP';
 
-why - `yarn why` wrapper
+version-local - `yarn why` wrapper
 
 USAGE:
-  >> why [args]
+  >> version-local [args]
 
 Options:
   --full  (-f) show full "yarn why" output
@@ -29,10 +29,10 @@ Options:
   --help  (-h)
 
 EXAMPLES:
-  >> why react
-  >> why react react-dom
-  >> why react -s # -> 18.2.0
-  >> why react typescript -d ~/project
+  >> version-local react
+  >> version-local react react-dom
+  >> version-local react -s # -> 18.2.0
+  >> version-local react typescript -d ~/project
 
 HELP
 }
