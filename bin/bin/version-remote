@@ -42,7 +42,7 @@ sub clearScreen {
     print "\033[0;0H";
 }
 
-sub printResults {
+sub printPollResults {
     my $arg = shift @_;
     my @result = split($DELIMITER, $arg);
     my $package = $result[0];
@@ -52,14 +52,24 @@ sub printResults {
     } else {
         $version = "v${version}";
     }
+
+    my $tagsCommand = "npm dist-tags $package 2> /dev/null";
+    my $tagsOutput = `$tagsCommand`;
+    chomp $tagsOutput;
+    my @tags = split(/\n/, $tagsOutput);
+
     printf "%-${longest}s: %s", $package, $version;
-    print "\n";
+    foreach my $tag (@tags) {
+        print "\n";
+        printf "%-${longest}s  %s", " ", $tag;
+    }
+    print "\n\n";
 }
 
 MAIN: {
     GetOptions(
         'latest' => \$a_latest,
-        'poll' => \$a_poll,
+        'poll:s' => \$a_poll,
         'json' => \$a_json,
         'help' => \$a_help
     ) || (help() && exit 1);
@@ -134,10 +144,6 @@ MAIN: {
             }
         }
 
-        foreach(@results) {
-            printResults($_);
-        }
-
         if (! defined $a_poll) {
             exit 0;
         }
@@ -148,11 +154,16 @@ MAIN: {
         print "$sd ($count)\n\n";
         $count = $count + 1;
         foreach(@results) {
-            printResults($_);
+            printPollResults($_);
         }
 
-        print "\npolling...";
-        sleep 1;
+        my $pollInterval = 1;
+        if ($a_poll =~ /^[0-9]+$/) {
+            $pollInterval = $a_poll;
+        }
+
+        print "\npolling in $pollInterval seconds...";
+        sleep $pollInterval;
     } while (1);
 
     exit 0;
