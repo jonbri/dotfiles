@@ -15,7 +15,11 @@ else
 fi
 
 justArgsResult=`${command}`
-# echo $command
 echo $justArgsResult
+
+if [[ $args == *"--command"* ]] || [[ $args == *"-c"* ]]; then
+  exit 0
+fi
+
 sleep 1
 eval $justArgsResult

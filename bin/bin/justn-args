@@ -5,6 +5,7 @@ use strict;
 use Getopt::Long;
 
 my $a_command;
+my $a_fuzzy;
 my $a_help;
 
 sub help() {
@@ -17,6 +18,7 @@ USAGE:
 
 Options:
   --command (-c) only print out command
+  --fuzzy   (-f) fuzzy search for tests
   --help    (-h)
 
 EXAMPLES:
@@ -42,6 +44,7 @@ sub clearScreen {
 MAIN: {
     GetOptions(
         'command' => \$a_command,
+        'fuzzy' => \$a_fuzzy,
         'help' => \$a_help,
     ) || (help() && exit 1);
 
@@ -52,10 +55,12 @@ MAIN: {
 
     $| = 1;
 
-    my @specArgs = map { "\"_/$_.spec\"" } @ARGV;
+    my @specArgs = @ARGV;
+    if (! defined $a_fuzzy) {
+        @specArgs = map { "\"_/$_.spec\"" } @ARGV;
+    }
     my $arg = join(" ", @specArgs);
 
-    # extract all scripts in package.json using `jq`
     my $packageJson = `cat package.json`;
     chomp $packageJson;
     my @scripts = `echo '$packageJson' | jq -r '.scripts | keys[]'`;
