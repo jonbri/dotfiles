@@ -8,7 +8,13 @@ my $a_width;
 my $a_reverse;
 my $a_numbers;
 my $a_integer;
+my $a_predefined;
 my $a_help;
+
+my $DOTFILES_DIR=$ENV{HOME};
+my $PLUGGED_DIR = "$DOTFILES_DIR/.config/nvim/plugged";
+my $VIM_LOREM_DIR = "$PLUGGED_DIR/vim-lorem";
+
 
 sub help() {
     print STDOUT <<'HELP';
@@ -19,17 +25,19 @@ USAGE:
   >> lorem [number] [options]
 
 Options:
-  --width   (-w) Set line-width
-  --reverse (-r) Reverse order
-  --numbers (-n) Show line numbers
-  --integer (-i) Numbers intead of words
-  --help    (-h) See this message
+  --width      (-w) Set line-width
+  --reverse    (-r) Reverse order
+  --numbers    (-n) Show line numbers
+  --integer    (-i) Numbers intead of words
+  --predefined (-p) Use a lorem from vim-lorem
+  --help       (-h) See this message
 
 EXAMPLES:
   >> lorem               # print one lorem line
   >> lorem 3             # print 3 lines
   >> lorem 5 -w 10       # print 5 short lines
   >> lorem 5 -w 10 -n -r # reversed with line numbers
+  >> lorem -p js         # print "lorem.js"
 
 HELP
 }
@@ -157,6 +165,7 @@ MAIN: {
         'reverse' => \$a_reverse,
         'numbers' => \$a_numbers,
         'integer' => \$a_integer,
+        'predefined:s' => \$a_predefined,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -173,6 +182,19 @@ MAIN: {
         $times = 1;
     }
 
+    sub printLorems {
+        my $dir = $VIM_LOREM_DIR . "/lorems";
+        opendir(DIR, $dir) or die $!;
+        print "Available lorems: ";
+        while (my $file = readdir(DIR)) {
+            if ($file =~ m/lorem\.(.*)/) {
+                print "$1 ";
+            }
+        }
+        print "\n";
+        closedir(DIR);
+    }
+
     my @content = ();
     for my $i (0 .. $times) {
         if ($i == $times) {
@@ -180,7 +202,27 @@ MAIN: {
         }
 
         my $t;
-        if (defined $a_integer) {
+        if (defined $a_predefined) {
+            if ($a_predefined eq "") {
+                printLorems();
+                exit 0;
+            }
+            my $PREDEFINED_FILE = "$VIM_LOREM_DIR/lorems/lorem.${a_predefined}";
+            if (-e $PREDEFINED_FILE) {
+                my $contents;
+                open(my $fh, '<', $PREDEFINED_FILE) or die "Could not open file '$PREDEFINED_FILE' $!";
+                while (my $row = <$fh>) {
+                    $contents .= $row;
+                }
+                close $fh;
+                print $contents;
+                next;
+            } else {
+                print "Error: no such predefined file: $PREDEFINED_FILE\n";
+                printLorems();
+                exit 1;
+            }
+        } elsif (defined $a_integer) {
             $t = $numbers[$i % scalar(@numbers)];
         } else {
             $t = $text[$i % scalar(@text)];
