@@ -4,10 +4,10 @@ export GIT_EDITOR=$EDITOR
 export PATH=~/bin:$PATH
 export HISTFILESIZE=5000
 
-export NODE_OPTIONS="--max-old-space-size=5120" # 5 GB
+# export NODE_OPTIONS="--max-old-space-size=5120" # 5 GB
 # export NODE_OPTIONS="--max-old-space-size=6144" # 6 GB
 # export NODE_OPTIONS="--max-old-space-size=7168" # 7 GB
-# export NODE_OPTIONS="--max-old-space-size=8192" # 8 GB
+export NODE_OPTIONS="--max-old-space-size=8192" # 8 GB
 
 export DOTFILES_DIR=${HOME}/dotfiles
 export BINBIN=${DOTFILES_DIR}/bin/bin
