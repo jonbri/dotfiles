@@ -241,6 +241,7 @@ alias win="cd ${WIN_HOME}/Desktop"
 alias prm="pr --me"
 alias pathsave="echo \"${PATH}\" >> ${DOTFILES_TMP}/path-save.txt"
 alias pathedit="pathprepare && v ${DOTFILES_TMP}/path-edit.sh && confirm writing && pathsave && source ${DOTFILES_TMP}/path-edit.sh && path"
+alias versionr="version --remote"
 
 alias fuat="fub && t"
 alias fubt="fub && t"
