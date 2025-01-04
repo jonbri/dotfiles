@@ -1,9 +1,10 @@
 #!/usr/bin/perl -w
 
 use strict;
-use Time::HiRes;
 
 use Getopt::Long;
+
+STDOUT->autoflush(1);
 
 my $a_full;
 my $a_short;
@@ -24,7 +25,7 @@ USAGE:
 Options:
   --full  (-f) show full "yarn why" output
   --short (-s) only show version number
-  --poll  (-p) doesn't work with --full
+  --poll  (-p) poll for latest versions
   --dir   (-d) specify directory
   --help  (-h)
 
@@ -55,7 +56,7 @@ MAIN: {
         'help' => \$a_help,
         'full' => \$a_full,
         'short' => \$a_short,
-        'poll' => \$a_poll,
+        'poll:s' => \$a_poll,
         'dir=s' => \$a_dir,
     ) || (help() && exit 1);
 
@@ -114,12 +115,10 @@ MAIN: {
             push(@results, "$result");
         }
 
-        foreach(@results) {
-            print("$_");
-            Time::HiRes::sleep(0.1);
-        }
-
         if (! defined $a_poll) {
+            foreach(@results) {
+                print("$_");
+            }
             exit 0;
         }
 
@@ -132,8 +131,13 @@ MAIN: {
             print("$_");
         }
 
-        print "\npolling...\n";
-        Time::HiRes::sleep(1);
+        my $pollInterval = 1;
+        if ($a_poll =~ /^[0-9]+$/) {
+            $pollInterval = $a_poll;
+        }
+
+        print "\npolling in $pollInterval seconds...";
+        sleep $pollInterval;
     } while (1);
 
     exit 0;
