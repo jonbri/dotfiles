@@ -6,7 +6,6 @@ use Getopt::Long;
 
 STDOUT->autoflush(1);
 
-my $a_latest;
 my $a_poll;
 my $a_json;
 my $a_help;
@@ -24,13 +23,11 @@ USAGE:
   >> version-remote [args]
 
 Options:
-  --latest (-l) See latest versions
-  --poll   (-p) Poll for latest versions
+  --poll   (-p) Poll NPM repository
   --json   (-j) Pass --json to yarn command
 
 EXAMPLES:
   >> version-remote react # see all versions
-  >> version-remote react -l # just the latest
   >> version-remote react lodash serve --poll
   >> version-remote . # use cwd for package
 
@@ -68,7 +65,6 @@ sub printPollResults {
 
 MAIN: {
     GetOptions(
-        'latest' => \$a_latest,
         'poll:s' => \$a_poll,
         'json' => \$a_json,
         'help' => \$a_help
@@ -97,7 +93,7 @@ MAIN: {
         $json = "--json";
     }
 
-    if (!defined $a_poll && !defined $a_latest) {
+    if (!defined $a_poll) {
         foreach my $arg (@args) {
             my $package = $arg;
             chomp $package;

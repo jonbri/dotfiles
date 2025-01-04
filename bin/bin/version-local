@@ -25,7 +25,7 @@ USAGE:
 Options:
   --full  (-f) show full "yarn why" output
   --short (-s) only show version number
-  --poll  (-p) poll for latest versions
+  --poll  (-p) poll node_modules directory
   --dir   (-d) specify directory
   --help  (-h)
 
