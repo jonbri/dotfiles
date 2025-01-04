@@ -6,7 +6,7 @@ sudo apt install --yes vim tmux npm tree jq openssh-server openssh-client g++ cu
 sudo npm install --global n yarn conny serve degit buffaloes seolaffub n verdaccio
 
 # node
-sudo n 18
+sudo n 20
 
 # neovim
 sudo add-apt-repository ppa:neovim-ppa/unstable
