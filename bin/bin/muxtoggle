@@ -14,15 +14,15 @@ my $SPACE="  ";
 sub help() {
     print STDOUT <<'HELP';
 
-toolversions
+muxtoggle - A script to toggle between multiple outputs
 
 Options:
   --dynamic (-d) use MUX_TOGGLE
   --help    (-h) See this message
 
 EXAMPLES:
-  >> toolversions
-  >> toolversions --dynamic
+  >> muxtoggle
+  >> muxtoggle --dynamic
 
 HELP
 }
