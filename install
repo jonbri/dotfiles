@@ -33,6 +33,7 @@ MAIN: {
     # create symlinks for nvim config
     print join('', runCommand("ln -sfv $cwd/.config/nvim $home/.config"));
 
+    `mkdir -p $cwd/tmp`;
     `mkdir -p $homeBinDir`;
     `mkdir -p $homeBinDir/save`;
     `cp bin/bin/* $homeBinDir`;

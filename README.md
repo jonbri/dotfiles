@@ -14,8 +14,6 @@ sudo apt update
 sudo apt install neovim
 
 # dotfiles
-mkdir -p ~/dotfiles/tmp
-# esesh
 git clone git@github.com:jonbri/dotfiles.git ~/dotfiles
 cd ~/dotfiles && ./install
 name
