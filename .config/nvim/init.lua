@@ -59,7 +59,7 @@ if not vim.g.vscode then -- in terminal
   -- add word under cursor to custom dictionary
   vim.keymap.set("n", "<leader>zg", "yiw:sp ~/dictionary/custom.dictionary<CR>Go<ESC>pzz", {})
 
-  vim.cmd [[ colorscheme shine ]]
+  vim.cmd [[ colorscheme evening ]]
 else -- in vscode
     vim.keymap.set("n", "<leader>c", ":call VSCodeCall('workbench.action.closeEditorsInGroup')<CR>", {})
 
