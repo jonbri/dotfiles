@@ -8,6 +8,8 @@ STDOUT->autoflush(1);
 
 my $a_poll;
 my $a_json;
+my $a_short;
+my $a_full;
 my $a_help;
 
 my $DELIMITER = "%";
@@ -23,8 +25,10 @@ USAGE:
   >> version-remote [args]
 
 Options:
-  --poll   (-p) Poll NPM repository
-  --json   (-j) Pass --json to yarn command
+  --short (-s) Only show @latest version number
+  --full  (-f) Show all tags and versions
+  --poll  (-p) Poll NPM repository
+  --json  (-j) Pass --json to yarn command
 
 EXAMPLES:
   >> version-remote react # see all versions
@@ -55,18 +59,32 @@ sub printPollResults {
     chomp $tagsOutput;
     my @tags = split(/\n/, $tagsOutput);
 
-    printf "%-${longest}s: %s", $package, $version;
-    foreach my $tag (@tags) {
-        print "\n";
-        printf "%-${longest}s  %s", " ", $tag;
+    my $latestCommand = "npm view $package dist-tags.latest 2> /dev/null";
+    my $latestOutput = `$latestCommand`;
+    chomp $latestOutput;
+
+
+    if (defined $a_short) {
+        print "$latestOutput\n";
+        return;
     }
-    print "\n\n";
+    print "$package: $latestOutput\n";
+
+    if (defined $a_full) {
+        foreach my $tag (@tags) {
+            printf "%-${longest}s  %s", " ", $tag;
+            print "\n";
+        }
+        print "\n\n";
+    }
 }
 
 MAIN: {
     GetOptions(
         'poll:s' => \$a_poll,
         'json' => \$a_json,
+        'short' => \$a_short,
+        'full' => \$a_full,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -100,18 +118,34 @@ MAIN: {
             my $versionCommand = "npm view $package versions $json 2> /dev/null";
             my $output = `$versionCommand`;
             chomp $output;
-            # if @args has length of 1, don't print the package name
-            if (@args > 1) {
-                print "${package}\n${output}\n";
-            } else {
-                print "${output}\n";
+            if (!defined $a_short && defined $a_full) {
+                # if @args has length of 1, don't print the package name
+                if (@args > 1) {
+                    print "${package}\n${output}\n";
+                } else {
+                    print "${output}\n";
+                }
             }
+
             my $tagsCommand = "npm dist-tags $package 2> /dev/null";
             my $tagsOutput = `$tagsCommand`;
             chomp $tagsOutput;
-            print "${tagsOutput}\n";
 
-            if ($arg ne $args[-1]) {
+            my $latestCommand = "npm view $package dist-tags.latest 2> /dev/null";
+            my $latestOutput = `$latestCommand`;
+            chomp $latestOutput;
+
+            if (defined $a_full) {
+                print "${tagsOutput}\n";
+            }
+            if (defined $a_short) {
+                print "$latestOutput\n";
+            }
+            if (!defined $a_short && !defined $a_full) {
+                print "$package: $latestOutput\n";
+            }
+
+            if (defined $a_full && $arg ne $args[-1]) {
                 print "\n";
             }
         }
@@ -158,7 +192,11 @@ MAIN: {
             $pollInterval = $a_poll;
         }
 
-        print "\npolling in $pollInterval seconds...";
+        if (!defined $a_full) {
+            print "\n";
+        }
+
+        print "polling in $pollInterval seconds...";
         sleep $pollInterval;
     } while (1);
 
