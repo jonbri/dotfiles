@@ -223,6 +223,12 @@ MAIN: {
 
     if (defined $a_knownFrom) {
         my $email = `git config --get user.email`;
+        if (defined $firstArg) {
+            if (defined $places{$firstArg}) {
+                $email = $places{$firstArg}{'email'};
+            }
+        }
+
         chomp($email);
         my @gitLogAuthor = `git log $a_knownFrom --oneline --author=$email`;
         if (scalar @gitLogAuthor > 0) {
