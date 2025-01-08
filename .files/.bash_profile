@@ -221,6 +221,10 @@ alias pat="pa && t"
 alias pbt="pb && t"
 alias pct="pc && t"
 
+alias aa="source _aa"
+alias bb="source _bb"
+alias cc="source _cc"
+
 alias pinf="pin --force"
 alias pullf="pull --force"
 alias pf="pullf"

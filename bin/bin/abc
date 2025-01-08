@@ -1,0 +1,83 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+use Getopt::Long;
+
+my $a_root;
+my $a_exact;
+my $a_help;
+
+my $A = $ENV{A};
+my $B = $ENV{B};
+my $C = $ENV{C};
+
+sub help() {
+    print STDOUT <<'HELP';
+
+    abc
+
+USAGE:
+  >> aa [path] [options]
+
+Options:
+  --help  (-h) See this message
+  --root  (-r) a,b,c
+  --exact (-e) Exact match
+
+EXAMPLES:
+  >> abc        # $A
+  >> abc -r b   # $B
+  >> abc foobar # $A/foobar
+  >> abc -r b fo*ar # $C/foobar
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'root=s' => \$a_root,
+        'exact' => \$a_exact,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if (!defined $firstArg) {
+        $firstArg = "";
+    }
+
+    if (!defined $a_root) {
+        $a_root = "a";
+    }
+
+    my $PREFIX = $A;
+    if ($a_root eq "b") {
+        $PREFIX = $B;
+    } elsif ($a_root eq "c") {
+        $PREFIX = $C;
+    }
+
+    my $pathArg = "*$firstArg*";
+    if (defined $a_exact) {
+        $pathArg = $firstArg;
+    }
+
+    print "${PREFIX}/${pathArg}\n";
+
+    exit 0;
+}
+
