@@ -71,9 +71,12 @@ MAIN: {
         $PREFIX = $C;
     }
 
-    my $pathArg = "*$firstArg*";
-    if (defined $a_exact) {
-        $pathArg = $firstArg;
+    my $pathArg = "";
+    if ($firstArg ne "") {
+        $pathArg = "*$firstArg*";
+        if (defined $a_exact) {
+            $pathArg = $firstArg;
+        }
     }
 
     print "${PREFIX}/${pathArg}\n";
