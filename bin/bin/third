@@ -6,7 +6,7 @@ THIRD_DIR=$HOME/third
 mkdir -p $THIRD_DIR
 cd $THIRD_DIR
 
-persona home
+ph
 
 echo;
 

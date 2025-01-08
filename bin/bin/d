@@ -4,7 +4,7 @@ clear
 cd $DOTFILES_DIR
 slow "D O T F I L E S"
 echo
-persona home
+ph
 echo
 cat << EOF
 D
