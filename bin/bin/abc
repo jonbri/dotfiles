@@ -42,6 +42,15 @@ sub getFirstNonOptionArg {
     return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
 }
 
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+
 MAIN: {
     GetOptions(
         'root=s' => \$a_root,
@@ -79,7 +88,32 @@ MAIN: {
         }
     }
 
-    print "${PREFIX}/${pathArg}\n";
+    my $path = "$PREFIX/$pathArg";
+    my @ls = runCommand("realpath $path");
+    if (scalar @ls == 1) {
+        my $realPath = $ls[0];
+        chomp $realPath;
+        if (-d $realPath) {
+            my $cdCommand = "cd $realPath";
+            my @personas = runCommand("persona -l");
+            foreach my $persona (@personas) {
+                chomp $persona;
+
+                my $personaName = (split(/\s+/, $persona))[0];
+                my $KNOWN_RESULTS=`$cdCommand && persona $personaName --known-from HEAD~`;
+                chomp $KNOWN_RESULTS;
+                if ($KNOWN_RESULTS =~ /[@]+.*[\s]+not found$/) {
+                    next;
+                }
+
+                my $personaCommand = "persona $personaName";
+                `$personaCommand`;
+                last;
+            }
+        }
+    }
+
+    print "${path}\n";
 
     exit 0;
 }
