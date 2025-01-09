@@ -33,14 +33,6 @@ sub getFirstNonOptionArg {
     return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
 }
 
-sub runCommand($) {
-    my ($command) = @_;
-    open CMD, "$command |" || die "Unable to run $command: $!";
-    my @output = <CMD>;
-    close CMD;
-    return @output;
-}
-
 MAIN: {
     GetOptions(
         'restore' => \$a_restore,
