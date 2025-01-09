@@ -8,6 +8,7 @@ my $home=$ENV{HOME};
 my $configFile="$home/.persona.conf";
 my %places=();
 my $a_add;
+my $a_become;
 my $a_edit;
 my $a_name;
 my $a_list;
@@ -27,6 +28,7 @@ USAGE:
 
 Options:
   --add        (-a) Add entry to .persona.conf
+  --become     (-b) Set persona based on commit history
   --fix        (-f) Update HEAD author and committer
   --edit       (-e) Open config file in editor
   --name       (-n) Display active place name
@@ -157,6 +159,7 @@ sub applyUpdate {
 MAIN: {
     GetOptions(
         'add=s' => \$a_add,
+        'become' => \$a_become,
         'list' => \$a_list,
         'name' => \$a_name,
         'edit' => \$a_edit,
@@ -239,6 +242,30 @@ MAIN: {
         } else {
             print "${email} not found\n";
         }
+        exit 0;
+    }
+
+    if (defined $a_become) {
+        my $isGit = `isgit`;
+        chomp $isGit;
+        if ($isGit ne 'true') {
+            print "not a git repo\n";
+            exit 1;
+        }
+
+        my $pwd = `pwd`;
+        chomp $pwd;
+
+        for(keys %places){
+            my $personaName = $_;
+            my $email = $places{$_}{email};
+            my @gitLogAuthor = `git log HEAD --oneline --author=$email`;
+            if (scalar @gitLogAuthor > 0) {
+                applyPlace($personaName);
+                last;
+            }
+        }
+
         exit 0;
     }
 
