@@ -189,9 +189,9 @@ alias vitef="./node_modules/.bin/vite --force"
 alias droplet="ssh root@192.81.214.19"
 
 # A B C
-alias aa="source _aa"
-alias bb="source _bb"
-alias cc="source _cc"
+alias aa="source _abc --root a"
+alias bb="source _abc --root b"
+alias cc="source _abc --root c"
 alias na="aa d*-s*-f*-n*a"
 alias nb="bb d*-s*-f*-n*a"
 alias nc="cc d*-s*-f*-n*a"
