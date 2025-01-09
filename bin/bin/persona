@@ -249,8 +249,10 @@ MAIN: {
         my $isGit = `isgit`;
         chomp $isGit;
         if ($isGit ne 'true') {
-            print "not a git repo\n";
-            exit 1;
+            if (!defined $a_quiet) {
+                print "not a git repo\n";
+            }
+            exit 0;
         }
 
         my $pwd = `pwd`;

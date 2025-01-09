@@ -1,6 +1,5 @@
 #!/bin/bash
 
-abc_result=`abc --root b $@`
-eval "cd $abc_result"
-persona --become
+eval "cd `abc --root b $@`"
+persona --become --quiet
 
