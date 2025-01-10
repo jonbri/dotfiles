@@ -183,9 +183,28 @@ alias vitef="./node_modules/.bin/vite --force"
 alias droplet="ssh root@192.81.214.19"
 
 # A B C
-alias aa="source _abc --root a"
-alias bb="source _abc --root b"
-alias cc="source _abc --root c"
+aa() {
+  source _abc --root a $@
+}
+bb() {
+  source _abc --root b $@
+}
+cc() {
+  source _abc --root c $@
+}
+aat() {
+  aa $@
+  t
+}
+bbt() {
+  bb $@
+  t
+}
+cct() {
+  cc $@
+  t
+}
+
 alias na="aa d*-s*-f*-n*a"
 alias nb="bb d*-s*-f*-n*a"
 alias nc="cc d*-s*-f*-n*a"
