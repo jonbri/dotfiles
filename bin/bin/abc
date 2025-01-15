@@ -84,11 +84,13 @@ MAIN: {
     }
 
     my $pathArg = "";
-    if ($firstArg ne "") {
+    if ($firstArg eq "") {
+        $pathArg = "*";
+    } else {
         $pathArg = "*$firstArg*";
-        if (defined $a_exact) {
-            $pathArg = $firstArg;
-        }
+    }
+    if (defined $a_exact) {
+        $pathArg = $firstArg;
     }
 
     if (defined $a_list) {

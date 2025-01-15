@@ -1,5 +1,16 @@
 #!/bin/bash
 
-eval "cd `abc $@`"
-persona --become --quiet
+results=`abc $@ --list`
+
+if [ -z "$results" ]; then
+  echo 'no matches'
+else
+  count=`echo $results | tr ' ' '\n' | wc -l`
+  if [ $count -eq 1 ]; then
+    eval "cd `abc $@`"
+    persona --become --quiet
+  else
+    echo $results | tr ' ' '\n'
+  fi
+fi
 
