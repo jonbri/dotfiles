@@ -5,6 +5,7 @@ use strict;
 use Getopt::Long;
 
 my $a_root;
+my $a_list;
 my $a_exact;
 my $a_help;
 
@@ -22,7 +23,8 @@ USAGE:
 
 Options:
   --help  (-h) See this message
-  --root  (-r) a,b,c
+  --root  (-r) Specify root dir (a,b,c)
+  --list  (-l) Show matches
   --exact (-e) Exact match
 
 EXAMPLES:
@@ -54,6 +56,7 @@ sub runCommand($) {
 MAIN: {
     GetOptions(
         'root=s' => \$a_root,
+        'list' => \$a_list,
         'exact' => \$a_exact,
         'help' => \$a_help
     ) || (help() && exit 1);
@@ -86,6 +89,16 @@ MAIN: {
         if (defined $a_exact) {
             $pathArg = $firstArg;
         }
+    }
+
+    if (defined $a_list) {
+        my @output = runCommand("find $PREFIX -maxdepth 1 -type d -name \"$pathArg\"");
+        foreach my $line (@output) {
+            chomp $line;
+            print "$line\n";
+        }
+
+        exit 0;
     }
 
     my $path = "$PREFIX/$pathArg";
