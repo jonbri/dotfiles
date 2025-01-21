@@ -8,6 +8,7 @@ my $a_root;
 my $a_list;
 my $a_count;
 my $a_exact;
+my $a_first;
 my $a_help;
 
 my $A = $ENV{A};
@@ -26,6 +27,7 @@ Options:
   --help   (-h) See this message
   --root   (-r) Specify root dir (a,b,c)
   --list   (-l) Show matches
+  --first  (-f) Show nth match (default first)
   --count  (-c) Show number of matches
   --exact  (-e) Exact match
 
@@ -61,6 +63,7 @@ MAIN: {
         'list' => \$a_list,
         'count' => \$a_count,
         'exact' => \$a_exact,
+        'first:s' => \$a_first,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -107,6 +110,21 @@ MAIN: {
     if (defined $a_count) {
         print scalar @list;
         print "\n";
+        exit 0;
+    }
+
+    if (defined $a_first) {
+        if ($a_first eq "") {
+            $a_first = 0;
+        }
+        $a_first = int($a_first);
+        if ($a_first < 0 || $a_first >= scalar @list) {
+            print STDERR "Invalid index: $a_first\n";
+            exit 1;
+        }
+        $pathArg = $list[$a_first];
+        chomp $pathArg;
+        print "${pathArg}\n";
         exit 0;
     }
 
