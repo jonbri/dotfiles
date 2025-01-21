@@ -194,21 +194,21 @@ cc() {
 }
 aat() {
   aa $@
-  count=`abc $@ --count`
+  count=`abc $@ --root a --count`
   if [ $count -eq 1 ]; then
     t
   fi
 }
 bbt() {
   bb $@
-  count=`abc $@ --count`
+  count=`abc $@ --root b --count`
   if [ $count -eq 1 ]; then
     t
   fi
 }
 cct() {
   cc $@
-  count=`abc $@ --count`
+  count=`abc $@ --root c --count`
   if [ $count -eq 1 ]; then
     t
   fi
