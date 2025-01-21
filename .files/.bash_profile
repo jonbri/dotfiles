@@ -194,15 +194,24 @@ cc() {
 }
 aat() {
   aa $@
-  t
+  count=`abc $@ --count`
+  if [ $count -eq 1 ]; then
+    t
+  fi
 }
 bbt() {
   bb $@
-  t
+  count=`abc $@ --count`
+  if [ $count -eq 1 ]; then
+    t
+  fi
 }
 cct() {
   cc $@
-  t
+  count=`abc $@ --count`
+  if [ $count -eq 1 ]; then
+    t
+  fi
 }
 
 alias pinf="pin --force"
