@@ -6,6 +6,7 @@ use Getopt::Long;
 
 my $a_root;
 my $a_list;
+my $a_count;
 my $a_exact;
 my $a_help;
 
@@ -22,10 +23,11 @@ USAGE:
   >> aa [path] [options]
 
 Options:
-  --help  (-h) See this message
-  --root  (-r) Specify root dir (a,b,c)
-  --list  (-l) Show matches
-  --exact (-e) Exact match
+  --help   (-h) See this message
+  --root   (-r) Specify root dir (a,b,c)
+  --list   (-l) Show matches
+  --count  (-c) Show number of matches
+  --exact  (-e) Exact match
 
 EXAMPLES:
   >> abc        # $A
@@ -57,6 +59,7 @@ MAIN: {
     GetOptions(
         'root=s' => \$a_root,
         'list' => \$a_list,
+        'count' => \$a_count,
         'exact' => \$a_exact,
         'help' => \$a_help
     ) || (help() && exit 1);
@@ -93,13 +96,17 @@ MAIN: {
         $pathArg = $firstArg;
     }
 
+    my @list = runCommand("find $PREFIX -maxdepth 1 -type d -name \"$pathArg\"");
     if (defined $a_list) {
-        my @output = runCommand("find $PREFIX -maxdepth 1 -type d -name \"$pathArg\"");
-        foreach my $line (@output) {
+        foreach my $line (@list) {
             chomp $line;
             print "$line\n";
         }
-
+        exit 0;
+    }
+    if (defined $a_count) {
+        print scalar @list;
+        print "\n";
         exit 0;
     }
 

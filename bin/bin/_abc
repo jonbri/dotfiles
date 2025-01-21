@@ -1,16 +1,14 @@
 #!/bin/bash
 
-results=`abc $@ --list`
+count=`abc $@ --count`
 
-if [ -z "$results" ]; then
+if [ $count -eq 0 ]; then
   echo 'no matches'
+elif [ $count -eq 1 ]; then
+  eval "cd `abc $@`"
+  persona --become --quiet
 else
-  count=`echo $results | tr ' ' '\n' | wc -l`
-  if [ $count -eq 1 ]; then
-    eval "cd `abc $@`"
-    persona --become --quiet
-  else
-    echo $results | tr ' ' '\n'
-  fi
+  results=`abc $@ --list`
+  echo $results | tr ' ' '\n'
 fi
 
