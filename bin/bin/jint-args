@@ -1,0 +1,72 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+use Getopt::Long;
+
+my $a_command;
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+jint-args - Run individual eslint tests
+
+USAGE:
+  >> jint-args [args]
+
+Options:
+  --command (-c) only print out command
+  --help    (-h)
+
+EXAMPLES:
+  >> jint-args foo
+  >> jint-args foo bar
+  >> jint-args foo -r test
+
+HELP
+}
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+sub clearScreen {
+    print "\033[2J";
+    print "\033[0;0H";
+}
+
+MAIN: {
+    GetOptions(
+        'command' => \$a_command,
+        'help' => \$a_help,
+    ) || (help() && exit 1);
+
+    if (defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    $| = 1;
+
+    my @pathArgs = map { "\"**/*$_*/**\"" } @ARGV;
+    my $paths = join(" ", @pathArgs);
+    my $command = "./node_modules/.bin/eslint --fix --config eslint.config.js ${paths}";
+
+    if (defined $a_command) {
+        print "$command\n";
+        exit 0;
+    }
+
+    clearScreen();
+    print "$command\n";
+    my @results = runCommand($command);
+    print @results;
+
+    exit 0;
+}
+

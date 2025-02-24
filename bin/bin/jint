@@ -1,0 +1,16 @@
+#!/bin/bash
+
+args="$@"
+
+echo "running..."
+command="jint-args $args --command"
+
+jintArgsResult=`${command}`
+echo $jintArgsResult
+
+if [[ $args == *"--command"* ]] || [[ $args == *"-c"* ]]; then
+  exit 0
+fi
+
+sleep 1
+eval $jintArgsResult
