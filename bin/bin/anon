@@ -20,7 +20,8 @@ Options:
   --help    (-h) See this message
 
 EXAMPLES:
-  >> anon
+  >> anon     # branch: anon-1234
+  >> anon foo # branch: anon-foo-1234
 
 HELP
 }
@@ -62,7 +63,11 @@ MAIN: {
 
     `crumb "anonStart=$branch"`;
     my $random = int(rand(9999));
-    my $anonBranch="anon-$random";
+    my $label = "anon";
+    if (defined $firstArg) {
+        $label = "anon-$firstArg";
+    }
+    my $anonBranch="${label}-$random";
     `git checkout -b $anonBranch`;
     `git add .`;
     `git commit -m "anon" --amend`;
