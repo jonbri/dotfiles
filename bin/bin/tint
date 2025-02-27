@@ -1,0 +1,16 @@
+#!/bin/bash
+
+args="$@"
+
+echo "running..."
+command="tint-args $args --command"
+
+tintArgsResult=`${command}`
+echo $tintArgsResult
+
+if [[ $args == *"--command"* ]] || [[ $args == *"-c"* ]]; then
+  exit 0
+fi
+
+sleep 1
+eval $tintArgsResult
