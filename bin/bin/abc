@@ -9,6 +9,7 @@ my $a_list;
 my $a_count;
 my $a_exact;
 my $a_first;
+my $a_base;
 my $a_help;
 
 my $A = $ENV{A};
@@ -24,18 +25,20 @@ USAGE:
   >> aa [path] [options]
 
 Options:
-  --help   (-h) See this message
-  --root   (-r) Specify root dir (a,b,c)
-  --list   (-l) Show matches
-  --first  (-f) Show nth match (default first)
-  --count  (-c) Show number of matches
-  --exact  (-e) Exact match
+  --help  (-h) See this message
+  --root  (-r) Specify root dir (a,b,c)
+  --list  (-l) Show matches
+  --first (-f) Show nth match (default first)
+  --count (-c) Show number of matches
+  --base  (-b) Show root path
+  --exact (-e) Exact match
 
 EXAMPLES:
   >> abc        # $A
   >> abc -r b   # $B
   >> abc foobar # $A/foobar
   >> abc -r b fo*ar # $C/foobar
+  >> abc foobar --base # /path/to/a
 
 HELP
 }
@@ -64,6 +67,7 @@ MAIN: {
         'count' => \$a_count,
         'exact' => \$a_exact,
         'first:s' => \$a_first,
+        'base' => \$a_base,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -113,6 +117,7 @@ MAIN: {
         exit 0;
     }
 
+    my $path = "$PREFIX/$pathArg";
     if (defined $a_first) {
         if ($a_first eq "") {
             $a_first = 0;
@@ -124,13 +129,13 @@ MAIN: {
         }
         $pathArg = $list[$a_first];
         chomp $pathArg;
-        print "${pathArg}\n";
-        exit 0;
+        $path = $pathArg;
+    }
+    if (defined $a_base) {
+        $path = $PREFIX;
     }
 
-    my $path = "$PREFIX/$pathArg";
     print "${path}\n";
-
     exit 0;
 }
 

@@ -10,5 +10,6 @@ elif [ $count -eq 1 ]; then
 else
   results=`abc $@ --list`
   echo $results | tr ' ' '\n'
+  eval "cd `abc --base $@`"
 fi
 
