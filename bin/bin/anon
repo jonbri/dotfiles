@@ -5,6 +5,7 @@ use strict;
 use Getopt::Long;
 
 my $a_restore;
+my $a_list;
 my $a_help;
 
 sub help() {
@@ -17,11 +18,14 @@ USAGE:
 
 Options:
   --restore (-r) Revert to previous anon
+  --list    (-l) List all anon branches
   --help    (-h) See this message
 
 EXAMPLES:
   >> anon     # branch: anon-1234
   >> anon foo # branch: anon-foo-1234
+  >> anon --list # list all
+  >> anon foo --list # filter by pattern "foo"
 
 HELP
 }
@@ -37,6 +41,7 @@ sub getFirstNonOptionArg {
 MAIN: {
     GetOptions(
         'restore' => \$a_restore,
+        'list' => \$a_list,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -55,6 +60,17 @@ MAIN: {
         `gwip`;
         `git checkout $restoreBranch`;
         `git reset --hard $restoreSHA`;
+        exit 0;
+    }
+
+    if (defined $a_list) {
+        my $anonBranches = "";
+        if (defined $firstArg) {
+            $anonBranches = `git branch | grep anon | grep $firstArg`;
+        } else {
+            $anonBranches = `git branch | grep anon`;
+        }
+        print $anonBranches;
         exit 0;
     }
 
