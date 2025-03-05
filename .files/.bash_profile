@@ -175,7 +175,6 @@ alias V="v ${DOTFILES_DIR}/.config/nvim/init.lua"
 alias ie="i && e"
 alias it="i && t"
 alias fast="slow -d 0.03"
-alias dict="$EDITOR -c \"colorscheme sorbet | normal Gzz\" $HOME/dictionary/custom.dictionary"
 alias goals="m --color sorbet goals"
 alias sepp="sep 80"
 alias jest="y test --watch"
@@ -212,6 +211,12 @@ cct() {
   if [ $count -eq 1 ]; then
     t
   fi
+}
+
+# A B C
+dict() {
+    $EDITOR -c "colorscheme sorbet | normal Gzz" $HOME/dictionary/custom.dictionary
+    cd $HOME/dictionary && pb
 }
 
 alias pinf="pin --force"
