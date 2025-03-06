@@ -105,9 +105,11 @@ MAIN: {
 
     my @list = runCommand("find $PREFIX -maxdepth 1 -type d -name \"$pathArg\"");
     if (defined $a_list) {
+        my $i = 0;
         foreach my $line (@list) {
             chomp $line;
-            print "$line\n";
+            print "${i}${line}\n";
+            $i++;
         }
         exit 0;
     }
