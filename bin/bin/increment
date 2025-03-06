@@ -33,6 +33,7 @@ EXAMPLES:
   >> increment my-key    # increments the "my-key" value
   >> increment my-key -s # print value
   >> increment my-key -d # remove my-key
+  >> increment my-key:4  # set value
 
 HELP
 }
@@ -96,12 +97,21 @@ MAIN: {
       exit 0;
     }
 
-    $KEY = $firstArg;
-    if (! defined $KEY) {
+    if (! defined $firstArg) {
       print "Needs key, passed in as an arg\n";
       exit 1;
     }
+
+    my $doesFirstArgContainColon = $firstArg =~ /:/;
+    my $AFTER_COLON;
+    if ($doesFirstArgContainColon) {
+      $AFTER_COLON = $firstArg;
+      $AFTER_COLON =~ s/.*://;
+    }
+
+    $KEY = $firstArg;
     $KEY = uc($KEY);
+    $KEY = $KEY =~ s/:.*//r;
 
     $FILE = "$tmp_dir/$KEY";
 
@@ -116,9 +126,13 @@ MAIN: {
       print "done\n";
       exit 0;
     }
-
+    
     if (!defined $a_show && ! -e $FILE) {
-      render(0);
+      if (defined $AFTER_COLON) {
+        render($AFTER_COLON);
+      } else {
+        render(0);
+      }
       exit 1;
     }
 
@@ -128,16 +142,16 @@ MAIN: {
     }
 
     my $VALUE = `cat $FILE`;
-
     if (defined $a_show) {
       print "$VALUE\n";
       exit 0;
     }
 
-    my $INC = $VALUE + 1;
-
-    render($INC);
-
+    if (defined $AFTER_COLON) {
+      render($AFTER_COLON);
+    } else {
+      render($VALUE + 1);
+    }
     exit 0;
 }
 
