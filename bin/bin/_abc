@@ -4,7 +4,7 @@ count=`abc $@ --count`
 
 hasFirstArg=false
 for arg in "$@"; do
-  if [ "$arg" == "-f" ] || [ "$arg" == "--first" ]; then
+  if [ "$arg" == "-n" ] || [ "$arg" == "--nth" ]; then
     hasFirstArg=true
     break
   fi

@@ -8,7 +8,7 @@ my $a_root;
 my $a_list;
 my $a_count;
 my $a_exact;
-my $a_first;
+my $a_nth;
 my $a_base;
 my $a_help;
 
@@ -28,7 +28,7 @@ Options:
   --help  (-h) See this message
   --root  (-r) Specify root dir (a,b,c)
   --list  (-l) Show matches
-  --first (-f) Show nth match (default first)
+  --nth   (-n) Show nth match (default: 0)
   --count (-c) Show number of matches
   --base  (-b) Show root path
   --exact (-e) Exact match
@@ -66,7 +66,7 @@ MAIN: {
         'list' => \$a_list,
         'count' => \$a_count,
         'exact' => \$a_exact,
-        'first:s' => \$a_first,
+        'nth:s' => \$a_nth,
         'base' => \$a_base,
         'help' => \$a_help
     ) || (help() && exit 1);
@@ -120,16 +120,16 @@ MAIN: {
     }
 
     my $path = "$PREFIX/$pathArg";
-    if (defined $a_first) {
-        if ($a_first eq "") {
-            $a_first = 0;
+    if (defined $a_nth) {
+        if ($a_nth eq "") {
+            $a_nth = 0;
         }
-        $a_first = int($a_first);
-        if ($a_first < 0 || $a_first >= scalar @list) {
-            print STDERR "Invalid index: $a_first\n";
+        $a_nth = int($a_nth);
+        if ($a_nth < 0 || $a_nth >= scalar @list) {
+            print STDERR "Invalid index: $a_nth\n";
             exit 1;
         }
-        $pathArg = $list[$a_first];
+        $pathArg = $list[$a_nth];
         chomp $pathArg;
         $path = $pathArg;
     }
