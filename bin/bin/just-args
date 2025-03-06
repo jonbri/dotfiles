@@ -65,7 +65,7 @@ MAIN: {
     }
 
     my $arg = join(" ", @specArgs);
-    my $command = "./node_modules/.bin/jest $arg --watch";
+    my $command = "DEBUG_PRINT_LIMIT=100000 ./node_modules/.bin/jest $arg --watch";
 
     if (defined $a_rootDir) {
         $command .= " --rootDir $a_rootDir";
