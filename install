@@ -1,11 +1,43 @@
 #!/usr/bin/perl -w
 
 use strict;
+
 use Cwd 'cwd';
+use Getopt::Long;
 
 my $home=$ENV{HOME};
 my $homeBinDir="$home/bin";
 my $cwd = cwd();
+
+my $a_local;
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+install
+
+USAGE:
+  >> install [options]
+
+Options:
+  --help  (-h) See this message
+  --local (-l) Only local operations
+
+EXAMPLES:
+  >> install
+  >> install --local
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
 
 sub runCommand($) {
     my ($command) = @_;
@@ -15,50 +47,70 @@ sub runCommand($) {
     return @output;
 }
 
+
 MAIN: {
-    print "Updating dotfiles...\n";
+    GetOptions(
+        'local' => \$a_local,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    print "updating bin...\n";
+    `mkdir -p $cwd/tmp`;
+    `mkdir -p $homeBinDir`;
+    `mkdir -p $homeBinDir/save`;
+    `cp bin/bin/* $homeBinDir`;
+
+    print "updating dotfiles...\n";
     opendir(DH, "$cwd/.files");
     my @files = readdir(DH);
     closedir(DH);
-
     # create symlinks for dotfiles
     foreach (@files) {
         # skip . and ..
         next if($_ =~ /^\.$/);
         next if($_ =~ /^\.\.$/);
-
         print join('', runCommand("ln -sfv $cwd/.files/$_ $home"));
     }
 
     # create symlinks for nvim config
     print join('', runCommand("ln -sfv $cwd/.config/nvim $home/.config"));
 
-    `mkdir -p $cwd/tmp`;
-    `mkdir -p $homeBinDir`;
-    `mkdir -p $homeBinDir/save`;
-    `cp bin/bin/* $homeBinDir`;
-
     `mkdir -p $home/a`;
     `mkdir -p $home/b`;
     `mkdir -p $home/c`;
 
-    my $dictionaryDir="$home/dictionary";
-    print "\nupdating dictionary...\n";
-    if (!-d "$dictionaryDir") {
-        `git clone git\@github.com:jonbri/dictionary.git $dictionaryDir`;
-    } else {
-        `git -C $dictionaryDir fetch`;
+    print "\n";
+
+    if (!defined $a_local) {
+        my $dictionaryDir="$home/dictionary";
+        print "updating dictionary...\n";
+        if (!-d "$dictionaryDir") {
+            `git clone git\@github.com:jonbri/dictionary.git $dictionaryDir`;
+        } else {
+            `git -C $dictionaryDir fetch`;
+        }
     }
 
-    my $marbleDir="$home/marble";
-    print "\nupdating marble...\n";
-    if (!-d "$marbleDir") {
-        `git clone git\@github.com:jonbri/marble.git $marbleDir`;
-    } else {
-        `git -C $marbleDir fetch`;
+    if (!defined $a_local) {
+        my $marbleDir="$home/marble";
+        print "updating marble...\n";
+        if (!-d "$marbleDir") {
+            `git clone git\@github.com:jonbri/marble.git $marbleDir`;
+        } else {
+            `git -C $marbleDir fetch`;
+        }
     }
 
-    print "\nDone\n";
+    print "Done\n";
     print join('', runCommand("welcome --quiet"));
+
+    exit 0;
 }
 
