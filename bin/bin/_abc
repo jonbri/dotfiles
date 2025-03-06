@@ -2,9 +2,17 @@
 
 count=`abc $@ --count`
 
+hasFirstArg=false
+for arg in "$@"; do
+  if [ "$arg" == "-f" ] || [ "$arg" == "--first" ]; then
+    hasFirstArg=true
+    break
+  fi
+done
+
 if [ $count -eq 0 ]; then
   echo 'no matches'
-elif [ $count -eq 1 ]; then
+elif [ $count -eq 1 ] || [ $hasFirstArg == true ]; then
   eval "cd `abc $@`"
   persona --become --quiet
 else
