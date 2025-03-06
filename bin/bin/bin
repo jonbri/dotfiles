@@ -115,7 +115,7 @@ MAIN: {
     }
 
     if (-e $targetFile) {
-        print "${targetFile} exists\n";
+        # print "${targetFile} exists\n";
     } else {
         confirm("${targetFile} does NOT exist. Continue and create? ");
         my $touchCommand = "touch $targetFile";
