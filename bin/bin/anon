@@ -78,12 +78,13 @@ MAIN: {
     chomp $branch;
 
     `crumb "anonStart=$branch"`;
-    my $random = int(rand(9999));
+    my $stamp = `stamp`;
+    chomp $stamp;
     my $label = "anon";
     if (defined $firstArg) {
         $label = "anon-$firstArg";
     }
-    my $anonBranch="${label}-$random";
+    my $anonBranch="${label}-$stamp";
     `git checkout -b $anonBranch`;
     `git add .`;
     `git commit -m "anon" --amend`;

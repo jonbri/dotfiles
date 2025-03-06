@@ -1,0 +1,58 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+use Getopt::Long;
+
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+stamp - display timestamp
+
+USAGE:
+  >> stamp [options]
+
+Options:
+  --help   (-h) See this message
+
+EXAMPLES:
+  # March 5th, 2025 at 12:00pm
+  >> stamp # 202503051200
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help,
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
+    $year = $year+1900;
+    $mon = sprintf("%02d", $mon+1);
+    $mday = sprintf("%02d", $mday);
+    $hour = sprintf("%02d", $hour);
+    $min = sprintf("%02d", $min);
+    $sec = sprintf("%02d", $sec);
+
+    print "${year}${mon}${mday}${hour}${min}${sec}\n";
+    exit 0;
+}
+
