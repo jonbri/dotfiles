@@ -6,6 +6,7 @@ use Getopt::Long;
 
 my $a_force;
 my $a_dryRun;
+my $a_nth;
 my $a_local;
 my $a_verbose;
 my $a_remote;
@@ -20,6 +21,7 @@ USAGE:
   >> pull (pattern) [options]
 
 Options:
+  --nth     (-n) Choose the nth option from list
   --force   (-f) Discard outstanding changes
   --dry-run (-d) Don't actually update HEAD
   --local   (-l) Don't fetch, just reset
@@ -54,6 +56,7 @@ sub runCommand($) {
 MAIN: {
     GetOptions(
         'help' => \$a_help,
+        'nth:s' => \$a_nth,
         'dry-run' => \$a_dryRun,
         'force' => \$a_force,
         'remote:s' => \$a_remote,
@@ -191,12 +194,25 @@ MAIN: {
             print "no match\n";
             exit 1;
         } elsif (scalar @grepResults > 1) {
-            print "multiple matches found:\n";
-            foreach (@grepResults) {
-                my @s = split('/', $_);
-                print "$s[2]";
+            if (defined $a_nth) {
+                if ($a_nth eq "") {
+                    $a_nth = 0;
+                }
+
+                my $result = $grepResults[$a_nth];
+                my @s = split('/', $result);
+                $TARGET_BRANCH="$s[2]";
+                chomp($TARGET_BRANCH);
+            } else {
+                print "multiple matches found:\n";
+                my $i = 0;
+                foreach (@grepResults) {
+                    my @s = split('/', $_);
+                    print "${i}$s[2]";
+                    $i++;
+                }
+                exit 0;
             }
-            exit 0;
         } else {
             foreach (@grepResults) {
                 my @s = split('/', $_);
