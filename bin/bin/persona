@@ -18,6 +18,9 @@ my $a_knownFrom;
 my $a_whoami;
 my $a_help;
 
+my $previousPersona = `increment PREVIOUS_PERSONA --show`;
+chomp $previousPersona;
+
 sub help() {
     print STDERR <<'HELP';
 
@@ -84,11 +87,36 @@ sub readConfig {
     close FH;
 }
 
+readConfig();
+my $currentPersona;
+my $email = `git config --get user.email`;
+chomp $email;
+my $name = `git config --get user.name`;
+chomp $name;
+# loop over places and find match with email and name
+for(keys %places){
+    if ($email eq $places{$_}{email} && $name eq $places{$_}{name}) {
+        $currentPersona = $_;
+        last;
+    }
+}
+
 sub applyPlace($) {
     my ($place)=@_;
 
     if (!defined $place) {
       return;
+    }
+
+    if ($place eq "P") {
+        $place = $previousPersona;
+        if (!defined $place) {
+            exit 0;
+        }
+    }
+
+    if (defined $currentPersona && $currentPersona ne $place) {
+        `increment "PREVIOUS_PERSONA:${currentPersona}"`;
     }
 
     if (!defined $places{$place}) {
@@ -169,7 +197,6 @@ MAIN: {
         'known-from=s' => \$a_knownFrom,
         'help' => \$a_help
     ) || (help() && exit 1);
-    readConfig();
 
     # show help if either arg or option is given
     my $firstArg = getFirstNonOptionArg();
@@ -186,20 +213,11 @@ MAIN: {
     }
 
     if (defined $a_whoami) {
-        my $email = `git config --get user.email`;
-        chomp $email;
-        my $name = `git config --get user.name`;
-        chomp $name;
-
-        # loop over places and find match with email and name
-        for(keys %places){
-            if ($email eq $places{$_}{email} && $name eq $places{$_}{name}) {
-                print "$_\n";
-                exit 0;
-            }
+        if (defined $currentPersona) {
+            print "$currentPersona\n";
+        } else {
+            print "not found\n";
         }
-
-        print "not found\n";
         exit 0;
     }
 
