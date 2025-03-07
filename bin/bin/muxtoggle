@@ -64,7 +64,7 @@ MAIN: {
       exit 0;
     }
 
-    $MUX_TOGGLE=`increment $KEY --print`;
+    $MUX_TOGGLE=`var $KEY`;
     chomp $MUX_TOGGLE;
 
     my $mod = scalar (@output) + 1;
