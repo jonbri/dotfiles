@@ -5,9 +5,6 @@ use strict;
 use Getopt::Long;
 
 my $a_help;
-my $a_print;
-
-my $KEY = "";
 
 sub help() {
     print STDOUT <<'HELP';
@@ -17,13 +14,8 @@ increment
 USAGE:
   >> increment [key] [options]
 
-Options:
-  --print   (-p) print value
-
 EXAMPLES:
-  >> increment key    # increment the "key" value
-  >> increment key -p # print value
-  >> increment key -d # remove key
+  >> increment key
 
 HELP
 }
@@ -38,8 +30,7 @@ sub getFirstNonOptionArg {
 
 MAIN: {
     GetOptions(
-        'help' => \$a_help,
-        'print' => \$a_print,
+        'help' => \$a_help
     ) || (help() && exit 1);
 
     # show help if either arg or option is given
@@ -55,22 +46,19 @@ MAIN: {
       exit 1;
     }
 
-    $KEY = $firstArg;
-    $KEY = uc($KEY);
-    $KEY = $KEY =~ s/:.*//r;
+    my $key = "";
+    $key = $firstArg;
+    $key = uc($key);
+    $key = $key =~ s/:.*//r;
 
-    if (defined $a_print) {
-      print `var $KEY`;
-      exit 0;
-    }
-
-    my $value = `var $KEY`;
+    my $value = `var $key`;
     chomp $value;
     if ($value eq "") {
       $value = -1;
     }
+
     my $newValue = $value + 1;
-    `var "${KEY}:${newValue}"`;
+    `var "${key}:${newValue}"`;
     exit 0;
 }
 
