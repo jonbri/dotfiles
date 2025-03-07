@@ -2,17 +2,17 @@
 
 count=`abc $@ --count`
 
-hasFirstArg=false
+hasNArg=false
 for arg in "$@"; do
   if [ "$arg" == "-n" ] || [ "$arg" == "--nth" ]; then
-    hasFirstArg=true
+    hasNArg=true
     break
   fi
 done
 
 if [ $count -eq 0 ]; then
   echo 'no matches'
-elif [ $count -eq 1 ] || [ $hasFirstArg == true ]; then
+elif [ $count -eq 1 ] || [ $hasNArg == true ]; then
   eval "cd `abc $@`"
   persona --become --quiet
 else

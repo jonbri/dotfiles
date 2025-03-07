@@ -103,7 +103,10 @@ MAIN: {
         $pathArg = $firstArg;
     }
 
-    my @list = runCommand("find $PREFIX -maxdepth 1 -type d -iname \"$pathArg\"");
+    my @list = runCommand("find $PREFIX -maxdepth 1 -type d -iname \"$pathArg\" -printf \"%Ts/%f\\n\" | sort -n | tac");
+    @list = map { $_ =~ s/^[^\/]*\///; $_ } @list;
+    @list = grep { $_ ne "$a_root\n" } @list;
+
     if (defined $a_list) {
         my $i = 0;
         foreach my $line (@list) {
@@ -131,7 +134,7 @@ MAIN: {
         }
         $pathArg = $list[$a_nth];
         chomp $pathArg;
-        $path = $pathArg;
+        $path = "$PREFIX/$pathArg";
     }
     if (defined $a_base) {
         $path = $PREFIX;
