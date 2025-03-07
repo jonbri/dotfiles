@@ -1,0 +1,134 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+use Getopt::Long;
+
+my $a_help;
+my $a_delete;
+my $a_verbose;
+
+my $KEY = "";
+my $FILE = "";
+my $dotfiles_dir = $ENV{"DOTFILES_DIR"};
+my $tmp_dir = "$dotfiles_dir/tmp";
+
+sub help() {
+    print STDOUT <<'HELP';
+
+var
+
+USAGE:
+  >> var [key] [options]
+
+Options:
+  --delete  (-d) remove variable
+  --verbose (-v) print extra info
+
+EXAMPLES:
+  >> var           # print variables
+  >> var key       # print value
+  >> var key:value # set value
+  >> var key -d    # remove entry
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+sub render($) {
+    my ($num)=@_;
+    open(my $fh, '>', $FILE) or die "Could not open file '$FILE' $!";
+    print $fh $num;
+    close $fh;
+}
+
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help,
+        'delete' => \$a_delete,
+        'verbose' => \$a_verbose
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if (! -e $tmp_dir) {
+      runCommand("mkdir -p ${tmp_dir}");
+    }
+
+    if (defined $a_verbose) {
+        print "files: ${tmp_dir}\n";
+    }
+
+    if (!defined $firstArg) {
+      my @files = runCommand("ls ${tmp_dir}");
+      foreach my $file (@files) {
+        chomp $file;
+        if ($file =~ /[a-z]/) {
+          next;
+        }
+        my $contents = `cat $tmp_dir/$file`;
+        chomp $contents;
+        print "$file: $contents\n";
+      }
+      exit 0;
+    }
+
+    my $AFTER_COLON;
+    if ($firstArg =~ /:/) {
+      $AFTER_COLON = $firstArg;
+      $AFTER_COLON =~ s/.*://;
+    }
+
+    $KEY = $firstArg;
+    $KEY = uc($KEY);
+    $KEY = $KEY =~ s/:.*//r;
+
+    $FILE = "$tmp_dir/$KEY";
+
+    if (defined $a_delete) {
+      if (! -e $FILE) {
+        print "$FILE does not exist\n";
+        exit 1;
+      }
+      my $command = "rm ${FILE}";
+      print "$command\n";
+      runCommand($command);
+      print "done\n";
+      exit 0;
+    }
+
+    if (!defined $AFTER_COLON) {
+      if (! -e $FILE) {
+        print "\n";
+        exit 0;
+      }
+      my $VALUE = `cat $FILE`;
+      print "$VALUE\n";
+      exit 0;
+    }
+
+    render($AFTER_COLON);
+    exit 0;
+}
+

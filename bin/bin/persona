@@ -18,7 +18,7 @@ my $a_knownFrom;
 my $a_whoami;
 my $a_help;
 
-my $previousPersona = `increment PREVIOUS_PERSONA --show`;
+my $previousPersona = `var PREVIOUS_PERSONA`;
 chomp $previousPersona;
 
 sub help() {
@@ -116,7 +116,7 @@ sub applyPlace($) {
     }
 
     if (defined $currentPersona && $currentPersona ne $place) {
-        `increment "PREVIOUS_PERSONA:${currentPersona}"`;
+        `var "PREVIOUS_PERSONA:${currentPersona}"`;
     }
 
     if (!defined $places{$place}) {
