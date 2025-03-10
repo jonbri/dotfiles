@@ -12,9 +12,9 @@ my $a_nth;
 my $a_base;
 my $a_help;
 
-my $ABC1 = $ENV{ABC1};
-my $ABC2 = $ENV{ABC2};
-my $ABC3 = $ENV{ABC3};
+my $_1 = $ENV{_1};
+my $_2 = $ENV{_2};
+my $_3 = $ENV{_3};
 
 sub help() {
     print STDOUT <<'HELP';
@@ -34,11 +34,11 @@ Options:
   --exact (-e) Exact match
 
 EXAMPLES:
-  >> 123        # $ABC1
-  >> 123 -r 2   # $ABC2
-  >> 123 foobar # $ABC1/foobar
-  >> 123 -r 2 fo*ar # $ABC2/foobar
-  >> 123 foobar --base # /path/to/ABC1
+  >> 123        # $_1
+  >> 123 -r 2   # $_2
+  >> 123 foobar # $_1/foobar
+  >> 123 -r 2 fo*ar # $_2/foobar
+  >> 123 foobar --base # /path/to/_1
 
 HELP
 }
@@ -86,11 +86,11 @@ MAIN: {
         $a_root = "1";
     }
 
-    my $PREFIX = $ABC1;
+    my $PREFIX = $_1;
     if ($a_root eq "2") {
-        $PREFIX = $ABC2;
+        $PREFIX = $_2;
     } elsif ($a_root eq "3") {
-        $PREFIX = $ABC3;
+        $PREFIX = $_3;
     }
 
     my $pathArg = "";

@@ -40,7 +40,7 @@ Options:
 EXAMPLES:
   >> purge           # interactive mode with all branches
   >> purge -d        # see local branches
-  >> purge foo -d    # see "abc" matches
+  >> purge foo -d    # see "foo" matches
   >> purge foo -f    # force delete via pattern
   >> purge -o remote # only show remote branches
   >> purge -o local  # only show local branches
