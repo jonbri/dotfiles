@@ -111,7 +111,7 @@ MAIN: {
         my $i = 0;
         foreach my $line (@list) {
             chomp $line;
-            print "${i}${line}\n";
+            print "${a_root}${i}${line}\n";
             $i++;
         }
         exit 0;
