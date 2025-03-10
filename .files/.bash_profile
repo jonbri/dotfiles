@@ -19,9 +19,9 @@ export WIN_HOME="/mnt/c/Users/${USER}"
 export WIN_DESKTOP="${WIN_HOME}/desktop"
 export WIN_DESKTOP_SAVE="${WIN_DESKTOP}/save"
 
-export A="${HOME}/a"
-export B="${HOME}/b"
-export C="${HOME}/c"
+export ABC1="${HOME}/1"
+export ABC2="${HOME}/2"
+export ABC3="${HOME}/3"
 
 export N_PREFIX=$HOME/.n
 mkdir -p $N_PREFIX
@@ -183,42 +183,41 @@ alias jest="y test --watch"
 alias vitef="./node_modules/.bin/vite --force"
 alias droplet="ssh root@192.81.214.19"
 
-# A B C
-aa() {
-  source _abc --root a $@
+# 123
+1() {
+  source _123 --root 1 $@
 }
-bb() {
-  source _abc --root b $@
+2() {
+  source _123 --root 2 $@
 }
-cc() {
-  source _abc --root c $@
+3() {
+  source _123 --root 3 $@
 }
-aat() {
-  aa $@
-  count=`abc $@ --root a --count`
+1t() {
+  1 $@
+  count=`123 $@ --root 1 --count`
   if [ $count -eq 1 ]; then
     t
   fi
 }
-bbt() {
-  bb $@
-  count=`abc $@ --root b --count`
+2t() {
+  2 $@
+  count=`123 $@ --root 2 --count`
   if [ $count -eq 1 ]; then
     t
   fi
 }
-cct() {
-  cc $@
-  count=`abc $@ --root c --count`
+3t() {
+  3 $@
+  count=`123 $@ --root 3 --count`
   if [ $count -eq 1 ]; then
     t
   fi
 }
 
-# A B C
 dict() {
-    $EDITOR -c "colorscheme sorbet | normal Gzz" $HOME/dictionary/custom.dictionary
-    cd $HOME/dictionary && pb
+  $EDITOR -c "colorscheme sorbet | normal Gzz" $HOME/dictionary/custom.dictionary
+  cd $HOME/dictionary && pb
 }
 
 alias pinf="pin --force"

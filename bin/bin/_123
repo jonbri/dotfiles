@@ -1,6 +1,6 @@
 #!/bin/bash
 
-count=`abc $@ --count`
+count=`123 $@ --count`
 
 hasNArg=false
 for arg in "$@"; do
@@ -13,11 +13,11 @@ done
 if [ $count -eq 0 ]; then
   echo 'no matches'
 elif [ $count -eq 1 ] || [ $hasNArg == true ]; then
-  eval "cd `abc $@`"
+  eval "cd `123 $@`"
   persona --become --quiet
 else
-  results=`abc $@ --list`
+  results=`123 $@ --list`
   echo $results | tr ' ' '\n'
-  eval "cd `abc --base $@`"
+  eval "cd `123 --base $@`"
 fi
 
