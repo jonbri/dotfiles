@@ -16,8 +16,11 @@ elif [ $count -eq 1 ] || [ $hasNArg == true ]; then
   eval "cd `123 $@`"
   persona --become --quiet
 else
+  clear
+  BASE=`123 --base $@`
+  slow "${BASE}" -d 0.03
   results=`123 $@ --list`
   echo $results | tr ' ' '\n'
-  eval "cd `123 --base $@`"
+  eval "cd $BASE"
 fi
 
