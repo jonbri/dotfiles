@@ -1,0 +1,94 @@
+1() {
+  source _123 --root 1 $@
+}
+2() {
+  source _123 --root 2 $@
+}
+3() {
+  source _123 --root 3 $@
+}
+1t() {
+  1 $@
+  count=`123 $@ --root 1 --count`
+  totalCount=`123 "*" $@ --root 1 --count`
+  if [ $count -eq 1 ] || [ $count -eq $totalCount ]; then
+    t
+  fi
+}
+2t() {
+  2 $@
+  count=`123 $@ --root 2 --count`
+  totalCount=`123 "*" $@ --root 2 --count`
+  if [ $count -eq 1 ] || [ $count -eq $totalCount ]; then
+    t
+  fi
+}
+3t() {
+  3 $@
+  count=`123 $@ --root 3 --count`
+  totalCount=`123 "*" $@ --root 3 --count`
+  if [ $count -eq 1 ] || [ $count -eq $totalCount ]; then
+    t
+  fi
+}
+alias 10="1 -n 0"
+alias 10t="1t -n 0"
+alias 11="1 -n 1"
+alias 11t="1t -n 1"
+alias 12="1 -n 2"
+alias 12t="1t -n 2"
+alias 13="1 -n 3"
+alias 13t="1t -n 3"
+alias 14="1 -n 4"
+alias 14t="1t -n 4"
+alias 15="1 -n 5"
+alias 15t="1t -n 5"
+alias 16="1 -n 6"
+alias 16t="1t -n 6"
+alias 17="1 -n 7"
+alias 17t="1t -n 7"
+alias 18="1 -n 8"
+alias 18t="1t -n 8"
+alias 19="1 -n 9"
+alias 19t="1t -n 9"
+alias 20="2 -n 0"
+alias 20t="2t -n 0"
+alias 21="2 -n 1"
+alias 21t="2t -n 1"
+alias 22="2 -n 2"
+alias 22t="2t -n 2"
+alias 23="2 -n 3"
+alias 23t="2t -n 3"
+alias 24="2 -n 4"
+alias 24t="2t -n 4"
+alias 25="2 -n 5"
+alias 25t="2t -n 5"
+alias 26="2 -n 6"
+alias 26t="2t -n 6"
+alias 27="2 -n 7"
+alias 27t="2t -n 7"
+alias 28="2 -n 8"
+alias 28t="2t -n 8"
+alias 29="2 -n 9"
+alias 29t="2t -n 9"
+alias 30="3 -n 0"
+alias 30t="3t -n 0"
+alias 31="3 -n 1"
+alias 31t="3t -n 1"
+alias 32="3 -n 2"
+alias 32t="3t -n 2"
+alias 33="3 -n 3"
+alias 33t="3t -n 3"
+alias 34="3 -n 4"
+alias 34t="3t -n 4"
+alias 35="3 -n 5"
+alias 35t="3t -n 5"
+alias 36="3 -n 6"
+alias 36t="3t -n 6"
+alias 37="3 -n 7"
+alias 37t="3t -n 7"
+alias 38="3 -n 8"
+alias 38t="3t -n 8"
+alias 39="3 -n 9"
+alias 39t="3t -n 9"
+
