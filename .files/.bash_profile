@@ -19,9 +19,9 @@ export WIN_HOME="/mnt/c/Users/${USER}"
 export WIN_DESKTOP="${WIN_HOME}/desktop"
 export WIN_DESKTOP_SAVE="${WIN_DESKTOP}/save"
 
+export _0="${HOME}/0"
 export _1="${HOME}/1"
 export _2="${HOME}/2"
-export _3="${HOME}/3"
 
 export N_PREFIX=$HOME/.n
 mkdir -p $N_PREFIX
@@ -255,7 +255,7 @@ export LIBGL_ALWAYS_INDIRECT=1
 export BUN_INSTALL="$HOME/.bun"
 export PATH=$BUN_INSTALL/bin:$PATH
 
-source $HOME/.123
+source $HOME/.012
 
 welcome --quiet
 

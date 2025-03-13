@@ -12,21 +12,21 @@ my $a_nth;
 my $a_base;
 my $a_help;
 
+my $_0 = $ENV{_0};
 my $_1 = $ENV{_1};
 my $_2 = $ENV{_2};
-my $_3 = $ENV{_3};
 
 sub help() {
     print STDOUT <<'HELP';
 
-    123
+    012
 
 USAGE:
   >> aa [path] [options]
 
 Options:
   --help  (-h) See this message
-  --root  (-r) Specify root dir (1,2,3)
+  --root  (-r) Specify root dir (0,1,2)
   --list  (-l) Show matches
   --nth   (-n) Show nth match (default: 0)
   --count (-c) Show number of matches
@@ -34,11 +34,11 @@ Options:
   --exact (-e) Exact match
 
 EXAMPLES:
-  >> 123        # $_1
-  >> 123 -r 2   # $_2
-  >> 123 foobar # $_1/foobar
-  >> 123 -r 2 fo*ar # $_2/foobar
-  >> 123 foobar --base # /path/to/_1
+  >> 012        # $_0
+  >> 012 -r 1   # $_1
+  >> 012 foobar # $_0/foobar
+  >> 012 -r 1 fo*ar # $_1/foobar
+  >> 012 foobar --base # /path/to/_0
 
 HELP
 }
@@ -83,14 +83,14 @@ MAIN: {
     }
 
     if (!defined $a_root) {
-        $a_root = "1";
+        $a_root = "0";
     }
 
-    my $PREFIX = $_1;
-    if ($a_root eq "2") {
+    my $PREFIX = $_0;
+    if ($a_root eq "1") {
+        $PREFIX = $_1;
+    } elsif ($a_root eq "2") {
         $PREFIX = $_2;
-    } elsif ($a_root eq "3") {
-        $PREFIX = $_3;
     }
 
     my $pathArg = "";

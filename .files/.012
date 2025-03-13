@@ -1,41 +1,61 @@
+0() {
+  source _012 --root 0 $@
+}
 1() {
-  source _123 --root 1 $@
+  source _012 --root 1 $@
 }
 2() {
-  source _123 --root 2 $@
+  source _012 --root 2 $@
 }
-3() {
-  source _123 --root 3 $@
+0t() {
+  0 $@
+  count=`012 $@ --root 0 --count`
+  totalCount=`012 "*" $@ --root 0 --count`
+  if [ $count -eq 1 ] || [ $count -eq $totalCount ]; then
+    t
+  fi
 }
 1t() {
   1 $@
-  count=`123 $@ --root 1 --count`
-  totalCount=`123 "*" $@ --root 1 --count`
+  count=`012 $@ --root 1 --count`
+  totalCount=`012 "*" $@ --root 1 --count`
   if [ $count -eq 1 ] || [ $count -eq $totalCount ]; then
     t
   fi
 }
 2t() {
   2 $@
-  count=`123 $@ --root 2 --count`
-  totalCount=`123 "*" $@ --root 2 --count`
+  count=`012 $@ --root 2 --count`
+  totalCount=`012 "*" $@ --root 2 --count`
   if [ $count -eq 1 ] || [ $count -eq $totalCount ]; then
     t
   fi
 }
-3t() {
-  3 $@
-  count=`123 $@ --root 3 --count`
-  totalCount=`123 "*" $@ --root 3 --count`
-  if [ $count -eq 1 ] || [ $count -eq $totalCount ]; then
-    t
-  fi
-}
+alias 00="0 -n 0"
+alias 00t="0t -n 0"
+alias 01="0 -n 1"
+alias 01t="0t -n 1"
+alias 02="0 -n 2"
+alias 02t="0t -n 2"
+alias 03="0 -n 3"
+alias 03t="0t -n 3"
+alias 04="0 -n 4"
+alias 04t="0t -n 4"
+alias 05="0 -n 5"
+alias 05t="0t -n 5"
+alias 06="0 -n 6"
+alias 06t="0t -n 6"
+alias 07="0 -n 7"
+alias 07t="0t -n 7"
+alias 08="0 -n 8"
+alias 08t="0t -n 8"
+alias 09="0 -n 9"
+alias 09t="0t -n 9"
 alias 10="1 -n 0"
 alias 10t="1t -n 0"
 alias 11="1 -n 1"
 alias 11t="1t -n 1"
-alias 12="1 -n 2"
+alias 22="1 -n 2"
 alias 12t="1t -n 2"
 alias 13="1 -n 3"
 alias 13t="1t -n 3"
@@ -71,24 +91,4 @@ alias 28="2 -n 8"
 alias 28t="2t -n 8"
 alias 29="2 -n 9"
 alias 29t="2t -n 9"
-alias 30="3 -n 0"
-alias 30t="3t -n 0"
-alias 31="3 -n 1"
-alias 31t="3t -n 1"
-alias 32="3 -n 2"
-alias 32t="3t -n 2"
-alias 33="3 -n 3"
-alias 33t="3t -n 3"
-alias 34="3 -n 4"
-alias 34t="3t -n 4"
-alias 35="3 -n 5"
-alias 35t="3t -n 5"
-alias 36="3 -n 6"
-alias 36t="3t -n 6"
-alias 37="3 -n 7"
-alias 37t="3t -n 7"
-alias 38="3 -n 8"
-alias 38t="3t -n 8"
-alias 39="3 -n 9"
-alias 39t="3t -n 9"
 
