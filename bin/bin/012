@@ -22,7 +22,7 @@ sub help() {
     012
 
 USAGE:
-  >> aa [path] [options]
+  >> 012 [path] [options]
 
 Options:
   --help  (-h) See this message
@@ -34,11 +34,12 @@ Options:
   --exact (-e) Exact match
 
 EXAMPLES:
-  >> 012        # $_0
-  >> 012 -r 1   # $_1
-  >> 012 foobar # $_0/foobar
+  >> 012            # $_0
+  >> 012 --root 1   # $_1
+  >> 012 foobar     # Filter
   >> 012 -r 1 fo*ar # $_1/foobar
-  >> 012 foobar --base # /path/to/_0
+  >> 012 foobar --base      # /path/to/0
+  >> 012 foobar --base -r 2 # /path/to/2
 
 HELP
 }
@@ -103,16 +104,26 @@ MAIN: {
         $pathArg = $firstArg;
     }
 
+    my @fullList = runCommand("find $PREFIX -maxdepth 1 -type d -iname \"*\" -printf \"%Ts/%f\\n\" | sort -n | tac");
+    @fullList = map { $_ =~ s/^[^\/]*\///; $_ } @fullList;
+    @fullList = grep { $_ ne "$a_root\n" } @fullList;
+
     my @list = runCommand("find $PREFIX -maxdepth 1 -type d -iname \"$pathArg\" -printf \"%Ts/%f\\n\" | sort -n | tac");
     @list = map { $_ =~ s/^[^\/]*\///; $_ } @list;
     @list = grep { $_ ne "$a_root\n" } @list;
 
     if (defined $a_list) {
-        my $i = 0;
         foreach my $line (@list) {
             chomp $line;
-            print "${a_root}${i}${line}\n";
-            $i++;
+            my $index = 0;
+            foreach my $fullLine (@fullList) {
+                chomp $fullLine;
+                if ($fullLine eq $line) {
+                    last;
+                }
+                $index++;
+            }
+            print "${a_root}${index}${line}\n";
         }
         exit 0;
     }
