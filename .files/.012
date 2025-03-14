@@ -1,35 +1,35 @@
 #!/bin/bash
 
 0() {
-  source _012 --root 0 $@
+  source _zeroonetwo --root 0 $@
 }
 1() {
-  source _012 --root 1 $@
+  source _zeroonetwo --root 1 $@
 }
 2() {
-  source _012 --root 2 $@
+  source _zeroonetwo --root 2 $@
 }
 
 0t() {
   0 $@
-  count=`012 $@ --root 0 --count`
-  totalCount=`012 "*" $@ --root 0 --count`
+  count=`zeroonetwo $@ --root 0 --count`
+  totalCount=`zeroonetwo "*" $@ --root 0 --count`
   if [ $count -eq 1 ] || [ $count -eq $totalCount ]; then
     t
   fi
 }
 1t() {
   1 $@
-  count=`012 $@ --root 1 --count`
-  totalCount=`012 "*" $@ --root 1 --count`
+  count=`zeroonetwo $@ --root 1 --count`
+  totalCount=`zeroonetwo "*" $@ --root 1 --count`
   if [ $count -eq 1 ] || [ $count -eq $totalCount ]; then
     t
   fi
 }
 2t() {
   2 $@
-  count=`012 $@ --root 2 --count`
-  totalCount=`012 "*" $@ --root 2 --count`
+  count=`zeroonetwo $@ --root 2 --count`
+  totalCount=`zeroonetwo "*" $@ --root 2 --count`
   if [ $count -eq 1 ] || [ $count -eq $totalCount ]; then
     t
   fi
@@ -47,7 +47,7 @@ alias 08="0 --nth 8"
 alias 09="0 --nth 9"
 alias 010="0 --nth 10"
 alias 011="0 --nth 11"
-# alias 012="0 --nth 12"
+alias 012="0 --nth 12"
 alias 013="0 --nth 13"
 alias 014="0 --nth 14"
 alias 015="0 --nth 15"

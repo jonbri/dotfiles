@@ -1,6 +1,6 @@
 #!/bin/bash
 
-count=`012 $@ --count`
+count=`zeroonetwo $@ --count`
 
 hasNArg=false
 for arg in "$@"; do
@@ -13,13 +13,13 @@ done
 if [ $count -eq 0 ]; then
   echo 'no matches'
 elif [ $count -eq 1 ] || [ $hasNArg == true ]; then
-  eval "cd `012 $@`"
+  eval "cd `zeroonetwo $@`"
   persona --become --quiet
 else
   clear
-  BASE=`012 --base $@`
+  BASE=`zeroonetwo --base $@`
   slow "${BASE}" -d 0.02
-  results=`012 $@ --list`
+  results=`zeroonetwo $@ --list`
   echo $results | tr ' ' '\n'
   eval "cd $BASE"
 fi

@@ -19,10 +19,10 @@ my $_2 = $ENV{_2};
 sub help() {
     print STDOUT <<'HELP';
 
-    012
+    zeroonetwo
 
 USAGE:
-  >> 012 [path] [options]
+  >> zeroonetwo [path] [options]
 
 Options:
   --help  (-h) See this message
@@ -34,12 +34,12 @@ Options:
   --exact (-e) Exact match
 
 EXAMPLES:
-  >> 012            # $_0
-  >> 012 --root 1   # $_1
-  >> 012 foobar     # Filter
-  >> 012 -r 1 fo*ar # $_1/foobar
-  >> 012 foobar --base      # /path/to/0
-  >> 012 foobar --base -r 2 # /path/to/2
+  >> zeroonetwo            # $_0
+  >> zeroonetwo --root 1   # $_1
+  >> zeroonetwo foobar     # Filter
+  >> zeroonetwo -r 1 fo*ar # $_1/foobar
+  >> zeroonetwo foobar --base      # /path/to/0
+  >> zeroonetwo foobar --base -r 2 # /path/to/2
 
 HELP
 }
