@@ -204,7 +204,7 @@ MAIN: {
                 my $formattedTimestamp = `shortdate "${timestamp}" --date`;
                 chomp $formattedTimestamp;
                 $line =~ s/.txt$//g;
-                printf "%s %2s %s\n", $formattedTimestamp, '('.$count.')', $line;
+                printf "%s %s%s\n", $formattedTimestamp, $count, $line;
                 $count++;
             }
         }
