@@ -196,7 +196,9 @@ MAIN: {
         if (scalar(@filteredWorkList) == 0) {
             print "Work: (none)\n";
         } else {
-            print "\nWork:\n";
+            if (defined $a_verbose) {
+                print "\nWork:\n";
+            }
             my $count = 0;
             foreach my $line (@filteredWorkList) {
                 my $timestamp = `stat -c %y ${WORK_DIR}/${line}`;
@@ -204,26 +206,32 @@ MAIN: {
                 my $formattedTimestamp = `shortdate "${timestamp}" --date`;
                 chomp $formattedTimestamp;
                 $line =~ s/.txt$//g;
-                printf "%s %s%s\n", $formattedTimestamp, $count, $line;
+                if (defined $a_verbose) {
+                    printf "%s m%s%s\n", $formattedTimestamp, $count, $line;
+                } else {
+                    printf "m%s%s\n", $count, $line;
+                }
                 $count++;
             }
         }
         print "\n";
 
-        if (scalar(@filteredPromotedList) == 0) {
-            print "Promoted: (none)\n";
-        } else {
-            print "Promoted:\n";
-            foreach my $line (@filteredPromotedList) {
-                my $timestamp = `stat -c %y ${PROMOTED_DIR}/${line}`;
-                chomp $timestamp;
-                my $formattedTimestamp = `shortdate "${timestamp}" --date`;
-                chomp $formattedTimestamp;
-                $line =~ s/.txt$//g;
-                print "$formattedTimestamp $line\n";
+        if (defined $a_verbose) {
+            if (scalar(@filteredPromotedList) == 0) {
+                print "Promoted: (none)\n";
+            } else {
+                print "Promoted:\n";
+                foreach my $line (@filteredPromotedList) {
+                    my $timestamp = `stat -c %y ${PROMOTED_DIR}/${line}`;
+                    chomp $timestamp;
+                    my $formattedTimestamp = `shortdate "${timestamp}" --date`;
+                    chomp $formattedTimestamp;
+                    $line =~ s/.txt$//g;
+                    print "$formattedTimestamp $line\n";
+                }
             }
+            print "\n";
         }
-        print "\n";
 
         exit 0;
     }
