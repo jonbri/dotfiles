@@ -18,7 +18,7 @@ elif [ $count -eq 1 ] || [ $hasNArg == true ]; then
 else
   clear
   BASE=`zeroonetwo --base $@`
-  slow "${BASE}" -d 0.02
+  slow "${BASE}" --delay 0.02
   results=`zeroonetwo $@ --list`
   echo $results | tr ' ' '\n'
   eval "cd $BASE"
