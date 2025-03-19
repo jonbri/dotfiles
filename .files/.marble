@@ -1,5 +1,9 @@
 #!/bin/bash
 
+M() {
+  marble $@ --gui
+}
+
 alias m="marble"
 alias ml="c && slow \"m a r b l e\" --delay 0.02 && m --list"
 alias m0="m 0"
@@ -33,4 +37,36 @@ alias m27="m 27"
 alias m28="m 28"
 alias m29="m 29"
 alias m30="m 30"
+
+alias M0="M 0"
+alias M1="M 1"
+alias M2="M 2"
+alias M3="M 3"
+alias M4="M 4"
+alias M5="M 5"
+alias M6="M 6"
+alias M7="M 7"
+alias M8="M 8"
+alias M9="M 9"
+alias M10="M 10"
+alias M11="M 11"
+alias M12="M 12"
+alias M13="M 13"
+alias M14="M 14"
+alias M15="M 15"
+alias M16="M 16"
+alias M17="M 17"
+alias M18="M 18"
+alias M19="M 19"
+alias M20="M 20"
+alias M21="M 21"
+alias M22="M 22"
+alias M23="M 23"
+alias M24="M 24"
+alias M25="M 25"
+alias M26="M 26"
+alias M27="M 27"
+alias M28="M 28"
+alias M29="M 29"
+alias M30="M 30"
 
