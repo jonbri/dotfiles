@@ -286,6 +286,7 @@ MAIN: {
     }
 
     if (defined $firstArg) {
+        print "using filter: $firstArg\n";
         @localBranches = grep (/.*$firstArg/, @localBranches);
         @remoteBranches = grep (/.*$firstArg/, @remoteBranches);
     }
