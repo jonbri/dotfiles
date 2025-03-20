@@ -86,8 +86,7 @@ MAIN: {
     }
     my $anonBranch="${label}-$stamp";
     `git checkout -b $anonBranch`;
-    `git add .`;
-    `git commit -m "anon" --amend`;
+    `snowball`;
 
     `git commit --amend --reuse-message=HEAD --author="Anon <anon\@anon.no>"`;
     `crumb "anonEnd=$branch"`;
