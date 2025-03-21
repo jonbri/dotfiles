@@ -19,9 +19,13 @@ export WIN_HOME="/mnt/c/Users/${USER}"
 export WIN_DESKTOP="${WIN_HOME}/desktop"
 export WIN_DESKTOP_SAVE="${WIN_DESKTOP}/save"
 
-export _0="${HOME}/0"
-export _1="${HOME}/1"
-export _2="${HOME}/2"
+export ZEROONETWO="${HOME}/012"
+export _0="${ZEROONETWO}/0"
+export _1="${ZEROONETWO}/1"
+export _2="${ZEROONETWO}/2"
+mkdir -p ${_0}
+mkdir -p ${_1}
+mkdir -p ${_2}
 
 export N_PREFIX=$HOME/.n
 mkdir -p $N_PREFIX
