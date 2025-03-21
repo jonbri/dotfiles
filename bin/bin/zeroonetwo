@@ -10,11 +10,13 @@ my $a_count;
 my $a_exact;
 my $a_nth;
 my $a_base;
+my $a_archive;
 my $a_help;
 
 my $_0 = $ENV{_0};
 my $_1 = $ENV{_1};
 my $_2 = $ENV{_2};
+my $ZEROONETWO = $ENV{ZEROONETWO};
 
 sub help() {
     print STDOUT <<'HELP';
@@ -25,13 +27,14 @@ USAGE:
   >> zeroonetwo [path] [options]
 
 Options:
-  --help  (-h) See this message
-  --root  (-r) Specify root dir (0,1,2)
-  --list  (-l) Show matches
-  --nth   (-n) Show nth match (default: 0)
-  --count (-c) Show number of matches
-  --base  (-b) Show root path
-  --exact (-e) Exact match
+  --help    (-h) See this message
+  --root    (-r) Specify root dir (0,1,2)
+  --list    (-l) Show matches
+  --nth     (-n) Show nth match (default: 0)
+  --count   (-c) Show number of matches
+  --base    (-b) Show root path
+  --archive (-a) Move target to archive
+  --exact   (-e) Exact match
 
 EXAMPLES:
   >> zeroonetwo            # $_0
@@ -69,6 +72,7 @@ MAIN: {
         'exact' => \$a_exact,
         'nth:s' => \$a_nth,
         'base' => \$a_base,
+        'archive' => \$a_archive,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -149,6 +153,20 @@ MAIN: {
     }
     if (defined $a_base) {
         $path = $PREFIX;
+    }
+
+    if (defined $a_archive) {
+        my $stamp = `stamp`;
+        chomp $stamp;
+        my $archiveDir = "${ZEROONETWO}/archive/${stamp}";
+        `mkdir -p "${archiveDir}"`;
+        `mv "${path}" "${archiveDir}"`;
+        print "archived\n";
+        print "> ls ${archiveDir}\n";
+        my $ls = `ls "${archiveDir}"`;
+        chomp $ls;
+        print "${ls}\n";
+        exit 0;
     }
 
     print "${path}\n";

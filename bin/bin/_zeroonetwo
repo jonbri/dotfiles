@@ -10,17 +10,28 @@ for arg in "$@"; do
   fi
 done
 
-if [ $count -eq 0 ]; then
-  echo 'no matches'
-elif [ $count -eq 1 ] || [ $hasNArg == true ]; then
-  eval "cd `zeroonetwo $@`"
-  persona --become --quiet
-else
-  clear
-  BASE=`zeroonetwo --base $@`
-  slow "${BASE}" --delay 0.02
-  results=`zeroonetwo $@ --list`
-  echo $results | tr ' ' '\n'
-  eval "cd $BASE"
-fi
+hasAArg=false
+for arg in "$@"; do
+  if [ "$arg" == "-a" ] || [ "$arg" == "--archive" ]; then
+    hasAArg=true
+    break
+  fi
+done
 
+if [ $hasAArg == true ]; then
+  zeroonetwo $@
+else
+    if [ $count -eq 0 ]; then
+      echo 'no matches'
+    elif [ $count -eq 1 ] || [ $hasNArg == true ]; then
+      eval "cd `zeroonetwo $@`"
+      persona --become --quiet
+    else
+      clear
+      BASE=`zeroonetwo --base $@`
+      slow "${BASE}" --delay 0.02
+      results=`zeroonetwo $@ --list`
+      echo $results | tr ' ' '\n'
+      eval "cd $BASE"
+    fi
+fi
