@@ -75,7 +75,10 @@ MAIN: {
         print "\n";
     }
 
-    my $lines = $firstArg || 40;
+    my $lines = $firstArg;
+    if (!defined $lines) {
+        $lines = 40;
+    }
     for (my $i = 0; $i < $lines; $i++) {
         print "-";
     }
