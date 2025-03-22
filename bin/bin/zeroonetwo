@@ -156,6 +156,14 @@ MAIN: {
     }
 
     if (defined $a_archive) {
+        if (!defined $a_exact) {
+            print STDERR "must use --exact\n";
+            exit 1;
+        }
+        if (!-e $path) {
+            print STDERR "Path does not exist: $path\n";
+            exit 1;
+        }
         my $stamp = `stamp`;
         chomp $stamp;
         my $archiveDir = "${ZEROONETWO}/archive/${stamp}";
