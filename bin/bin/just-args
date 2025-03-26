@@ -4,6 +4,7 @@ use strict;
 
 use Getopt::Long;
 
+my $a_all;
 my $a_command;
 my $a_rootDir;
 my $a_fuzzy;
@@ -18,6 +19,7 @@ USAGE:
   >> just-args [args]
 
 Options:
+  --all     (-a) run all tests
   --command (-c) only print out command
   --rootDir (-r) specify root directory
   --fuzzy   (-f) fuzzy search
@@ -46,6 +48,7 @@ sub clearScreen {
 
 MAIN: {
     GetOptions(
+        'all' => \$a_all,
         'command' => \$a_command,
         'rootDir=s' => \$a_rootDir,
         'fuzzy' => \$a_fuzzy,
@@ -64,8 +67,14 @@ MAIN: {
         @specArgs = map { "\"_/$_.spec\"" } @ARGV;
     }
 
+    my $debugPrintLimit = 100000;
+    my $testTimeout = 20000;
+
     my $arg = join(" ", @specArgs);
-    my $command = "DEBUG_PRINT_LIMIT=100000 ./node_modules/.bin/jest $arg --watch";
+    my $command = "DEBUG_PRINT_LIMIT=${debugPrintLimit} ./node_modules/.bin/jest $arg --watch --testTimeout=${testTimeout}";
+    if (defined $a_all) {
+        $command = "DEBUG_PRINT_LIMIT=${debugPrintLimit} ./node_modules/.bin/jest --testTimeout=${testTimeout}";
+    }
 
     if (defined $a_rootDir) {
         $command .= " --rootDir $a_rootDir";

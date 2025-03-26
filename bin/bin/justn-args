@@ -4,6 +4,7 @@ use strict;
 
 use Getopt::Long;
 
+my $a_all;
 my $a_command;
 my $a_fuzzy;
 my $a_help;
@@ -17,6 +18,7 @@ USAGE:
   >> justn-args [args]
 
 Options:
+  --all     (-a) run all tests
   --command (-c) only print out command
   --fuzzy   (-f) fuzzy search for tests
   --help    (-h)
@@ -43,6 +45,7 @@ sub clearScreen {
 
 MAIN: {
     GetOptions(
+        'all' => \$a_all,
         'command' => \$a_command,
         'fuzzy' => \$a_fuzzy,
         'help' => \$a_help,
@@ -61,12 +64,18 @@ MAIN: {
     }
     my $arg = join(" ", @specArgs);
 
+    my $debugPrintLimit = 100000;
+    my $testTimeout = 20000;
+
     my $packageJson = `cat package.json`;
     chomp $packageJson;
     my @scripts = `echo '$packageJson' | jq -r '.scripts | keys[]'`;
     my $script = `echo '$packageJson' | jq -r '.scripts | keys[]' | grep -E 'test:.*n.*com.*ns\$'`;
     chomp $script;
-    my $command = "DEBUG_PRINT_LIMIT=100000 yarn $script $arg --watch";
+    my $command = "DEBUG_PRINT_LIMIT=${debugPrintLimit} yarn $script $arg --watch --testTimeout=${testTimeout}";
+    if (defined $a_all) {
+        $command = "DEBUG_PRINT_LIMIT=${debugPrintLimit} yarn $script --testTimeout=${testTimeout}";
+    }
 
     if (defined $a_command) {
         print "$command\n";
