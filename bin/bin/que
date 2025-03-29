@@ -1,0 +1,83 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+use Getopt::Long;
+
+my $a_help;
+
+my $EDITOR = $ENV{EDITOR};
+my $colorscheme = "retrobox";
+my $home=$ENV{HOME};
+my $QUE_DIR="${home}/que";
+
+sub help() {
+    print STDOUT <<'HELP';
+
+que
+
+USAGE:
+  >> que [options]
+
+Options:
+  --help (-h) See this message
+
+EXAMPLES:
+  >> que
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+sub runCommand($) {
+    my ($command) = @_;
+    open CMD, "$command |" || die "Unable to run $command: $!";
+    my @output = <CMD>;
+    close CMD;
+    return @output;
+}
+
+sub confirm($) {
+    my ($message)=@_;
+    print $message;
+    my $ok=<>;
+    chomp $ok;
+    return $ok;
+}
+
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help,
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my $timestamp = `stamp`;
+    chomp $timestamp;
+    my $year = substr($timestamp, 0, 4);
+    my $month = substr($timestamp, 4, 2);
+    my $day = substr($timestamp, 6, 2);
+    $timestamp = "${year}-${month}-${day}";
+    print "$timestamp\n";
+
+
+    my $year_dir = "${QUE_DIR}/${year}";
+    `mkdir -p "${year_dir}"`;
+    my $path = "${year_dir}/${timestamp}.md";
+    system("$EDITOR -c \"colorscheme $colorscheme | normal Gzz\" \"${path}\"");
+    exit 0;
+}
+
