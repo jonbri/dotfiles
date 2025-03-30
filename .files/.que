@@ -1,0 +1,15 @@
+#!/bin/bash
+
+q() {
+  pp
+  eval "cd ~/que"
+  gf
+  que $@
+}
+
+qt() {
+  pp
+  eval "cd ~/que"
+  t
+}
+

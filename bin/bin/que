@@ -71,8 +71,6 @@ MAIN: {
     my $month = substr($timestamp, 4, 2);
     my $day = substr($timestamp, 6, 2);
     $timestamp = "${year}-${month}-${day}";
-    print "$timestamp\n";
-
 
     my $year_dir = "${QUE_DIR}/${year}";
     `mkdir -p "${year_dir}"`;

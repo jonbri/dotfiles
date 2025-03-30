@@ -149,8 +149,6 @@ alias knl="k 'node ' --list"
 alias kz="k 'zed '"
 alias me="cd $HOME/me && pb && gf"
 alias met="me && t"
-alias q="cd $HOME/que && pp && gf && que"
-alias qt="q && t"
 alias seeds="cd $HOME/seeds && pb && git fetch && $EDITOR -c \"colorscheme morning | normal Gzz\" README.md"
 alias seedst="seeds && t"
 alias capture="t capture-pane && sb"
@@ -261,6 +259,7 @@ export PATH=$BUN_INSTALL/bin:$PATH
 
 source $HOME/.012
 source $HOME/.marble
+source $HOME/.que
 
 welcome --quiet
 
