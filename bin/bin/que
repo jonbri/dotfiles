@@ -5,6 +5,7 @@ use strict;
 use Getopt::Long;
 
 my $a_help;
+my $a_random;
 
 my $EDITOR = $ENV{EDITOR};
 my $colorscheme = "retrobox";
@@ -20,7 +21,8 @@ USAGE:
   >> que [options]
 
 Options:
-  --help (-h) See this message
+  --help   (-h) See this message
+  --random (-r) See random message
 
 EXAMPLES:
   >> que
@@ -55,6 +57,7 @@ sub confirm($) {
 
 MAIN: {
     GetOptions(
+        'random' => \$a_random,
         'help' => \$a_help,
     ) || (help() && exit 1);
 
@@ -65,16 +68,36 @@ MAIN: {
         exit 1;
     }
 
-    my $timestamp = `stamp`;
-    chomp $timestamp;
-    my $year = substr($timestamp, 0, 4);
-    my $month = substr($timestamp, 4, 2);
-    my $day = substr($timestamp, 6, 2);
-    $timestamp = "${year}-${month}-${day}";
+    my $stamp = `stamp`;
+    chomp $stamp;
+
+    my $year = substr($stamp, 0, 4);
+    my $month = substr($stamp, 4, 2);
+    my $day = substr($stamp, 6, 2);
+    my $timestamp = "${year}-${month}-${day}";
+
+    my @years = runCommand("ls -1 ${QUE_DIR}");
+    chomp @years;
+    @years = grep { /^\d{4}$/ } @years;
+    @years = sort { $b <=> $a } @years;
+
+    my $randomYear = $years[int rand @years];
+    my @filesPerYear = runCommand("ls -1 ${QUE_DIR}/${randomYear}");
+    chomp @filesPerYear;
+    @filesPerYear = grep { /^\d{4}-\d{2}-\d{2}\.md$/ } @filesPerYear;
+    @filesPerYear = sort { $b cmp $a } @filesPerYear;
+    my $randomPath = $randomYear . "/" . $filesPerYear[int rand @filesPerYear];
 
     my $year_dir = "${QUE_DIR}/${year}";
-    `mkdir -p "${year_dir}"`;
+    if (!defined $randomYear) {
+      `mkdir -p "${year_dir}"`;
+    }
+
     my $path = "${year_dir}/${timestamp}.md";
+    if (defined $a_random) {
+      $path = "${QUE_DIR}/${randomPath}";
+    }
+
     system("$EDITOR -c \"colorscheme $colorscheme | normal Gzz\" \"${path}\"");
     exit 0;
 }

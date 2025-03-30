@@ -13,6 +13,13 @@ qt() {
   t
 }
 
+qr() {
+  pp
+  eval "cd ~/que"
+  gf
+  que --random $@
+}
+
 qout() {
   persona `var PREVIOUS_PERSONA`
   sleep 1
