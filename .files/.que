@@ -13,3 +13,9 @@ qt() {
   t
 }
 
+qout() {
+  persona `var PREVIOUS_PERSONA`
+  sleep 1
+  e
+}
+
