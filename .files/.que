@@ -20,7 +20,7 @@ qr() {
   que --random $@
 }
 
-qout() {
+qq() {
   pprev
   sleep 1
   e
