@@ -21,7 +21,7 @@ qr() {
 }
 
 qout() {
-  persona `var PREVIOUS_PERSONA`
+  pprev
   sleep 1
   e
 }
