@@ -219,7 +219,7 @@ MAIN: {
                 my $i = 0;
                 foreach (@grepResults) {
                     my @s = split('/', $_);
-                    print "${i}$s[2]";
+                    print "pf${i}$s[2]";
                     $i++;
                 }
                 exit 0;
