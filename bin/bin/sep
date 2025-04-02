@@ -4,6 +4,7 @@ use strict;
 
 use Getopt::Long;
 
+my $a_text;
 my $a_padding;
 my $a_help;
 
@@ -16,12 +17,14 @@ USAGE:
   >> sep [options]
 
 Options:
+  --text    (-t) Text placed within dashes
   --padding (-p) Vertical padding (default: 1)
   --help    (-h) See this message
 
 EXAMPLES:
   >> sep
   >> sep 10 # show 10 lines
+  >> sep 10 -t "Hello" # show 10 lines with text
   >> sep 10 -p 2     # two lines on each side of dashes
   >> sep 10 -p "0-2" # only padding after dashes
 
@@ -38,8 +41,9 @@ sub getFirstNonOptionArg {
 
 MAIN: {
     GetOptions(
+        'text=s' => \$a_text,
+        'padding=s' => \$a_padding,
         'help' => \$a_help,
-        'padding=s' => \$a_padding
     ) || (help() && exit 1);
 
     # show help if either arg or option is given
@@ -79,9 +83,19 @@ MAIN: {
     if (!defined $lines) {
         $lines = 40;
     }
+
+    my $displayText = "";
     for (my $i = 0; $i < $lines; $i++) {
-        print "-";
+        $displayText .= "-";
     }
+
+    if (defined $a_text) {
+        for (my $i = 0; $i < length($a_text); $i++) {
+            substr($displayText, $i + 1, 1) = substr($a_text, $i, 1);
+        }
+    }
+
+    print $displayText;
 
     for (my $i = 0; $i < $afterPadding; $i++) {
         print "\n";
