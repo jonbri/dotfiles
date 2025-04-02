@@ -43,10 +43,12 @@ Options:
   --help  (-h) See this message
 
 EXAMPLES:
-  >> persona         - print current settings
-  >> persona -a home - add "home" persona
-  >> persona home    - switch to "home" persona
-  >> persona -f      - fix HEAD commit
+  >> persona          - print current settings
+  >> persona -a home  - add "home" persona
+  >> persona home     - switch to "home" persona
+  >> persona --fix    - fix HEAD commit
+  >> persona --become - switch to persona based on commit history
+  >> persona -b HEAD~ - start search from HEAD~
 
 HELP
 }
@@ -88,18 +90,53 @@ sub readConfig {
 }
 
 readConfig();
-my $currentPersona;
 my $email = `git config --get user.email`;
 chomp $email;
 my $name = `git config --get user.name`;
 chomp $name;
-# loop over places and find match with email and name
-for(keys %places){
-    if ($email eq $places{$_}{email} && $name eq $places{$_}{name}) {
-        $currentPersona = $_;
-        last;
+
+sub parsePersona {
+    my ($rootRef)=@_;
+    my $targetPersona;
+    my $count = 0;
+    my $HEAD;
+    while (1) {
+        if (!defined $HEAD) {
+            if (defined $rootRef) {
+                $HEAD = $rootRef;
+            } else {
+                $HEAD = `git rev-parse HEAD`;
+            }
+            chomp $HEAD;
+        }
+
+        my $HEADEmail = `git show -s --format=%ae $HEAD`;
+        chomp $HEADEmail;
+
+        # loop over places and find match with email and name
+        for(keys %places){
+            if ($HEADEmail eq $places{$_}{email}) {
+                $targetPersona = $_;
+                last;
+            }
+        }
+
+        if (defined $targetPersona) {
+            last;
+        }
+
+        $count++;
+        if ($count > 5) {
+            last;
+        }
+
+        $HEAD = `git rev-parse HEAD~$count`;
+        chomp $HEAD;
     }
+    return $targetPersona;
 }
+
+my $currentPersona = parsePersona();
 
 sub applyPlace($) {
     my ($place)=@_;
@@ -187,7 +224,7 @@ sub applyUpdate {
 MAIN: {
     GetOptions(
         'add=s' => \$a_add,
-        'become' => \$a_become,
+        'become:s' => \$a_become,
         'list' => \$a_list,
         'name' => \$a_name,
         'edit' => \$a_edit,
@@ -273,16 +310,18 @@ MAIN: {
             exit 0;
         }
 
-        my $pwd = `pwd`;
-        chomp $pwd;
+        my $rootRef = $a_become;
+        if (!defined $rootRef) {
+            $rootRef = "HEAD";
+        }
 
-        for(keys %places){
-            my $personaName = $_;
-            my $email = $places{$_}{email};
-            my @gitLogAuthor = `git log HEAD --oneline --author=$email`;
-            if (scalar @gitLogAuthor > 0) {
-                applyPlace($personaName);
-                last;
+        my $personaName = parsePersona($rootRef);
+        if (defined $personaName) {
+            applyPlace($personaName);
+            last;
+        } else {
+            if (!defined $a_quiet) {
+                print "no persona found\n";
             }
         }
 
