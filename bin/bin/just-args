@@ -4,7 +4,6 @@ use strict;
 
 use Getopt::Long;
 
-my $a_all;
 my $a_command;
 my $a_rootDir;
 my $a_exact;
@@ -19,13 +18,13 @@ USAGE:
   >> just-args [args]
 
 Options:
-  --all     (-a) run all tests
   --command (-c) only print out command
   --rootDir (-r) specify jest root directory
   --exact   (-e) exact test names
   --help    (-h)
 
 EXAMPLES:
+  >> just-args          # matches all tests
   >> just-args foo      # matches foo.spec, foobar.spec
   >> just-args foo -e   # matches foo.spec
   >> just-args src/util # matches every test in dir
@@ -48,7 +47,6 @@ sub clearScreen {
 
 MAIN: {
     GetOptions(
-        'all' => \$a_all,
         'command' => \$a_command,
         'rootDir=s' => \$a_rootDir,
         'exact' => \$a_exact,
@@ -62,6 +60,7 @@ MAIN: {
 
     $| = 1;
 
+    my $hasArgs = @ARGV > 0;
     my @specArgs = @ARGV;
     if (defined $a_exact) {
         @specArgs = map { "\"_/$_.spec\"" } @ARGV;
@@ -72,7 +71,7 @@ MAIN: {
 
     my $arg = join(" ", @specArgs);
     my $command = "DEBUG_PRINT_LIMIT=${debugPrintLimit} ./node_modules/.bin/jest $arg --watch --testTimeout=${testTimeout}";
-    if (defined $a_all) {
+    if (!$hasArgs) {
         $command = "DEBUG_PRINT_LIMIT=${debugPrintLimit} ./node_modules/.bin/jest --testTimeout=${testTimeout}";
     }
 
