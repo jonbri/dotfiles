@@ -10,10 +10,12 @@ my $a_untracked;
 my $a_conflict;
 my $a_release;
 my $a_empty;
-my $a_message;
-my $a_destroy;
+my $a_type;
+my $a_scope;
+my $a_description;
 my $a_help;
 
+my $scratch_file = "_delete.me";
 my $MAIN=`main`;
 chomp $MAIN;
 
@@ -26,19 +28,22 @@ USAGE:
   >> snowball [options]
 
 Options:
-  --working   (-w) working directory dirty
-  --index     (-i) cache (stage) dirty
-  --untracked (-u) create untracked file
-  --empty     (-e) create empty commit
-  --conflict  (-c) create merge conflict
-  --release   (-r) create release commit
-  --destroy   (-d) reset back to main
-  --message   (-m) commit message to use
+  --working     (-w) working directory dirty
+  --index       (-i) cache (stage) dirty
+  --untracked   (-u) create untracked file
+  --empty       (-e) create empty commit
+  --conflict    (-c) create merge conflict
+  --release     (-r) create release commit
+  --type        (-t) commit type to use (default: "test")
+  --scope       (-s) value in parenthesis
+  --description (-d) commit description
 
 EXAMPLES:
-  >> snowball    # create fake commit
-  >> snowball -w # just dirty working dir
-  >> snowball -i # just dirty index
+  >> snowball                   # test: <timestamp>
+  >> snowball -d "my message"   # my message
+  >> snowball -t "fix" -s "foo" # fix(foo): <timestamp>
+  >> snowball -w # dirty working dir
+  >> snowball -i # dirty index
   >> snowball -u # untracked
 
 HELP
@@ -69,8 +74,9 @@ MAIN: {
         'conflict' => \$a_conflict,
         'release' => \$a_release,
         'empty' => \$a_empty,
-        'message=s' => \$a_message,
-        'destroy' => \$a_destroy,
+        'description=s' => \$a_description,
+        'type=s' => \$a_type,
+        'scope=s' => \$a_scope,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -89,15 +95,8 @@ MAIN: {
     my $EXISTING_FILE2 = $trackedFiles[2];
     chomp $EXISTING_FILE2;
 
-    my $timestamp = `shortdate`;
+    my $timestamp = `stamp`;
     chomp $timestamp;
-
-    if (defined $a_destroy) {
-        print `git reset .`;
-        print `git checkout .`;
-        print `git reset --hard origin/$MAIN`;
-        exit 0;
-    }
 
     if (defined $a_working) {
         if (!defined $EXISTING_FILE0) {
@@ -144,11 +143,11 @@ MAIN: {
     }
 
     if (defined $a_release) {
-        print `echo "snowball-release" >> snowball_commit_log.txt`;
-        print `git add snowball_commit_log.txt`;
+        print `echo "release" >> ${scratch_file}`;
+        print `git add ${scratch_file}`;
         my $commitMessage = "release: v1.2.3";
-        if (defined $a_message) {
-            $commitMessage = $a_message;
+        if (defined $a_description) {
+            $commitMessage = $a_description;
         }
         print `git commit -m '$commitMessage'`;
         exit 0;
@@ -160,11 +159,23 @@ MAIN: {
     }
 
     # default behavior: create commit
-    print `echo "snowball $timestamp" >> snowball_commit_log.txt`;
-    print `git add snowball_commit_log.txt`;
-    my $commitMessage = "snowball $timestamp";
-    if (defined $a_message) {
-        $commitMessage = $a_message;
+    print `echo "$timestamp" >> ${scratch_file}`;
+    print `git add ${scratch_file}`;
+    my $commitMessage = "test: $timestamp";
+    if (defined $a_description || defined $a_type || defined $a_scope) {
+      my $message = $a_description;
+      if (!defined $message) {
+          $message = "$timestamp";
+      }
+      my $type = $a_type;
+      if (!defined $type) {
+          $type = "test";
+      }
+      my $scope = "";
+      if ($a_scope) {
+          $scope = "($a_scope)";
+      }
+      $commitMessage = "${type}${scope}: ${message}";
     }
     print `git commit -m '$commitMessage'`;
 
