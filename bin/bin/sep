@@ -5,6 +5,7 @@ use strict;
 use Getopt::Long;
 
 my $a_text;
+my $a_character;
 my $a_padding;
 my $a_help;
 
@@ -17,9 +18,10 @@ USAGE:
   >> sep [options]
 
 Options:
-  --text    (-t) Text placed within dashes
-  --padding (-p) Vertical padding (default: 1)
-  --help    (-h) See this message
+  --text      (-t) Text placed within dashes
+  --character (-c) Character used (default: "-")
+  --padding   (-p) Vertical padding (default: 1)
+  --help      (-h) See this message
 
 EXAMPLES:
   >> sep
@@ -42,6 +44,7 @@ sub getFirstNonOptionArg {
 MAIN: {
     GetOptions(
         'text=s' => \$a_text,
+        'character=s' => \$a_character,
         'padding=s' => \$a_padding,
         'help' => \$a_help,
     ) || (help() && exit 1);
@@ -84,9 +87,14 @@ MAIN: {
         $lines = 40;
     }
 
+    my $displayCharacter = "-";
+    if (defined $a_character) {
+        $displayCharacter = $a_character;
+    }
+
     my $displayText = "";
     for (my $i = 0; $i < $lines; $i++) {
-        $displayText .= "-";
+        $displayText .= $displayCharacter;
     }
 
     if (defined $a_text) {
