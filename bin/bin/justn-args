@@ -6,7 +6,7 @@ use Getopt::Long;
 
 my $a_all;
 my $a_command;
-my $a_fuzzy;
+my $a_exact;
 my $a_help;
 
 sub help() {
@@ -20,12 +20,13 @@ USAGE:
 Options:
   --all     (-a) run all tests
   --command (-c) only print out command
-  --fuzzy   (-f) fuzzy search for tests
+  --exact   (-e) exact test names
   --help    (-h)
 
 EXAMPLES:
-  >> justn-args foo
-  >> justn-args foo bar
+  >> justn-args foo      # matches foo.spec, foobar.spec
+  >> justn-args foo -e   # matches foo.spec
+  >> justn-args src/util # matches every test in dir
 
 HELP
 }
@@ -47,7 +48,7 @@ MAIN: {
     GetOptions(
         'all' => \$a_all,
         'command' => \$a_command,
-        'fuzzy' => \$a_fuzzy,
+        'exact' => \$a_exact,
         'help' => \$a_help,
     ) || (help() && exit 1);
 
@@ -59,7 +60,7 @@ MAIN: {
     $| = 1;
 
     my @specArgs = @ARGV;
-    if (! defined $a_fuzzy) {
+    if (defined $a_exact) {
         @specArgs = map { "\"_/$_.spec\"" } @ARGV;
     }
     my $arg = join(" ", @specArgs);

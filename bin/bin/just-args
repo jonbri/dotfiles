@@ -7,7 +7,7 @@ use Getopt::Long;
 my $a_all;
 my $a_command;
 my $a_rootDir;
-my $a_fuzzy;
+my $a_exact;
 my $a_help;
 
 sub help() {
@@ -21,14 +21,14 @@ USAGE:
 Options:
   --all     (-a) run all tests
   --command (-c) only print out command
-  --rootDir (-r) specify root directory
-  --fuzzy   (-f) fuzzy search
+  --rootDir (-r) specify jest root directory
+  --exact   (-e) exact test names
   --help    (-h)
 
 EXAMPLES:
-  >> just-args foo
-  >> just-args foo bar
-  >> just-args foo -r test
+  >> just-args foo      # matches foo.spec, foobar.spec
+  >> just-args foo -e   # matches foo.spec
+  >> just-args src/util # matches every test in dir
 
 HELP
 }
@@ -51,7 +51,7 @@ MAIN: {
         'all' => \$a_all,
         'command' => \$a_command,
         'rootDir=s' => \$a_rootDir,
-        'fuzzy' => \$a_fuzzy,
+        'exact' => \$a_exact,
         'help' => \$a_help,
     ) || (help() && exit 1);
 
@@ -63,7 +63,7 @@ MAIN: {
     $| = 1;
 
     my @specArgs = @ARGV;
-    if (! defined $a_fuzzy) {
+    if (defined $a_exact) {
         @specArgs = map { "\"_/$_.spec\"" } @ARGV;
     }
 
