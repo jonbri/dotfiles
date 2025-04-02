@@ -4,6 +4,7 @@ use strict;
 
 use Getopt::Long;
 
+my $a_format;
 my $a_help;
 
 sub help() {
@@ -15,11 +16,18 @@ USAGE:
   >> stamp [options]
 
 Options:
-  --help   (-h) See this message
+  --format (-f) printf-ish config
+  --help   (-h) see this message
 
 EXAMPLES:
-  # March 5th, 2025 at 12:00pm
-  >> stamp # 202503051200
+  >> stamp
+  # 20250305120;0
+
+  >> stamp -f
+  # 2025-03-05 12:00:00
+
+  >> stamp -f "%year-%month-%date (%hour:%minute:%second)"
+  # 2025-03-05 (12:00:00)
 
 HELP
 }
@@ -34,6 +42,7 @@ sub getFirstNonOptionArg {
 
 MAIN: {
     GetOptions(
+        'format:s' => \$a_format,
         'help' => \$a_help,
     ) || (help() && exit 1);
 
@@ -45,14 +54,31 @@ MAIN: {
     }
 
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
-    $year = $year+1900;
-    $mon = sprintf("%02d", $mon+1);
-    $mday = sprintf("%02d", $mday);
-    $hour = sprintf("%02d", $hour);
-    $min = sprintf("%02d", $min);
-    $sec = sprintf("%02d", $sec);
+    my $display_year = $year+1900;
+    my $display_month = sprintf("%02d", $mon+1);
+    my $display_date = sprintf("%02d", $mday);
+    my $display_hour = sprintf("%02d", $hour);
+    my $display_minute = sprintf("%02d", $min);
+    my $display_second = sprintf("%02d", $sec);
 
-    print "${year}${mon}${mday}${hour}${min}${sec}\n";
+    my $noFormat = "%year%month%date%hour%minute%second";
+    my $defaultFormat = "%year-%month-%date %hour:%minute:%second";
+
+    my $format = $noFormat;
+    if (defined $a_format) {
+        $format = $a_format || $defaultFormat;
+    }
+
+    my $output = $format;
+
+    $output =~ s/%year/$display_year/g;
+    $output =~ s/%month/$display_month/g;
+    $output =~ s/%date/$display_date/g;
+    $output =~ s/%hour/$display_hour/g;
+    $output =~ s/%minute/$display_minute/g;
+    $output =~ s/%second/$display_second/g;
+
+    print "${output}\n";
     exit 0;
 }
 
