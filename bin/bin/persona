@@ -10,7 +10,6 @@ my %places=();
 my $a_add;
 my $a_become;
 my $a_edit;
-my $a_name;
 my $a_list;
 my $a_quiet;
 my $a_fix;
@@ -34,7 +33,6 @@ Options:
   --become     (-b) Set persona based on commit history
   --fix        (-f) Update HEAD author and committer
   --edit       (-e) Open config file in editor
-  --name       (-n) Display active place name
   --list       (-l) Print places
   --quiet      (-q) Don't write to stdout
   --whoami     (-w) Print current persona
@@ -226,7 +224,6 @@ MAIN: {
         'add=s' => \$a_add,
         'become:s' => \$a_become,
         'list' => \$a_list,
-        'name' => \$a_name,
         'edit' => \$a_edit,
         'quiet' => \$a_quiet,
         'fix' => \$a_fix,
@@ -250,16 +247,6 @@ MAIN: {
     }
 
     if (defined $a_whoami) {
-        if (defined $currentPersona) {
-            print "$currentPersona\n";
-        } else {
-            print "not found\n";
-        }
-        exit 0;
-    }
-
-
-    if (defined $a_name) {
         if (!defined $a_quiet) {
             my $email = `git config --get user.email`;
             chomp $email;
