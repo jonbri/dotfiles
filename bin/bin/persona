@@ -134,7 +134,16 @@ sub parsePersona {
     return $targetPersona;
 }
 
-my $currentPersona = parsePersona();
+my $whoami;
+my $configuredEmail = `git config --get user.email`;
+chomp $configuredEmail;
+for(keys %places){
+    if ($configuredEmail eq $places{$_}{email}) {
+        $whoami = $_;
+        last;
+    }
+}
+
 
 sub applyPlace($) {
     my ($place)=@_;
@@ -150,8 +159,8 @@ sub applyPlace($) {
         }
     }
 
-    if (defined $currentPersona && $currentPersona ne $place) {
-        `var "PREVIOUS_PERSONA:${currentPersona}"`;
+    if (defined $whoami && $whoami ne $place) {
+        `var "PREVIOUS_PERSONA:${whoami}"`;
     }
 
     if (!defined $places{$place}) {
@@ -164,9 +173,9 @@ sub applyPlace($) {
         `git config --global user.name "${name}"`;
     }
 
-    my $email = $places{$place}{'email'};
-    if (defined $email) {
-        `git config --global user.email $email`;
+    my $placeEmail = $places{$place}{'email'};
+    if (defined $placeEmail) {
+        `git config --global user.email $placeEmail`;
     }
 
     my $ssh_dir = "$home/.ssh";
@@ -248,13 +257,10 @@ MAIN: {
 
     if (defined $a_whoami) {
         if (!defined $a_quiet) {
-            my $email = `git config --get user.email`;
-            chomp $email;
-            for(keys %places){
-                if ($email eq $places{$_}{email}) {
-                    print "$_\n";
-                    exit 0;
-                }
+            if (defined $whoami) {
+                print "$whoami\n";
+            } else {
+                print "persona not found\n";
             }
         }
         exit 0;
