@@ -4,8 +4,9 @@ use strict;
 
 use Getopt::Long;
 
-my $a_help;
+my $a_exit;
 my $a_random;
+my $a_help;
 
 my $EDITOR = $ENV{EDITOR};
 my $colorscheme = "retrobox";
@@ -21,8 +22,9 @@ USAGE:
   >> que [options]
 
 Options:
-  --help   (-h) See this message
+  --exit   (-e) Exit que
   --random (-r) See random message
+  --help   (-h) See this message
 
 EXAMPLES:
   >> que
@@ -57,6 +59,7 @@ sub confirm($) {
 
 MAIN: {
     GetOptions(
+        'exit' => \$a_exit,
         'random' => \$a_random,
         'help' => \$a_help,
     ) || (help() && exit 1);
@@ -66,6 +69,33 @@ MAIN: {
     if (($firstArg && $firstArg eq "help") || defined $a_help) {
         help();
         exit 1;
+    }
+
+    if (defined $a_exit) {
+      my $cleandirty=`status --format "%{cleandirty}"`;
+      chomp $cleandirty;
+      my $leftright=`status --format "%{leftright}"`;
+      chomp $leftright;
+      my $left=$leftright;
+      $left =~ s/-.*//;
+      my $right=$leftright;
+      $right =~ s/.*-//;
+
+      if ($cleandirty ne "" || (defined $left && $left ne "" && $left > 0)) {
+        if ($right gt 0) {
+          print "need to pull";
+        } else {
+          my $answer = confirm("pin? ");
+          if ($answer =~ /^y/i) {
+            `pin --force`;
+            print "pushed\n";
+          }
+        }
+      } else {
+        print "no changes to commit\n";
+      }
+
+      exit 0;
     }
 
     my $stamp = `stamp`;

@@ -21,9 +21,17 @@ qr() {
 }
 
 qq() {
-  _qq
+  que --exit
   pprev
-  # sleep 1
-  # e
+  sleep 2
+  echo "leaving"
+  sleep 1
+  e
 }
 
+qqq() {
+  pprev
+  sleep 1
+  echo "leaving"
+  e
+}
