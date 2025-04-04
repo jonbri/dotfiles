@@ -1,0 +1,73 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+$| = 1;
+
+use Getopt::Long;
+
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+qq - exit que
+
+USAGE:
+  >> qq [options]
+
+Options:
+  --help   (-h) See this message
+
+EXAMPLES:
+  >> qq
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help,
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my $cleandirty=`status --format "%{cleandirty}"`;
+    chomp $cleandirty;
+    print "$cleandirty\n";
+    my $leftright=`status --format "%{leftright}"`;
+    chomp $leftright;
+    my $left=$leftright;
+    $left =~ s/-.*//;
+    my $right=$leftright;
+    $right =~ s/.*-//;
+
+    if ($cleandirty ne "" || (defined $left && $left ne "" && $left > 0)) {
+      if ($right gt 0) {
+        print "need to pull";
+        return;
+      } else {
+        print "about to push...\n";
+        sleep 1;
+        `pin`
+      }
+    } else {
+      print "no changes to commit\n";
+    }
+
+    exit 0;
+}
+

@@ -21,8 +21,9 @@ qr() {
 }
 
 qq() {
+  _qq
   pprev
-  sleep 1
-  e
+  # sleep 1
+  # e
 }
 
