@@ -6,6 +6,11 @@ vim.opt.showtabline = 2
 if not vim.g.vscode then -- in terminal
   vim.opt.mouse = "";
 
+  -- get persona
+  local handle = io.popen("persona --whoami")
+  local persona = handle:read("*a")
+  handle:close()
+
   -- get machine "name"
   local handle = io.popen("name")
   local name = handle:read("*a")
@@ -43,7 +48,7 @@ if not vim.g.vscode then -- in terminal
   Plug 'jonbri/vim-sane'
   Plug 'jonbri/vim-colorpulse'
   Plug 'numToStr/Comment.nvim'
-  if name == "t14\n" or name == "t480s\n" or name == "wsl\n" then Plug 'github/copilot.vim' end
+  if persona ~= "pp\n" and (name == "t14\n" or name == "t480s\n" or name == "wsl\n") then Plug 'github/copilot.vim' end
   vim.call('plug#end');
 
   vim.keymap.set("n", "<leader>c", ":quit<CR>", {})
