@@ -1,0 +1,63 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+use Getopt::Long;
+
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+ispp
+
+USAGE:
+  >> ispp
+
+Options:
+  --help (-h) See this message
+
+EXAMPLES:
+  >> ispp
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    my $dir = $firstArg;
+    if (!defined $dir) {
+        $dir = `pwd`;
+        chomp $dir;
+    }
+
+    my $personaCommand = `persona --whoami`;
+    chomp $personaCommand;
+
+    if ($personaCommand eq 'pp') {
+      print "true\n";
+      exit 0;
+    }
+
+    print "false\n";
+    exit 0;
+}
+
