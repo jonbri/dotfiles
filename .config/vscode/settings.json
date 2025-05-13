@@ -7,7 +7,7 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "prettier.prettierPath": "./node_modules/prettier",
   "editor.formatOnSave": true,
-  "workbench.startupEditor": "newUntitledFile",
+  "workbench.startupEditor": "none",
   "explorer.confirmDragAndDrop": false,
   "editor.tabSize": 8,
   "editor.cursorStyle": "line",
