@@ -5,11 +5,11 @@
   },
   {
     "key": "ctrl+b",
-    "command": "workbench.action.toggleActivityBarVisibility"
+    "command": "workbench.action.toggleSidebarVisibility"
   },
   {
     "key": "ctrl+alt+b",
-    "command": "workbench.action.toggleSidebarVisibility"
+    "command": "workbench.action.toggleActivityBarVisibility"
   },
   {
     "key": "ctrl+alt+m",
