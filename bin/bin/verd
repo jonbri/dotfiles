@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Add user:
+# > npm adduser --registry http://localhost:4873
+#
+# Commands (add `--registry http://localhost:4873` if no .npmrc):
+# > npm login
+# > npm whoami
+# > yarn config get registry
+# > npm publish
+#
+# .npmrc:
+# ```
+# registry=http://localhost:4873/
+# always-auth=true
+# ```
+
+verdaccio --config ~/verdaccio.config.yaml
+
