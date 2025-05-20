@@ -1,19 +1,90 @@
-#!/bin/bash
+#!/usr/bin/perl -w
 
-# Add user:
-# > npm adduser --registry http://localhost:4873
-#
-# Commands (add `--registry http://localhost:4873` if no .npmrc):
-# > npm login
-# > npm whoami
-# > yarn config get registry
-# > npm publish
-#
-# .npmrc:
-# ```
-# registry=http://localhost:4873/
-# always-auth=true
-# ```
+use strict;
 
-verdaccio --config ~/verdaccio.config.yaml
+use Getopt::Long;
+
+my $a_app;
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+verd - working with Verdaccio
+
+USAGE:
+  >> verdaccio [options]]
+
+Running verd with no arguments starts server.
+
+Options:
+  --app  (-a) Configure ./.npmrc
+  --help (-h) See this message
+
+EXAMPLES:
+  >> verd    # start verdaccio server
+  >> verd -a # ./.npmrc will point to local verdaccio server
+
+Add user:
+> npm adduser --registry http://localhost:4873
+
+Commands (add `--registry http://localhost:4873` if no .npmrc):
+> npm login
+> npm whoami
+> yarn config get registry
+> npm publish
+
+.npmrc:
+```
+registry=http://localhost:4873/
+always-auth=true
+```
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'app' => \$a_app,
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    if (defined $a_app) {
+        my $npmrc = <<'END';
+registry=http://localhost:4873/
+always-auth=true
+END
+        my $npmrcFile = "./.npmrc";
+        open(my $fh, '>', $npmrcFile) or die "Could not open file '$npmrcFile' $!";
+        print $fh $npmrc;
+        close $fh;
+        print("> cat $npmrcFile\n");
+        system("cat $npmrcFile");
+        print "\n";
+
+        exit 0;
+    }
+
+    my $verdaccioCommand = "verdaccio --config ~/verdaccio.config.yaml";
+    print "$verdaccioCommand\n";
+    system("$verdaccioCommand");
+
+    print "\n";
+    exit 0;
+}
 
