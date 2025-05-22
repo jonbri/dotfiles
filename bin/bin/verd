@@ -5,6 +5,7 @@ use strict;
 use Getopt::Long;
 
 my $a_app;
+my $a_id;
 my $a_help;
 
 sub help() {
@@ -13,12 +14,13 @@ sub help() {
 verd - working with Verdaccio
 
 USAGE:
-  >> verdaccio [options]]
+  >> verd [options]
 
 Running verd with no arguments starts server.
 
 Options:
   --app  (-a) Configure ./.npmrc
+  --id   (-i) Show verdaccio processes
   --help (-h) See this message
 
 EXAMPLES:
@@ -40,6 +42,8 @@ registry=http://localhost:4873/
 always-auth=true
 ```
 
+Also see ~/verdaccio.config.yaml.
+
 HELP
 }
 
@@ -54,6 +58,7 @@ sub getFirstNonOptionArg {
 MAIN: {
     GetOptions(
         'app' => \$a_app,
+        'id' => \$a_id,
         'help' => \$a_help
     ) || (help() && exit 1);
 
@@ -62,6 +67,17 @@ MAIN: {
     if (($firstArg && $firstArg eq "help") || defined $a_help) {
         help();
         exit 1;
+    }
+
+    if (defined $a_id) {
+        my $psCommand = "ps aux | grep verdaccio | grep -v grep";
+        my $psOutput = `$psCommand`;
+        if ($psOutput) {
+            print $psOutput;
+        } else {
+            print "No verdaccio process found.\n";
+        }
+        exit 0;
     }
 
     if (defined $a_app) {
