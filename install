@@ -80,6 +80,7 @@ MAIN: {
     }
 
     # create symlinks for nvim config
+    `mkdir -p $home/.config`;
     print join('', runCommand("ln -sfv $cwd/.config/nvim $home/.config"));
 
     `mkdir -p $home/a`;
