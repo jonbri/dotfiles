@@ -121,6 +121,8 @@ MAIN: {
     if (defined $a_exact) {
         $pathArg = $firstArg;
     }
+    my $pathArgNoWildcard = $pathArg;
+    $pathArgNoWildcard =~ s/\*//g;
 
     my @fullList = runCommand("find $PREFIX -maxdepth 1 -type d -iname \"*\" -printf \"%Ts/%f\\n\" | sort -n | tac");
     @fullList = map { $_ =~ s/^[^\/]*\///; $_ } @fullList;
@@ -135,13 +137,13 @@ MAIN: {
     @list = map { $_ =~ s/^[^\/]*\///; $_ } @list;
     @list = grep { $_ ne "$a_root\n" } @list;
     @list = map { chomp; $_ } @list;
-    if ($PINNED ne '') {
+    if ($PINNED ne '' && $pathArgNoWildcard eq '' || $PINNED =~ /${pathArgNoWildcard}/) {
         @list = grep { $_ ne $PINNED } @list;
         unshift @list, $PINNED;
     }
 
-    if (defined $a_pin) {
-        my $first= $list[1];
+    if (defined $a_pin && !defined $a_nth) {
+        my $first= $list[0];
         chomp $first;
         if (defined $first) {
           `var "PINNED_${a_root}:${first}"`;
@@ -182,6 +184,10 @@ MAIN: {
         $pathArg = $list[$a_nth];
         chomp $pathArg;
         $path = "$PREFIX/$pathArg";
+
+        if (defined $a_pin) {
+            `var "PINNED_${a_root}:${pathArg}"`;
+        }
     }
     if (defined $a_base) {
         $path = $PREFIX;
