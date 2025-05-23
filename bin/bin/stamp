@@ -5,6 +5,7 @@ use strict;
 use Getopt::Long;
 
 my $a_format;
+my $a_increment;
 my $a_help;
 
 sub help() {
@@ -16,8 +17,9 @@ USAGE:
   >> stamp [options]
 
 Options:
-  --format (-f) printf-ish config
-  --help   (-h) see this message
+  --increment (-i) increment by n days
+  --format    (-f) printf-ish config
+  --help      (-h) see this message
 
 EXAMPLES:
   >> stamp
@@ -25,6 +27,9 @@ EXAMPLES:
 
   >> stamp -f
   # 2025-03-05 12:00:00
+
+  >> stamp -f -i -1
+  # 2025-03-04 12:00:00
 
   >> stamp -f "%year-%month-%date (%hour:%minute:%second)"
   # 2025-03-05 (12:00:00)
@@ -40,8 +45,11 @@ sub getFirstNonOptionArg {
     return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
 }
 
+use constant ONE_DAY => 24 * 60 * 60;
+
 MAIN: {
     GetOptions(
+        'increment=s' => \$a_increment,
         'format:s' => \$a_format,
         'help' => \$a_help,
     ) || (help() && exit 1);
@@ -53,7 +61,12 @@ MAIN: {
         exit 1;
     }
 
-    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
+    my $incrementAdjustment = 0;
+    if (defined $a_increment) {
+        $incrementAdjustment = ONE_DAY * $a_increment;
+    }
+
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time + $incrementAdjustment);
     my $display_year = $year+1900;
     my $display_month = sprintf("%02d", $mon+1);
     my $display_date = sprintf("%02d", $mday);
