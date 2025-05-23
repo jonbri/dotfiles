@@ -71,6 +71,11 @@ MAIN: {
         exit 1;
     }
 
+    if (!-d $QUE_DIR) {
+        print "$QUE_DIR does not exist\n";
+        exit 1;
+    }
+
     if (defined $a_exit) {
       my $cleandirty=`status --format "%{cleandirty}"`;
       chomp $cleandirty;
