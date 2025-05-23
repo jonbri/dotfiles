@@ -5,6 +5,7 @@ use strict;
 use Getopt::Long;
 
 my $a_command;
+my $a_stop;
 my $a_rootDir;
 my $a_exact;
 my $a_help;
@@ -19,6 +20,7 @@ USAGE:
 
 Options:
   --command (-c) only print out command
+  --stop    (-s) do not use --watch
   --rootDir (-r) specify jest root directory
   --exact   (-e) exact test names
   --help    (-h)
@@ -48,6 +50,7 @@ sub clearScreen {
 MAIN: {
     GetOptions(
         'command' => \$a_command,
+        'stop' => \$a_stop,
         'rootDir=s' => \$a_rootDir,
         'exact' => \$a_exact,
         'help' => \$a_help,
@@ -70,7 +73,8 @@ MAIN: {
     my $testTimeout = 20000;
 
     my $arg = join(" ", @specArgs);
-    my $command = "DEBUG_PRINT_LIMIT=${debugPrintLimit} ./node_modules/.bin/jest $arg --watch --testTimeout=${testTimeout}";
+    my $watch = $a_stop ? "" : "--watch";
+    my $command = "DEBUG_PRINT_LIMIT=${debugPrintLimit} ./node_modules/.bin/jest $arg ${watch} --testTimeout=${testTimeout}";
     if (!$hasArgs) {
         $command = "DEBUG_PRINT_LIMIT=${debugPrintLimit} ./node_modules/.bin/jest --testTimeout=${testTimeout}";
     }
