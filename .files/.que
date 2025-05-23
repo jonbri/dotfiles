@@ -17,11 +17,11 @@ qr() {
   pp
   eval "cd ~/que"
   gf
-  que --random $@
+  que r $@
 }
 
 qq() {
-  que --exit
+  que e $@
   pprev
   sleep 2
   echo "leaving"

@@ -4,8 +4,6 @@ use strict;
 
 use Getopt::Long;
 
-my $a_exit;
-my $a_random;
 my $a_help;
 
 my $EDITOR = $ENV{EDITOR};
@@ -22,12 +20,14 @@ USAGE:
   >> que [options]
 
 Options:
-  --exit   (-e) Exit que
-  --random (-r) See random message
-  --help   (-h) See this message
+  --help (-h) See this message
 
 EXAMPLES:
   >> que
+  >> que 0      # today
+  >> que -2     # two days ago
+  >> que random # random page (r)
+  >> que exit   # random page (e)
 
 HELP
 }
@@ -59,8 +59,6 @@ sub confirm($) {
 
 MAIN: {
     GetOptions(
-        'exit' => \$a_exit,
-        'random' => \$a_random,
         'help' => \$a_help,
     ) || (help() && exit 1);
 
@@ -76,31 +74,35 @@ MAIN: {
         exit 1;
     }
 
-    if (defined $a_exit) {
-      my $cleandirty=`status --format "%{cleandirty}"`;
-      chomp $cleandirty;
-      my $leftright=`status --format "%{leftright}"`;
-      chomp $leftright;
-      my $left=$leftright;
-      $left =~ s/-.*//;
-      my $right=$leftright;
-      $right =~ s/.*-//;
+    if (!defined $firstArg) {
+        $firstArg = "0";
+    }
 
-      if ($cleandirty ne "" || (defined $left && $left ne "" && $left > 0)) {
-        if ($right gt 0) {
-          print "need to pull";
-        } else {
-          my $answer = confirm("pin? ");
-          if ($answer =~ /^y/i) {
-            `pin --force`;
-            print "pushed\n";
+    if ($firstArg eq "e" || $firstArg eq "exit") {
+        my $cleandirty=`status --format "%{cleandirty}"`;
+        chomp $cleandirty;
+        my $leftright=`status --format "%{leftright}"`;
+        chomp $leftright;
+        my $left=$leftright;
+        $left =~ s/-.*//;
+        my $right=$leftright;
+        $right =~ s/.*-//;
+
+        if ($cleandirty ne "" || (defined $left && $left ne "" && $left > 0)) {
+          if ($right gt 0) {
+            print "need to pull";
+          } else {
+            my $answer = confirm("pin? (y/n) ");
+            if ($answer =~ /^y/i) {
+              `pin --force`;
+              print "pushed\n";
+            }
           }
+        } else {
+          print "no changes to commit\n";
         }
-      } else {
-        print "no changes to commit\n";
-      }
 
-      exit 0;
+        exit 0;
     }
 
     my $stamp = `stamp`;
@@ -129,7 +131,7 @@ MAIN: {
     }
 
     my $path = "${year_dir}/${timestamp}.md";
-    if (defined $a_random) {
+    if ($firstArg eq "r") {
       $path = "${QUE_DIR}/${randomPath}";
     }
 
