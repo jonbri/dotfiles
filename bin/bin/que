@@ -23,10 +23,11 @@ Options:
   --help (-h) See this message
 
 EXAMPLES:
-  >> que
-  >> que 0      # today
-  >> que -2     # two days ago
-  >> que random # random page (r)
+  >> que        # today
+  >> que 1      # yesterday
+  >> que 7      # one week ago
+  >> que random # random page
+  >> que r      # random page
   >> que exit   # random page (e)
 
 HELP
@@ -105,7 +106,7 @@ MAIN: {
         exit 0;
     }
 
-    my $stamp = `stamp`;
+    my $stamp = `stamp --increment -$firstArg`;
     chomp $stamp;
 
     my $year = substr($stamp, 0, 4);
