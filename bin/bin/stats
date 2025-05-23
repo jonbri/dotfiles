@@ -6,6 +6,7 @@ use warnings;
 use Getopt::Long;
 
 my $a_all;
+my $a_known;
 my $a_help;
 
 sub help() {
@@ -17,11 +18,14 @@ USAGE:
   >> stats [options]
 
 Options:
-  --all  (-a) See all output
-  --help (-h) See this message
+  --all    (-a) See all output
+  --known  (-k) Passed to --author
+  --help   (-h) See this message
 
 EXAMPLES:
   >> stats
+  >> stats -k pw # true
+  >> stats -k pp # false
 
 HELP
 }
@@ -29,13 +33,24 @@ HELP
 MAIN: {
     GetOptions(
         'all' => \$a_all,
+        'known=s' => \$a_known,
         'help' => \$a_help
     ) || (help() && exit 1);
 
-    # show help
     if (defined $a_help) {
         help();
         exit 1;
+    }
+
+    if (defined $a_known) {
+        my $output = `git log --author "$a_known"`;
+        my @lines = split("\n", $output);
+        if (scalar(@lines) == 0) {
+            print "false\n";
+        } else {
+            print "true\n";
+        }
+        exit 0;
     }
 
     print "Total commits: ";
