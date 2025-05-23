@@ -10,6 +10,7 @@ my $a_count;
 my $a_exact;
 my $a_nth;
 my $a_base;
+my $a_pin;
 my $a_archive;
 my $a_help;
 
@@ -17,6 +18,13 @@ my $_0 = $ENV{_0};
 my $_1 = $ENV{_1};
 my $_2 = $ENV{_2};
 my $ZEROONETWO = $ENV{ZEROONETWO};
+
+my $PINNED_0 = `var PINNED_0`;
+chomp $PINNED_0;
+my $PINNED_1 = `var PINNED_1`;
+chomp $PINNED_1;
+my $PINNED_2 = `var PINNED_2`;
+chomp $PINNED_2;
 
 sub help() {
     print STDOUT <<'HELP';
@@ -33,14 +41,16 @@ Options:
   --nth     (-n) Show nth match (default: 0)
   --count   (-c) Show number of matches
   --base    (-b) Show root path
+  --pin     (-p) Pin entry to top of list
   --archive (-a) Move target to archive
   --exact   (-e) Exact match
 
 EXAMPLES:
-  >> zeroonetwo            # $_0
-  >> zeroonetwo --root 1   # $_1
-  >> zeroonetwo foobar     # Filter
-  >> zeroonetwo -r 1 fo*ar # $_1/foobar
+  >> zeroonetwo              # $_0
+  >> zeroonetwo --root 1     # $_1
+  >> zeroonetwo foobar       # Filter
+  >> zeroonetwo -r 1 fo*ar   # $_1/foobar
+  >> zeroonetwo -r 1 -p fo*ar # pin foobar
   >> zeroonetwo foobar --base      # /path/to/0
   >> zeroonetwo foobar --base -r 2 # /path/to/2
 
@@ -72,6 +82,7 @@ MAIN: {
         'exact' => \$a_exact,
         'nth:s' => \$a_nth,
         'base' => \$a_base,
+        'pin' => \$a_pin,
         'archive' => \$a_archive,
         'help' => \$a_help
     ) || (help() && exit 1);
@@ -92,10 +103,13 @@ MAIN: {
     }
 
     my $PREFIX = $_0;
+    my $PINNED = $PINNED_0;
     if ($a_root eq "1") {
         $PREFIX = $_1;
+        $PINNED = $PINNED_1;
     } elsif ($a_root eq "2") {
         $PREFIX = $_2;
+        $PINNED = $PINNED_2;
     }
 
     my $pathArg = "";
@@ -111,10 +125,28 @@ MAIN: {
     my @fullList = runCommand("find $PREFIX -maxdepth 1 -type d -iname \"*\" -printf \"%Ts/%f\\n\" | sort -n | tac");
     @fullList = map { $_ =~ s/^[^\/]*\///; $_ } @fullList;
     @fullList = grep { $_ ne "$a_root\n" } @fullList;
+    @fullList = map { chomp; $_ } @fullList;
+    if ($PINNED ne '') {
+        @fullList = grep { $_ ne $PINNED } @fullList;
+        unshift @fullList, $PINNED;
+    }
 
     my @list = runCommand("find $PREFIX -maxdepth 1 -type d -iname \"$pathArg\" -printf \"%Ts/%f\\n\" | sort -n | tac");
     @list = map { $_ =~ s/^[^\/]*\///; $_ } @list;
     @list = grep { $_ ne "$a_root\n" } @list;
+    @list = map { chomp; $_ } @list;
+    if ($PINNED ne '') {
+        @list = grep { $_ ne $PINNED } @list;
+        unshift @list, $PINNED;
+    }
+
+    if (defined $a_pin) {
+        my $first= $list[1];
+        chomp $first;
+        if (defined $first) {
+          `var "PINNED_${a_root}:${first}"`;
+        }
+    }
 
     if (defined $a_list) {
         foreach my $line (@list) {
