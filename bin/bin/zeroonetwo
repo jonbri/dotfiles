@@ -161,7 +161,11 @@ MAIN: {
                 }
                 $index++;
             }
-            print "${a_root}${index}${line}\n";
+            my $pinnedMarker = "";
+            if ($PINNED ne '' && $line eq $PINNED) {
+                $pinnedMarker = "↑";
+            }
+            print "${a_root}${index}${line}${pinnedMarker}\n";
         }
         exit 0;
     }
