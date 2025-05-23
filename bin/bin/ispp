@@ -47,6 +47,10 @@ MAIN: {
     if (!defined $dir) {
         $dir = `pwd`;
         chomp $dir;
+        if ($dir =~ /que/) {
+            print "true\n";
+            exit 0;
+        }
     }
 
     my $personaCommand = `persona --whoami`;
