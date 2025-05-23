@@ -128,8 +128,7 @@ MAIN: {
         @pidLineToKill = grep(/$firstArg/, @pidLineToKill);
         @pidLineToKill = grep(!/perl.*killer /, @pidLineToKill);
 
-        @pidLineToKill = map { my @fields = split(/\s+/, $_); join(" ", @fields[0..1], @fields[10..$#fields], @fields[2..9]) } @pidLineToKill;
-        @pidLineToKill = map { my @fields = split(/\s+/, $_); join(" ", $fields[0], @fields[2..$#fields]) } @pidLineToKill;
+        @pidLineToKill = map { my @fields = split(/\s+/, $_); join(" ", $fields[0], $fields[1], @fields[10..$#fields]) } @pidLineToKill;
 
         if (scalar @pidLineToKill == 0) {
             _print "no matches found\n";
@@ -168,7 +167,7 @@ MAIN: {
                 if ($answer =~ /^y/i) {
                     my @pidParts = split(/\s+/, $_);
                     my $pidToKill = $pidParts[1];
-                    runCommand("sudo kill -9 $pidToKill");
+                    runCommand("sudo kill -9 ${pidToKill}");
                     _print "killed pid $pidToKill\n";
                     $i_kills++;
                 } else {
