@@ -21,7 +21,7 @@ qr() {
 }
 
 qq() {
-  que e $@
+  que exit $@
   pprev
   sleep 2
   echo "leaving"
