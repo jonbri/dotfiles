@@ -6,7 +6,6 @@ use Getopt::Long;
 
 my $a_list;
 my $a_gui;
-my $a_write;
 my $a_show;
 my $a_promote;
 my $a_color;
@@ -18,32 +17,9 @@ my $a_zip;
 my $a_help;
 
 my $EDITOR = $ENV{EDITOR};
-my $WIN_DESKTOP=$ENV{"WIN_DESKTOP"};
-my $WIN_DESKTOP_SAVE=$ENV{"WIN_DESKTOP_SAVE"};
 my $DEFAULT_NOTE_NAME="_default";
 my $colorscheme = "blue";
 my $home=$ENV{HOME};
-
-my $DESKTOP=$WIN_DESKTOP;
-if (! -d $DESKTOP) {
-    $DESKTOP="${home}/Desktop";
-}
-if (! -d $DESKTOP) {
-    print "Cannot find $DESKTOP\n";
-    print "exiting\n";
-    exit 1;
-}
-
-my $DESKTOP_SAVE=$WIN_DESKTOP_SAVE;
-if (! -d $DESKTOP_SAVE) {
-    $DESKTOP_SAVE="${DESKTOP}/save";
-}
-`mkdir -p ${DESKTOP_SAVE}`;
-if (! -d $DESKTOP_SAVE) {
-    print "Cannot find $DESKTOP_SAVE\n";
-    print "exiting\n";
-    exit 1;
-}
 
 my $MARBLE_DIR="${home}/marble";
 my $PROMOTED_DIR_NAME="promoted";
@@ -66,7 +42,6 @@ Options:
   --list     (-l) List files
   --gui      (-g) Open in graphical editor
   --promote  (-p) Move between work and promoted
-  --write    (-w) Save to desktop
   --show     (-s) Print to stdout
   --color    (-c) Vim color scheme
   --archive  (-a) Archive a note file
@@ -116,7 +91,6 @@ MAIN: {
     GetOptions(
         'list' => \$a_list,
         'gui:s' => \$a_gui,
-        'write' => \$a_write,
         'show' => \$a_show,
         'promote' => \$a_promote,
         'color:s' => \$a_color,
@@ -285,16 +259,6 @@ MAIN: {
         if (defined $a_verbose) {
             print "Backup saved to ${backupFile}\n";
         }
-    }
-
-    if (defined $a_write) {
-        # if (defined $noteName && ! -e $path) {
-        if (! -e $path) {
-            print "File not found: ${path}\n";
-            exit 1;
-        }
-        `cp ${path} ${DESKTOP}`;
-        exit 0;
     }
 
     if (defined $a_promote) {
