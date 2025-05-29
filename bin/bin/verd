@@ -4,7 +4,7 @@ use strict;
 
 use Getopt::Long;
 
-my $a_app;
+my $a_add;
 my $a_id;
 my $a_help;
 
@@ -19,7 +19,7 @@ USAGE:
 Running verd with no arguments starts server.
 
 Options:
-  --app  (-a) Configure ./.npmrc
+  --add  (-a) Configure ./.npmrc
   --id   (-i) Show verdaccio processes
   --help (-h) See this message
 
@@ -57,7 +57,7 @@ sub getFirstNonOptionArg {
 
 MAIN: {
     GetOptions(
-        'app' => \$a_app,
+        'add' => \$a_add,
         'id' => \$a_id,
         'help' => \$a_help
     ) || (help() && exit 1);
@@ -80,7 +80,7 @@ MAIN: {
         exit 0;
     }
 
-    if (defined $a_app) {
+    if (defined $a_add) {
         my $npmrc = <<'END';
 registry=http://localhost:4873/
 always-auth=true
