@@ -69,6 +69,6 @@
       ]
     }
   ],
-  "editor.stickyScroll.enabled": true,
+  "editor.stickyScroll.enabled": false,
   "github.copilot.editor.enableAutoCompletions": true
 }
