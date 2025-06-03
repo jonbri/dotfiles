@@ -5,7 +5,6 @@ use strict;
 use Getopt::Long;
 
 my $a_add;
-my $a_remove;
 my $a_id;
 my $a_help;
 
@@ -21,7 +20,6 @@ Running verd with no arguments starts server.
 
 Options:
   --add    (-a) Configure ./.npmrc
-  --remove (-r) Restore ./.npmrc changes made with --add
   --id     (-i) Show verdaccio processes
   --help   (-h) See this message
 
@@ -60,7 +58,6 @@ sub getFirstNonOptionArg {
 MAIN: {
     GetOptions(
         'add' => \$a_add,
-        'remove' => \$a_remove,
         'id' => \$a_id,
         'help' => \$a_help
     ) || (help() && exit 1);
@@ -96,24 +93,6 @@ END
         system("cat $npmrcFile");
         print "\n";
 
-        exit 0;
-    }
-
-    if (defined $a_remove) {
-        my $npmrcFile = "./.npmrc";
-        if (-e $npmrcFile) {
-            print "Removing $npmrcFile\n";
-            unlink $npmrcFile or warn "Could not remove $npmrcFile: $!";
-        } else {
-            print "$npmrcFile does not exist, nothing to remove.\n";
-        }
-        my $gitStatus = `git status --porcelain $npmrcFile`;
-        if ($gitStatus) {
-            print "There are changes in $npmrcFile, restoring original state.\n";
-            system("git checkout $npmrcFile");
-        } else {
-            print "TODO\n";
-        }
         exit 0;
     }
 
