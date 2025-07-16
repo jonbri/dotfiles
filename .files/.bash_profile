@@ -127,6 +127,7 @@ alias yapi="sep --text \"yapi begin\" && yb && y api:extract && sep --text \"yap
 alias yyapi="yybe && y api:extract"
 alias yall="ytsc && yl && yapi && ydoc"
 alias yyall="y && yall"
+alias yfull="y && ytsc && yl && yb && y api:extract && ydoc"
 alias yyc="c;y && yc"
 alias yyf="c;y && yf"
 alias yyl="c;y && yl"
