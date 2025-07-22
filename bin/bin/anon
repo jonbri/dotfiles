@@ -78,7 +78,7 @@ MAIN: {
     chomp $branch;
 
     `crumb "anonStart=$branch"`;
-    my $stamp = `stamp`;
+    my $stamp = `stamp -f "%year_%month_%date_%hour_%minute%second"`;
     chomp $stamp;
     my $label = "anon";
     if (defined $firstArg) {
