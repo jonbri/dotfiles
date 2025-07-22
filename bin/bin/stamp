@@ -28,8 +28,11 @@ EXAMPLES:
   >> stamp -f
   # 2025-03-05 12:00:00
 
-  >> stamp -f -i -1
+  >> stamp -f --increment -1
   # 2025-03-04 12:00:00
+
+  >> stamp -f "%year_%month_%date_%hour_%minute%second"
+  # 2025_03_05_12_0000
 
   >> stamp -f "%year-%month-%date (%hour:%minute:%second)"
   # 2025-03-05 (12:00:00)
