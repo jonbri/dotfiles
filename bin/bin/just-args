@@ -8,6 +8,7 @@ my $a_command;
 my $a_stop;
 my $a_rootDir;
 my $a_exact;
+my $a_first;
 my $a_help;
 
 sub help() {
@@ -23,6 +24,7 @@ Options:
   --stop    (-s) do not use --watch
   --rootDir (-r) specify jest root directory
   --exact   (-e) exact test names
+  --first   (-f) run only the first test found
   --help    (-h)
 
 EXAMPLES:
@@ -53,6 +55,7 @@ MAIN: {
         'stop' => \$a_stop,
         'rootDir=s' => \$a_rootDir,
         'exact' => \$a_exact,
+        'first' => \$a_first,
         'help' => \$a_help,
     ) || (help() && exit 1);
 
@@ -69,15 +72,23 @@ MAIN: {
         @specArgs = map { "\"_/$_.spec\"" } @ARGV;
     }
 
+    if (defined $a_first) {
+        my $args = join(" ", @specArgs);
+        my $command = "./node_modules/.bin/jest $args --listTests | head -n 1";
+        @specArgs = runCommand($command);
+        chomp @specArgs;
+    }
+
     my $debugPrintLimit = 100000;
     my $testTimeout = 20000;
 
     my $arg = join(" ", @specArgs);
     my $watch = $a_stop ? "" : "--watch";
-    my $command = "DEBUG_PRINT_LIMIT=${debugPrintLimit} ./node_modules/.bin/jest $arg ${watch} --testTimeout=${testTimeout}";
     if (!$hasArgs) {
-        $command = "DEBUG_PRINT_LIMIT=${debugPrintLimit} ./node_modules/.bin/jest --testTimeout=${testTimeout}";
+        $watch = "";
+        $arg = "";
     }
+    my $command = "DEBUG_PRINT_LIMIT=${debugPrintLimit} ./node_modules/.bin/jest $arg ${watch} --testTimeout=${testTimeout}";
 
     if (defined $a_rootDir) {
         $command .= " --rootDir $a_rootDir";
