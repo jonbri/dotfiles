@@ -231,9 +231,6 @@ alias versionr="version --remote"
 alias ju="just"
 alias jue="ju --exact"
 alias juu="ju --first"
-alias jenalee="~/012/0/jenalee/dist/index.js"
-alias j="jenalee"
-alias jb="pushd ~/012/0/jenalee && yarn build && popd"
 
 alias b="browse 80 -n example.org"
 alias b3="browse 3000"
@@ -269,6 +266,7 @@ export PATH=$BUN_INSTALL/bin:$PATH
 source $HOME/.012
 source $HOME/.marble
 source $HOME/.que
+source $HOME/.jenalee
 
 welcome --quiet
 
