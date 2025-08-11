@@ -1,6 +1,6 @@
-alias jenalee="~/012/0/jenalee/dist/index.js"
 alias j="jenalee"
-alias jb="pushd ~/012/0/jenalee && yarn build && popd"
+alias jenaleeb="pushd ~/012/0/jenalee && yarn build && popd"
+alias jenaleed="~/012/0/jenalee/dist/index.js"
 
 alias j0="jenalee --number 0"
 alias j1="jenalee --number 1"

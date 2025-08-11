@@ -3,7 +3,7 @@
 ```sh
 sudo apt update
 sudo apt install --yes vim tmux npm tree jq openssh-server openssh-client g++ curl libssl-dev make net-tools zip
-sudo npm install --global n yarn conny serve degit buffaloes seolaffub n verdaccio
+sudo npm install --global n yarn conny serve degit buffaloes seolaffub n verdaccio jenalee
 
 # node
 sudo n 20
