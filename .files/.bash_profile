@@ -271,5 +271,34 @@ source $HOME/.marble
 source $HOME/.que
 source $HOME/.jenalee
 
+pinfbuild() {
+  PINF_BRANCH=`git rev-parse --abbrev-ref HEAD`
+  PINF_BRANCH_BUILD="${PINF_BRANCH}-build"
+  echo "starting on $PINF_BRANCH"
+  sleep 1
+  echo ""
+  echo "switch to $PINF_BRANCH_BUILD..."
+  sleep 2
+  git checkout $PINF_BRANCH_BUILD
+  echo "done"
+  sleep 1
+  echo ""
+  echo "about to reset --hard..."
+  sleep 2
+  git reset --hard origin/$PINF_BRANCH
+  echo "done"
+  sleep 1
+  echo ""
+  echo "about to pinf..."
+  sleep 3
+  pinf
+  echo "done"
+  sleep 1
+  echo ""
+  echo "back to $PINF_BRANCH..."
+  git checkout -
+  echo "done"
+}
+
 welcome --quiet
 
