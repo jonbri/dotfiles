@@ -48,6 +48,7 @@ if not vim.g.vscode then -- in terminal
   Plug 'jonbri/vim-sane'
   Plug 'jonbri/vim-colorpulse'
   Plug 'numToStr/Comment.nvim'
+  Plug 'unblevable/quick-scope'
 
   -- conditionally load copilot plugin
   if vim.fn.getcwd():match("/me$") == nil and ispp ~= "true\n" and (name == "t14\n" or name == "t480s\n" or name == "wsl\n") then Plug 'github/copilot.vim' end
