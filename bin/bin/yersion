@@ -1,0 +1,81 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+use Getopt::Long;
+
+my $YALC_DIR = $ENV{YALC_DIR} || "$ENV{HOME}/.yalc";
+
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+yersion - get local yalc latest version of package
+
+USAGE:
+  >> yersion [options]
+
+Options:
+  --help   (-h) See this message
+
+EXAMPLES:
+  >> yersion foo # get local yalc version of package foo
+
+HELP
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help,
+    ) || (help() && exit 1);
+
+    # show help if either arg or option is given
+    my $firstArg = getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    # if $firstArg is not defined, exit
+    if (!defined $firstArg) {
+        print STDERR "Error: No package name given\n";
+        help();
+        exit 1;
+    }
+    
+    my $package_dir = "$YALC_DIR/packages/$firstArg";
+    if (!-d $package_dir) {
+        print STDERR "Error: Package '$firstArg' not found in yalc\n";
+        exit 1;
+    }
+    opendir(my $dh, $package_dir) || die "Can't open $package_dir: $!";
+    my @versions = grep { !/^\./ && -d "$package_dir/$_" } readdir($dh);
+    closedir $dh;
+    if (!@versions) {
+        print STDERR "Error: No versions found for package '$firstArg'\n";
+        exit 1;
+    }
+    my @sorted_versions = sort { version_cmp($a, $b) } @versions;
+    print "$sorted_versions[-1]\n";
+}
+
+sub version_cmp {
+    my ($a, $b) = @_;
+    my @a_parts = split(/\./, $a);
+    my @b_parts = split(/\./, $b);
+    for (my $i = 0; $i < @a_parts || $i < @b_parts; $i++) {
+        my $a_part = $a_parts[$i] // 0;
+        my $b_part = $b_parts[$i] // 0;
+        return $a_part <=> $b_part if $a_part != $b_part;
+    }
+    return 0;
+}
