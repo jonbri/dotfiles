@@ -3,9 +3,11 @@
 use strict;
 
 use Getopt::Long;
+use JSON::PP qw(decode_json);
 
 my $YALC_DIR = $ENV{YALC_DIR} || "$ENV{HOME}/.yalc";
 
+my $a_bump;
 my $a_help;
 
 sub help() {
@@ -14,13 +16,17 @@ sub help() {
 yersion - get local yalc latest version of package
 
 USAGE:
+  >> yersion
   >> yersion [options]
 
 Options:
+  --bump  (-b) Bump version in package.json (patch, minor, major)
   --help   (-h) See this message
 
 EXAMPLES:
-  >> yersion foo # get local yalc version of package foo
+  >> yersion          # get local yalc version of package in cwd
+  >> yersion foo      # get local yalc version of package foo
+  >> yersion -b major # Bump major version for cwd package
 
 HELP
 }
@@ -36,6 +42,7 @@ sub getFirstNonOptionArg {
 MAIN: {
     GetOptions(
         'help' => \$a_help,
+        'bump|b=s' => \$a_bump,
     ) || (help() && exit 1);
 
     # show help if either arg or option is given
@@ -45,27 +52,88 @@ MAIN: {
         exit 1;
     }
 
-    # if $firstArg is not defined, exit
-    if (!defined $firstArg) {
-        print STDERR "Error: No package name given\n";
-        help();
-        exit 1;
+    if (!defined $firstArg && !defined $a_bump) {
+        open(my $package_fh, '<', 'package.json')
+            || die "Can't open package.json: $!";
+        local $/;
+        my $package_json = <$package_fh>;
+        close $package_fh;
+
+        my $package = eval { decode_json($package_json) };
+        if (!$package || ref($package) ne 'HASH' || !$package->{name}) {
+            print STDERR "Error: Could not find a package name in CWD package.json\n";
+            exit 1;
+        }
+        $firstArg = $package->{name};
     }
-    
-    my $package_dir = "$YALC_DIR/packages/$firstArg";
-    if (!-d $package_dir) {
-        print STDERR "Error: Package '$firstArg' not found in yalc\n";
-        exit 1;
+
+    if (defined $firstArg) {
+      my $package_dir = "$YALC_DIR/packages/$firstArg";
+      if (!-d $package_dir) {
+          print STDERR "Error: Package '$firstArg' not found in yalc\n";
+          exit 1;
+      }
+      opendir(my $dh, $package_dir) || die "Can't open $package_dir: $!";
+      my @versions = grep { !/^\./ && -d "$package_dir/$_" } readdir($dh);
+      closedir $dh;
+      if (!@versions) {
+          print STDERR "Error: No versions found for package '$firstArg'\n";
+          exit 1;
+      }
+      my @sorted_versions = sort { version_cmp($a, $b) } @versions;
+      print "$sorted_versions[-1]\n";
+      exit 0;
     }
-    opendir(my $dh, $package_dir) || die "Can't open $package_dir: $!";
-    my @versions = grep { !/^\./ && -d "$package_dir/$_" } readdir($dh);
-    closedir $dh;
-    if (!@versions) {
-        print STDERR "Error: No versions found for package '$firstArg'\n";
-        exit 1;
+
+    if (defined $a_bump) {
+        if ($a_bump !~ /^(?:major|minor|patch)$/) {
+            print STDERR "Error: Bump must be one of major, minor, or patch\n";
+            exit 1;
+        }
+
+        # Edit package.json directly. Do not invoke npm: even `npm version`
+        # can inspect the dependency tree and run unrelated project work.
+        open(my $package_fh, '<', 'package.json')
+            || die "Can't open package.json: $!";
+        local $/;
+        my $package_json = <$package_fh>;
+        close $package_fh;
+
+        my $package = eval { decode_json($package_json) };
+        my $version = $package && ref($package) eq 'HASH'
+            ? $package->{version}
+            : undef;
+        if (!defined $version || $version !~ /^v?(\d+)\.(\d+)\.(\d+)/) {
+            print STDERR "Error: Could not find a valid version in package.json\n";
+            exit 1;
+        }
+
+        my ($major, $minor, $patch) = ($1, $2, $3);
+        if ($a_bump eq 'major') {
+            $major++;
+            $minor = 0;
+            $patch = 0;
+        } elsif ($a_bump eq 'minor') {
+            $minor++;
+            $patch = 0;
+        } else {
+            $patch++;
+        }
+        my $new_version = "$major.$minor.$patch";
+
+        my $replacements = ($package_json =~ s/^(\s*"version"\s*:\s*")v?\d+\.\d+\.\d+(?:-[^"]+)?("\s*,?)/$1$new_version$2/m);
+        if (!$replacements) {
+            print STDERR "Error: Could not update the version in package.json\n";
+            exit 1;
+        }
+
+        open($package_fh, '>', 'package.json')
+            || die "Can't write package.json: $!";
+        print $package_fh $package_json;
+        close $package_fh;
+        print "v$new_version\n";
+        exit 0;
     }
-    my @sorted_versions = sort { version_cmp($a, $b) } @versions;
-    print "$sorted_versions[-1]\n";
 }
 
 sub version_cmp {
