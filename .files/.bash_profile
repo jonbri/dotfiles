@@ -301,5 +301,22 @@ pinfbuild() {
   echo "done"
 }
 
+# SSH_ENV="$HOME/.ssh/agent.env"
+# start_agent() {
+#     ssh-agent -s > "$SSH_ENV"
+#     chmod 600 "$SSH_ENV"
+#     . "$SSH_ENV" > /dev/null
+#     ssh-add ~/.ssh/id_rsa
+# }
+#
+# if [ -f "$SSH_ENV" ]; then
+#     . "$SSH_ENV" > /dev/null
+#     if ! kill -0 "$SSH_AGENT_PID" 2>/dev/null; then
+#         start_agent
+#     fi
+# else
+#     start_agent
+# fi
+
 welcome --quiet
 
