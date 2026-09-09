@@ -114,7 +114,6 @@ MAIN: {
     # }
 
     print "Done\n";
-    print join('', runCommand("welcome --quiet"));
 
     exit 0;
 }
