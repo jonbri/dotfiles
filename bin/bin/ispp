@@ -53,6 +53,12 @@ MAIN: {
         }
     }
 
+    my $personaPath = `which persona`;
+    if ($personaPath eq '') {
+        print "false\n";
+        exit 0;
+    }
+
     my $personaCommand = `persona --whoami`;
     chomp $personaCommand;
 
