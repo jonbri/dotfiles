@@ -90,6 +90,9 @@ else -- in vscode
     vim.call('plug#end');
 end
 
-require("Comment").setup();
+local ok, comment = pcall(require, 'Comment')
+if ok then
+  comment.setup()
+end
 
 vim.cmd [[ source ~/dotfiles/.config/nvim/vimrc.vim ]]
