@@ -318,5 +318,9 @@ pinfbuild() {
 #     start_agent
 # fi
 
+kc() {
+  kubectl config set-context --current --namespace="$1"
+}
+
 welcome --quiet
 
