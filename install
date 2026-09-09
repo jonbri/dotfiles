@@ -93,7 +93,11 @@ MAIN: {
         my $dictionaryDir="$home/dictionary";
         print "updating dictionary...\n";
         if (!-d "$dictionaryDir") {
-            `git clone git\@github.com:jonbri/dictionary.git $dictionaryDir`;
+            my $isDocker = ($< == 0) || -f "/.dockerenv";
+            my $repoUrl = $isDocker
+                ? "https://github.com/jonbri/dictionary.git"
+                : "git\@github.com:jonbri/dictionary.git";
+            `git clone $repoUrl $dictionaryDir`;
         } else {
             `git -C $dictionaryDir fetch`;
         }
