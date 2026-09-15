@@ -47,6 +47,7 @@ if not vim.g.vscode then -- in terminal
   Plug 'jonbri/vim-bpm'
   Plug 'jonbri/vim-sane'
   Plug 'jonbri/vim-colorpulse'
+  Plug 'jonbri/vim-hilo'
   Plug 'numToStr/Comment.nvim'
   Plug 'unblevable/quick-scope'
 
