@@ -1,0 +1,84 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+use Getopt::Long;
+
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+gitcontinue - continue a resolved Git conflict
+
+USAGE:
+  >> gitcontinue [options]
+
+Options:
+  --help (-h) See this message
+
+Continues an in-progress rebase or cherry-pick. Git does not record a
+continuable state for a conflicted `git stash pop`; the stash is retained,
+so verify it before dropping it manually.
+
+HELP
+}
+
+sub continue_git(@) {
+    my (@command) = @_;
+    print 'Running: git ', join(' ', @command), "\n";
+    system('git', @command);
+    if ($? == -1) {
+        die "Unable to run git: $!\n";
+    }
+    if ($? & 127) {
+        exit 128 + ($? & 127);
+    }
+    exit($? >> 8);
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    if (defined $a_help || (defined $ARGV[0] && $ARGV[0] eq 'help')) {
+        help();
+        exit 0;
+    }
+
+    my $git_dir = `git rev-parse --absolute-git-dir 2>/dev/null`;
+    if ($? != 0) {
+        print STDERR "not a git repo\n";
+        exit 1;
+    }
+    chomp $git_dir;
+
+    if (-d "$git_dir/rebase-merge" ||
+        (-d "$git_dir/rebase-apply" && !-f "$git_dir/rebase-apply/applying")) {
+        continue_git('rebase', '--continue');
+    }
+
+    if (-f "$git_dir/CHERRY_PICK_HEAD") {
+        continue_git('cherry-pick', '--continue');
+    }
+
+    if (-f "$git_dir/MERGE_HEAD") {
+        continue_git('merge', '--continue');
+    }
+
+    my $unmerged = `git diff --name-only --diff-filter=U`;
+    if ($? != 0) {
+        print STDERR "unable to read Git conflict state\n";
+        exit 1;
+    }
+
+    if ($unmerged ne '') {
+        print STDERR "unresolved conflicts remain; resolve and stage them first\n";
+        exit 1;
+    }
+
+    print "No rebase, cherry-pick, or merge is in progress.\n";
+    print "If this was a resolved stash pop, Git has no continue command and keeps the stash entry; verify it, then run 'git stash drop' if you want to remove it.\n";
+    exit 0;
+}
