@@ -1,0 +1,16 @@
+#!/usr/bin/perl -w
+
+use strict;
+use POSIX qw(strftime);
+
+my $timestamp = strftime("%Y-%m-%d %H:%M:%S", localtime);
+my $message = "test: $timestamp";
+
+my $status = system('commit', '--stage', '--message', $message);
+if ($status == -1) {
+    die "Unable to run commit: $!\n";
+}
+if ($status & 127) {
+    die "commit terminated by signal " . ($status & 127) . "\n";
+}
+exit($status >> 8);
