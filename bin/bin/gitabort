@@ -1,0 +1,72 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+use Getopt::Long;
+
+my $a_help;
+
+sub help() {
+    print STDOUT <<'HELP';
+
+gitabort - abort an in-progress Git operation
+
+USAGE:
+  >> gitabort [options]
+
+Options:
+  --help (-h) See this message
+
+Aborts an in-progress rebase, cherry-pick, or merge. A conflicted `git stash
+pop` is not an abortable Git operation; the stash entry is retained.
+
+HELP
+}
+
+sub abort_git(@) {
+    my (@command) = @_;
+    print 'Running: git ', join(' ', @command), "\n";
+    system('git', @command);
+    if ($? == -1) {
+        die "Unable to run git: $!\n";
+    }
+    if ($? & 127) {
+        exit 128 + ($? & 127);
+    }
+    exit($? >> 8);
+}
+
+MAIN: {
+    GetOptions(
+        'help' => \$a_help
+    ) || (help() && exit 1);
+
+    if (defined $a_help || (defined $ARGV[0] && $ARGV[0] eq 'help')) {
+        help();
+        exit 0;
+    }
+
+    my $git_dir = `git rev-parse --absolute-git-dir 2>/dev/null`;
+    if ($? != 0) {
+        print STDERR "not a git repo\n";
+        exit 1;
+    }
+    chomp $git_dir;
+
+    if (-d "$git_dir/rebase-merge" ||
+        (-d "$git_dir/rebase-apply" && !-f "$git_dir/rebase-apply/applying")) {
+        abort_git('rebase', '--abort');
+    }
+
+    if (-f "$git_dir/CHERRY_PICK_HEAD") {
+        abort_git('cherry-pick', '--abort');
+    }
+
+    if (-f "$git_dir/MERGE_HEAD") {
+        abort_git('merge', '--abort');
+    }
+
+    print "No rebase, cherry-pick, or merge is in progress.\n";
+    print "A conflicted stash pop cannot be aborted as an operation; the stash entry is retained.\n";
+    exit 0;
+}
