@@ -9,21 +9,22 @@ my $a_help;
 sub help() {
     print STDOUT <<'HELP';
 
-gitabort - abort an in-progress Git operation
+gcontinue - continue a resolved Git conflict
 
 USAGE:
-  >> gitabort [options]
+  >> gcontinue [options]
 
 Options:
   --help (-h) See this message
 
-Aborts an in-progress rebase, cherry-pick, or merge. A conflicted `git stash
-pop` is not an abortable Git operation; the stash entry is retained.
+Continues an in-progress rebase or cherry-pick. Git does not record a
+continuable state for a conflicted `git stash pop`; the stash is retained,
+so verify it before dropping it manually.
 
 HELP
 }
 
-sub abort_git(@) {
+sub continue_git(@) {
     my (@command) = @_;
     print 'Running: git ', join(' ', @command), "\n";
     system('git', @command);
@@ -55,18 +56,29 @@ MAIN: {
 
     if (-d "$git_dir/rebase-merge" ||
         (-d "$git_dir/rebase-apply" && !-f "$git_dir/rebase-apply/applying")) {
-        abort_git('rebase', '--abort');
+        continue_git('rebase', '--continue');
     }
 
     if (-f "$git_dir/CHERRY_PICK_HEAD") {
-        abort_git('cherry-pick', '--abort');
+        continue_git('cherry-pick', '--continue');
     }
 
     if (-f "$git_dir/MERGE_HEAD") {
-        abort_git('merge', '--abort');
+        continue_git('merge', '--continue');
+    }
+
+    my $unmerged = `git diff --name-only --diff-filter=U`;
+    if ($? != 0) {
+        print STDERR "unable to read Git conflict state\n";
+        exit 1;
+    }
+
+    if ($unmerged ne '') {
+        print STDERR "unresolved conflicts remain; resolve and stage them first\n";
+        exit 1;
     }
 
     print "No rebase, cherry-pick, or merge is in progress.\n";
-    print "A conflicted stash pop cannot be aborted as an operation; the stash entry is retained.\n";
+    print "If this was a resolved stash pop, Git has no continue command and keeps the stash entry; verify it, then run 'git stash drop' if you want to remove it.\n";
     exit 0;
 }
