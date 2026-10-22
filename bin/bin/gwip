@@ -4,7 +4,7 @@ use strict;
 use POSIX qw(strftime);
 
 my $timestamp = strftime("%Y-%m-%d %H:%M:%S", localtime);
-my $message = "test: $timestamp";
+my $message = "wip: $timestamp";
 
 my $status = system('commit', '--stage', '--message', $message);
 if ($status == -1) {
