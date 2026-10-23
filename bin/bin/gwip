@@ -1,10 +1,49 @@
 #!/usr/bin/perl -w
 
 use strict;
-use POSIX qw(strftime);
+use Getopt::Long;
 
-my $timestamp = strftime("%Y-%m-%d %H:%M:%S", localtime);
-my $message = "wip: $timestamp";
+my $help;
+my $type = 'wip';
+
+sub help() {
+        print STDOUT <<'HELP';
+
+gwip - create a timestamped work-in-progress commit
+
+USAGE:
+    >> gwip [options] [message]
+
+Options:
+    --type TYPE  (-t) Set the commit type (default: wip)
+    --help       (-h) Show this message
+
+EXAMPLES:
+    >> gwip
+    >> gwip "my message"
+    >> gwip --type feat "my message"
+
+HELP
+}
+
+if (!GetOptions(
+        'type|t=s' => \$type,
+        'help|h' => \$help
+)) {
+        help();
+        exit 1;
+}
+
+if (defined $help || (defined $ARGV[0] && $ARGV[0] eq 'help')) {
+        help();
+        exit 0;
+}
+
+my $timestamp = `shortdate`;
+chomp $timestamp;
+my $message = @ARGV
+    ? "$type: " . join(' ', @ARGV) . " $timestamp"
+    : "$type: $timestamp";
 
 my $status = system('commit', '--stage', '--message', $message);
 if ($status == -1) {
